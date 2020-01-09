@@ -1,0 +1,1 @@
+sqlplus -S -L / as sysdba  @2-do-redefinition.sql

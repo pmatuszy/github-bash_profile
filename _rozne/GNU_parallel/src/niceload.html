@@ -1,0 +1,412 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>niceload - slow down a program when the load average is above a certain limit</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#options">OPTIONS</a></li>
+	<li><a href="#example__see_niceload_in_action">EXAMPLE: See niceload in action</a></li>
+	<li><a href="#example__run_updatedb">EXAMPLE: Run updatedb</a></li>
+	<li><a href="#example__run_rsync">EXAMPLE: Run rsync</a></li>
+	<li><a href="#example__ensure_enough_disk_cache">EXAMPLE: Ensure enough disk cache</a></li>
+	<li><a href="#environment_variables">ENVIRONMENT VARIABLES</a></li>
+	<li><a href="#exit_status">EXIT STATUS</a></li>
+	<li><a href="#reporting_bugs">REPORTING BUGS</a></li>
+	<li><a href="#author">AUTHOR</a></li>
+	<li><a href="#license">LICENSE</a></li>
+	<ul>
+
+		<li><a href="#documentation_license_i">Documentation license I</a></li>
+		<li><a href="#documentation_license_ii">Documentation license II</a></li>
+	</ul>
+
+	<li><a href="#dependencies">DEPENDENCIES</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<h1><a name="name">NAME</a></h1>
+<p>niceload - slow down a program when the load average is above a certain limit</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<p><strong>niceload</strong> [-v] [-h] [-n nice] [-I io] [-L load] [-M mem] [-N]
+[--sensor program] [-t time] [-s time|-f factor] ( command | -p PID [-p PID ...] )</p>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p>GNU <strong>niceload</strong> will slow down a program when the load average (or
+other system activity) is above a certain limit. When the limit is
+reached the program will be suspended for some time. Then resumed
+again for some time.  Then the load average is checked again and we
+start over.</p>
+<p>Instead of load average <strong>niceload</strong> can also look at disk I/O, amount
+of free memory, or swapping activity.</p>
+<p>If the load is 3.00 then the default settings will run a program
+like this:</p>
+<p>run 1 second, suspend (3.00-1.00) seconds, run 1 second, suspend
+(3.00-1.00) seconds, run 1 second, ...</p>
+<p>
+</p>
+<hr />
+<h1><a name="options">OPTIONS</a></h1>
+<dl>
+<dt><strong><a name="f_factor" class="item"><strong>-f</strong> <em>FACTOR</em></a></strong></dt>
+
+<dt><strong><a name="factor_factor" class="item"><strong>--factor</strong> <em>FACTOR</em></a></strong></dt>
+
+<dd>
+<p>Suspend time factor. Dynamically set <strong>-s</strong> as amount over limit *
+factor. Default is 1.</p>
+</dd>
+<dt><strong><a name="h" class="item"><strong>-H</strong></a></strong></dt>
+
+<dt><strong><a name="hard" class="item"><strong>--hard</strong></a></strong></dt>
+
+<dd>
+<p>Hard limit. <strong>--hard</strong> will suspend the process until the system is
+under the limits. The default is <strong>--soft</strong>.</p>
+</dd>
+<dt><strong><a name="io_iolimit" class="item"><strong>--io</strong> <em>iolimit</em></a></strong></dt>
+
+<dt><strong><a name="i_iolimit" class="item"><strong>-I</strong> <em>iolimit</em></a></strong></dt>
+
+<dd>
+<p>Limit for I/O. The amount of disk I/O will be computed as a value 0 -
+10, where 0 is no I/O and 10 is at least one disk is 100% saturated.</p>
+<p><strong>--io</strong> will set both <strong>--start-io</strong> and <strong>run-io</strong>.</p>
+</dd>
+<dt><strong><a name="load_loadlimit" class="item"><strong>--load</strong> <em>loadlimit</em></a></strong></dt>
+
+<dt><strong><a name="l_loadlimit" class="item"><strong>-L</strong> <em>loadlimit</em></a></strong></dt>
+
+<dd>
+<p>Limit for load average.</p>
+<p><strong>--load</strong> will set both <strong>--start-load</strong> and <strong>run-load</strong>.</p>
+</dd>
+<dt><strong><a name="mem_memlimit" class="item"><strong>--mem</strong> <em>memlimit</em></a></strong></dt>
+
+<dt><strong><a name="m_memlimit" class="item"><strong>-M</strong> <em>memlimit</em></a></strong></dt>
+
+<dd>
+<p>Limit for free memory. This is the amount of bytes available as free
++ cache. This limit is treated opposite other limits: If the system
+is above the limit the program will run, if it is below the limit the
+program will stop</p>
+<p><em>memlimit</em> can be postfixed with K, M, G, T, or P which would
+multiply the size with 1024, 1048576, 1073741824, or 1099511627776
+respectively.</p>
+<p><strong>--mem</strong> will set both <strong>--start-mem</strong> and <strong>run-mem</strong>.</p>
+</dd>
+<dt><strong><a name="noswap" class="item"><strong>--noswap</strong></a></strong></dt>
+
+<dt><strong><a name="n" class="item"><strong>-N</strong></a></strong></dt>
+
+<dd>
+<p>No swapping. If the system is swapping both in and out it is a good
+indication that the system is memory stressed.</p>
+<p><strong>--noswap</strong> is over limit if the system is swapping both in and out.</p>
+<p><strong>--noswap</strong> will set both <strong>--start-noswap</strong> and <strong>run-noswap</strong>.</p>
+</dd>
+<dt><strong><a name="n_niceness" class="item"><strong>-n</strong> <em>niceness</em></a></strong></dt>
+
+<dt><strong><a name="nice_niceness" class="item"><strong>--nice</strong> <em>niceness</em></a></strong></dt>
+
+<dd>
+<p>Sets niceness. See <strong>nice</strong>(1).</p>
+</dd>
+<dt><strong><a name="pid" class="item"><strong>-p</strong> <em>PID</em> (alpha testing)</a></strong></dt>
+
+<dt><strong><strong>--pid</strong> <em>PID</em> (alpha testing)</strong></dt>
+
+<dd>
+<p>Process ID of process to suspend. You can specify multiple process IDs
+with multiple <strong>-p</strong> <em>PID</em>.</p>
+</dd>
+<dt><strong><a name="program" class="item"><strong>--prg</strong> <em>program</em> (alpha testing)</a></strong></dt>
+
+<dt><strong><strong>--program</strong> <em>program</em> (alpha testing)</strong></dt>
+
+<dd>
+<p>Name of running program to suspend. You can specify multiple programs
+with multiple <strong>--prg</strong> <em>program</em>.</p>
+</dd>
+<dt><strong><a name="quote" class="item"><strong>--quote</strong></a></strong></dt>
+
+<dt><strong><a name="q" class="item"><strong>-q</strong></a></strong></dt>
+
+<dd>
+<p>Quote the command line. Useful if the command contains chars like *,
+$, &gt;, and &quot; that should not be interpreted by the shell.</p>
+</dd>
+<dt><strong><a name="run_io_iolimit" class="item"><strong>--run-io</strong> <em>iolimit</em></a></strong></dt>
+
+<dt><strong><a name="ri_iolimit" class="item"><strong>--ri</strong> <em>iolimit</em></a></strong></dt>
+
+<dt><strong><a name="run_load_loadlimit" class="item"><strong>--run-load</strong> <em>loadlimit</em></a></strong></dt>
+
+<dt><strong><a name="rl_loadlimit" class="item"><strong>--rl</strong> <em>loadlimit</em></a></strong></dt>
+
+<dt><strong><a name="run_mem_memlimit" class="item"><strong>--run-mem</strong> <em>memlimit</em></a></strong></dt>
+
+<dt><strong><a name="rm_memlimit" class="item"><strong>--rm</strong> <em>memlimit</em></a></strong></dt>
+
+<dd>
+<p>Run limit. The running program will be slowed down if the system is
+above the limit. See: <strong>--io</strong>, <strong>--load</strong>, <strong>--mem</strong>, <strong>--noswap</strong>.</p>
+</dd>
+<dt><strong><strong>--sensor</strong> <em>sensor program</em> (alpha testing)</strong></dt>
+
+<dd>
+<p>Read sensor. Use <em>sensor program</em> to read a sensor.</p>
+<p>This will keep the CPU temperature below 80 deg C on GNU/Linux:</p>
+<pre>
+  niceload -l 80000 -f 0.001 --sensor 'sort -n /sys/devices/platform/coretemp*/temp*_input' gzip *</pre>
+<p>This will stop if the disk space &lt; 100000.</p>
+<pre>
+  niceload -H -l -100000 --sensor &quot;df . | awk '{ print \$4 }'&quot; echo</pre>
+</dd>
+<dt><strong><a name="start_io_iolimit" class="item"><strong>--start-io</strong> <em>iolimit</em></a></strong></dt>
+
+<dt><strong><a name="si_iolimit" class="item"><strong>--si</strong> <em>iolimit</em></a></strong></dt>
+
+<dt><strong><a name="start_load_loadlimit" class="item"><strong>--start-load</strong> <em>loadlimit</em></a></strong></dt>
+
+<dt><strong><a name="sl_loadlimit" class="item"><strong>--sl</strong> <em>loadlimit</em></a></strong></dt>
+
+<dt><strong><a name="start_mem_memlimit" class="item"><strong>--start-mem</strong> <em>memlimit</em></a></strong></dt>
+
+<dt><strong><a name="sm_memlimit" class="item"><strong>--sm</strong> <em>memlimit</em></a></strong></dt>
+
+<dd>
+<p>Start limit. The program will not start until the system is below the
+limit. See: <strong>--io</strong>, <strong>--load</strong>, <strong>--mem</strong>, <strong>--noswap</strong>.</p>
+</dd>
+<dt><strong><a name="soft" class="item"><strong>--soft</strong></a></strong></dt>
+
+<dt><strong><a name="s" class="item"><strong>-S</strong></a></strong></dt>
+
+<dd>
+<p>Soft limit. <strong>niceload</strong> will suspend a process for a while and then
+let it run for a second thus only slowing down a process while the
+system is over one of the given limits. This is the default.</p>
+</dd>
+<dt><strong><a name="suspend_sec" class="item"><strong>--suspend</strong> <em>SEC</em></a></strong></dt>
+
+<dt><strong><a name="s_sec" class="item"><strong>-s</strong> <em>SEC</em></a></strong></dt>
+
+<dd>
+<p>Suspend time. Suspend the command this many seconds when the max load
+average is reached.</p>
+</dd>
+<dt><strong><a name="recheck_sec" class="item"><strong>--recheck</strong> <em>SEC</em></a></strong></dt>
+
+<dt><strong><a name="t_sec" class="item"><strong>-t</strong> <em>SEC</em></a></strong></dt>
+
+<dd>
+<p>Recheck load time. Sleep SEC seconds before checking load
+again. Default is 1 second.</p>
+</dd>
+<dt><strong><a name="verbose" class="item"><strong>--verbose</strong></a></strong></dt>
+
+<dt><strong><a name="v" class="item"><strong>-v</strong></a></strong></dt>
+
+<dd>
+<p>Verbose. Print some extra output on what is happening. Use <strong>-v</strong> until
+you know what your are doing.</p>
+</dd>
+</dl>
+<p>
+</p>
+<hr />
+<h1><a name="example__see_niceload_in_action">EXAMPLE: See niceload in action</a></h1>
+<p>In terminal 1 run: top</p>
+<p>In terminal 2 run:</p>
+<p><strong>niceload -q perl -e '$|=1;do{$l==$r or print &quot;.&quot;; $l=$r}until(($r=time-$^T)</strong>&gt;<strong>50)'</strong></p>
+<p>This will print a '.' every second for 50 seconds and eat a lot of
+CPU. When the load rises to 1.0 the process is suspended.</p>
+<p>
+</p>
+<hr />
+<h1><a name="example__run_updatedb">EXAMPLE: Run updatedb</a></h1>
+<p>Running updatedb can often starve the system for disk I/O and thus result in a high load.</p>
+<p>Run updatedb but suspend updatedb if the load is above 2.00:</p>
+<p><strong>niceload -L 2 updatedb</strong></p>
+<p>
+</p>
+<hr />
+<h1><a name="example__run_rsync">EXAMPLE: Run rsync</a></h1>
+<p>rsync can just like updatedb starve the system for disk I/O and thus result in a high load.</p>
+<p>Run rsync but keep load below 3.4. If load reaches 7 sleep for
+(7-3.4)*12 seconds:</p>
+<p><strong>niceload -L 3.4 -f 12 rsync -Ha /home/ /backup/home/</strong></p>
+<p>
+</p>
+<hr />
+<h1><a name="example__ensure_enough_disk_cache">EXAMPLE: Ensure enough disk cache</a></h1>
+<p>Assume the program <strong>foo</strong> uses 2 GB files intensively. <strong>foo</strong> will run
+fast if the files are in disk cache and be slow as a crawl if they are
+not in the cache.</p>
+<p>To ensure 2 GB are reserved for disk cache run:</p>
+<p><strong>niceload --hard --run-mem 2g foo</strong></p>
+<p>This will not guarantee that the 2 GB memory will be used for the
+files for <strong>foo</strong>, but it will stop <strong>foo</strong> if the memory for disk cache
+is too low.</p>
+<p>
+</p>
+<hr />
+<h1><a name="environment_variables">ENVIRONMENT VARIABLES</a></h1>
+<p>None. In future versions $NICELOAD will be able to contain default settings.</p>
+<p>
+</p>
+<hr />
+<h1><a name="exit_status">EXIT STATUS</a></h1>
+<p>Exit status should be the same as the command being run (untested).</p>
+<p>
+</p>
+<hr />
+<h1><a name="reporting_bugs">REPORTING BUGS</a></h1>
+<p>Report bugs to &lt;<a href="mailto:bug-parallel@gnu.org">bug-parallel@gnu.org</a>&gt;.</p>
+<p>
+</p>
+<hr />
+<h1><a name="author">AUTHOR</a></h1>
+<p>Copyright (C) 2004-11-19 Ole Tange, <a href="http://ole.tange.dk">http://ole.tange.dk</a></p>
+<p>Copyright (C) 2005,2006,2006,2008,2009,2010 Ole Tange, <a href="http://ole.tange.dk">http://ole.tange.dk</a></p>
+<p>Copyright (C) 2010,2011,2012 Ole Tange, <a href="http://ole.tange.dk">http://ole.tange.dk</a> and Free
+Software Foundation, Inc.</p>
+<p>
+</p>
+<hr />
+<h1><a name="license">LICENSE</a></h1>
+<p>Copyright (C) 2010,2011,2012 Free Software Foundation, Inc.</p>
+<p>This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 3 of the License, or
+at your option any later version.</p>
+<p>This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.</p>
+<p>You should have received a copy of the GNU General Public License
+along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</p>
+<p>
+</p>
+<h2><a name="documentation_license_i">Documentation license I</a></h2>
+<p>Permission is granted to copy, distribute and/or modify this documentation
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with no
+Invariant Sections, with no Front-Cover Texts, and with no Back-Cover
+Texts.  A copy of the license is included in the file fdl.txt.</p>
+<p>
+</p>
+<h2><a name="documentation_license_ii">Documentation license II</a></h2>
+<p>You are free:</p>
+<dl>
+<dt><strong><a name="to_share" class="item"><strong>to Share</strong></a></strong></dt>
+
+<dd>
+<p>to copy, distribute and transmit the work</p>
+</dd>
+<dt><strong><a name="to_remix" class="item"><strong>to Remix</strong></a></strong></dt>
+
+<dd>
+<p>to adapt the work</p>
+</dd>
+</dl>
+<p>Under the following conditions:</p>
+<dl>
+<dt><strong><a name="attribution" class="item"><strong>Attribution</strong></a></strong></dt>
+
+<dd>
+<p>You must attribute the work in the manner specified by the author or
+licensor (but not in any way that suggests that they endorse you or
+your use of the work).</p>
+</dd>
+<dt><strong><a name="share_alike" class="item"><strong>Share Alike</strong></a></strong></dt>
+
+<dd>
+<p>If you alter, transform, or build upon this work, you may distribute
+the resulting work only under the same, similar or a compatible
+license.</p>
+</dd>
+</dl>
+<p>With the understanding that:</p>
+<dl>
+<dt><strong><a name="waiver" class="item"><strong>Waiver</strong></a></strong></dt>
+
+<dd>
+<p>Any of the above conditions can be waived if you get permission from
+the copyright holder.</p>
+</dd>
+<dt><strong><a name="public_domain" class="item"><strong>Public Domain</strong></a></strong></dt>
+
+<dd>
+<p>Where the work or any of its elements is in the public domain under
+applicable law, that status is in no way affected by the license.</p>
+</dd>
+<dt><strong><a name="other_rights" class="item"><strong>Other Rights</strong></a></strong></dt>
+
+<dd>
+<p>In no way are any of the following rights affected by the license:</p>
+<ul>
+<li>
+<p>Your fair dealing or fair use rights, or other applicable
+copyright exceptions and limitations;</p>
+</li>
+<li>
+<p>The author's moral rights;</p>
+</li>
+<li>
+<p>Rights other persons may have either in the work itself or in
+how the work is used, such as publicity or privacy rights.</p>
+</li>
+</ul>
+</dd>
+</dl>
+<dl>
+<dt><strong><a name="notice" class="item"><strong>Notice</strong></a></strong></dt>
+
+<dd>
+<p>For any reuse or distribution, you must make clear to others the
+license terms of this work.</p>
+</dd>
+</dl>
+<p>A copy of the full license is included in the file as cc-by-sa.txt.</p>
+<p>
+</p>
+<hr />
+<h1><a name="dependencies">DEPENDENCIES</a></h1>
+<p>GNU <strong>niceload</strong> uses Perl, and the Perl modules POSIX, and
+Getopt::Long.</p>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><strong>parallel</strong>(1), <strong>nice</strong>(1), <strong>uptime</strong>(1)</p>
+
+</body>
+
+</html>

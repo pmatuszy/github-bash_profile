@@ -1,0 +1,3229 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>parallel - build and execute shell command lines from standard input in parallel</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@localhost" />
+</head>
+
+<body style="background-color: white">
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<ul>
+
+		<li><a href="#reader_s_guide">Reader's guide</a></li>
+	</ul>
+
+	<li><a href="#options">OPTIONS</a></li>
+	<li><a href="#example__working_as_xargs__n1__argument_appending">EXAMPLE: Working as xargs -n1. Argument appending</a></li>
+	<li><a href="#example__reading_arguments_from_command_line">EXAMPLE: Reading arguments from command line</a></li>
+	<li><a href="#example__inserting_multiple_arguments">EXAMPLE: Inserting multiple arguments</a></li>
+	<li><a href="#example__context_replace">EXAMPLE: Context replace</a></li>
+	<li><a href="#example__compute_intensive_jobs_and_substitution">EXAMPLE: Compute intensive jobs and substitution</a></li>
+	<li><a href="#example__substitution_and_redirection">EXAMPLE: Substitution and redirection</a></li>
+	<li><a href="#example__composed_commands">EXAMPLE: Composed commands</a></li>
+	<li><a href="#example__calling_bash_functions">EXAMPLE: Calling Bash functions</a></li>
+	<li><a href="#example__removing_file_extension_when_processing_files">EXAMPLE: Removing file extension when processing files</a></li>
+	<li><a href="#example__removing_two_file_extensions_when_processing_files_and">EXAMPLE: Removing two file extensions when processing files and</a></li>
+	<li><a href="#example__download_10_images_for_each_of_the_past_30_days">EXAMPLE: Download 10 images for each of the past 30 days</a></li>
+	<li><a href="#example__breadth_first_parallel_web_crawler_mirrorer">EXAMPLE: Breadth first parallel web crawler/mirrorer</a></li>
+	<li><a href="#example__process_files_from_a_tar_file_while_unpacking">EXAMPLE: Process files from a tar file while unpacking</a></li>
+	<li><a href="#example__rewriting_a_for_loop_and_a_while_read_loop">EXAMPLE: Rewriting a for-loop and a while-read-loop</a></li>
+	<li><a href="#example__rewriting_nested_for_loops">EXAMPLE: Rewriting nested for-loops</a></li>
+	<li><a href="#example__finding_the_lowest_difference_between_files">EXAMPLE: Finding the lowest difference between files</a></li>
+	<li><a href="#example__for_loops_with_column_names">EXAMPLE: for-loops with column names</a></li>
+	<li><a href="#example__count_the_differences_between_all_files_in_a_dir">EXAMPLE: Count the differences between all files in a dir</a></li>
+	<li><a href="#example__speeding_up_fast_jobs">EXAMPLE: Speeding up fast jobs</a></li>
+	<li><a href="#example__using_shell_variables">EXAMPLE: Using shell variables</a></li>
+	<li><a href="#example__group_output_lines">EXAMPLE: Group output lines</a></li>
+	<li><a href="#example__tag_output_lines">EXAMPLE: Tag output lines</a></li>
+	<li><a href="#example__keep_order_of_output_same_as_order_of_input">EXAMPLE: Keep order of output same as order of input</a></li>
+	<li><a href="#example__parallel_grep">EXAMPLE: Parallel grep</a></li>
+	<li><a href="#example__using_remote_computers">EXAMPLE: Using remote computers</a></li>
+	<li><a href="#example__transferring_of_files">EXAMPLE: Transferring of files</a></li>
+	<li><a href="#example__distributing_work_to_local_and_remote_computers">EXAMPLE: Distributing work to local and remote computers</a></li>
+	<li><a href="#example__running_the_same_command_on_remote_computers">EXAMPLE: Running the same command on remote computers</a></li>
+	<li><a href="#example__parallelizing_rsync">EXAMPLE: Parallelizing rsync</a></li>
+	<li><a href="#example__use_multiple_inputs_in_one_command">EXAMPLE: Use multiple inputs in one command</a></li>
+	<li><a href="#example__use_a_table_as_input">EXAMPLE: Use a table as input</a></li>
+	<li><a href="#example__run_the_same_command_10_times">EXAMPLE: Run the same command 10 times</a></li>
+	<li><a href="#example__working_as_cat___sh__resource_inexpensive_jobs_and_evaluation">EXAMPLE: Working as cat | sh. Resource inexpensive jobs and evaluation</a></li>
+	<li><a href="#example__processing_a_big_file_using_more_cores">EXAMPLE: Processing a big file using more cores</a></li>
+	<li><a href="#example__working_as_mutex_and_counting_semaphore">EXAMPLE: Working as mutex and counting semaphore</a></li>
+	<li><a href="#example__start_editor_with_filenames_from_stdin__standard_input_">EXAMPLE: Start editor with filenames from stdin (standard input)</a></li>
+	<li><a href="#example__running_sudo">EXAMPLE: Running sudo</a></li>
+	<li><a href="#example__gnu_parallel_as_queue_system_batch_manager">EXAMPLE: GNU Parallel as queue system/batch manager</a></li>
+	<li><a href="#example__gnu_parallel_as_dir_processor">EXAMPLE: GNU Parallel as dir processor</a></li>
+	<li><a href="#quoting">QUOTING</a></li>
+	<li><a href="#list_running_jobs">LIST RUNNING JOBS</a></li>
+	<li><a href="#complete_running_jobs_but_do_not_start_new_jobs">COMPLETE RUNNING JOBS BUT DO NOT START NEW JOBS</a></li>
+	<li><a href="#environment_variables">ENVIRONMENT VARIABLES</a></li>
+	<li><a href="#default_profile__config_file_">DEFAULT PROFILE (CONFIG FILE)</a></li>
+	<li><a href="#profile_files">PROFILE FILES</a></li>
+	<li><a href="#exit_status">EXIT STATUS</a></li>
+	<li><a href="#differences_between_gnu_parallel_and_alternatives">DIFFERENCES BETWEEN GNU Parallel AND ALTERNATIVES</a></li>
+	<ul>
+
+		<li><a href="#summary_table">SUMMARY TABLE</a></li>
+		<li><a href="#differences_between_xargs_and_gnu_parallel">DIFFERENCES BETWEEN xargs AND GNU Parallel</a></li>
+		<li><a href="#differences_between_find__exec_and_gnu_parallel">DIFFERENCES BETWEEN find -exec AND GNU Parallel</a></li>
+		<li><a href="#differences_between_make__j_and_gnu_parallel">DIFFERENCES BETWEEN make -j AND GNU Parallel</a></li>
+		<li><a href="#differences_between_ppss_and_gnu_parallel">DIFFERENCES BETWEEN ppss AND GNU Parallel</a></li>
+		<ul>
+
+			<li><a href="#examples_from_ppss_manual">EXAMPLES FROM ppss MANUAL</a></li>
+		</ul>
+
+		<li><a href="#differences_between_pexec_and_gnu_parallel">DIFFERENCES BETWEEN pexec AND GNU Parallel</a></li>
+		<li><a href="#differences_between_xjobs_and_gnu_parallel">DIFFERENCES BETWEEN xjobs AND GNU Parallel</a></li>
+		<li><a href="#differences_between_prll_and_gnu_parallel">DIFFERENCES BETWEEN prll AND GNU Parallel</a></li>
+		<li><a href="#differences_between_dxargs_and_gnu_parallel">DIFFERENCES BETWEEN dxargs AND GNU Parallel</a></li>
+		<li><a href="#differences_between_mdm_middleman_and_gnu_parallel">DIFFERENCES BETWEEN mdm/middleman AND GNU Parallel</a></li>
+		<li><a href="#differences_between_xapply_and_gnu_parallel">DIFFERENCES BETWEEN xapply AND GNU Parallel</a></li>
+		<li><a href="#differences_between_paexec_and_gnu_parallel">DIFFERENCES BETWEEN paexec AND GNU Parallel</a></li>
+		<li><a href="#differences_between_clusterssh_and_gnu_parallel">DIFFERENCES BETWEEN ClusterSSH AND GNU Parallel</a></li>
+	</ul>
+
+	<li><a href="#bugs">BUGS</a></li>
+	<ul>
+
+		<li><a href="#quoting_of_newline">Quoting of newline</a></li>
+		<li><a href="#speed">Speed</a></li>
+		<ul>
+
+			<li><a href="#startup">Startup</a></li>
+			<li><a href="#job_startup">Job startup</a></li>
+			<li><a href="#ssh">SSH</a></li>
+			<li><a href="#disk_access">Disk access</a></li>
+		</ul>
+
+		<li><a href="#__nice_limits_command_length">-nice limits command length</a></li>
+		<li><a href="#aliases_and_functions_do_not_work">Aliases and functions do not work</a></li>
+	</ul>
+
+	<li><a href="#reporting_bugs">REPORTING BUGS</a></li>
+	<li><a href="#author">AUTHOR</a></li>
+	<li><a href="#license">LICENSE</a></li>
+	<ul>
+
+		<li><a href="#documentation_license_i">Documentation license I</a></li>
+		<li><a href="#documentation_license_ii">Documentation license II</a></li>
+	</ul>
+
+	<li><a href="#dependencies">DEPENDENCIES</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<h1><a name="name">NAME</a></h1>
+<p>parallel - build and execute shell command lines from standard input in parallel</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<p><strong>parallel</strong> [options] [<em>command</em> [arguments]] &lt; list_of_arguments</p>
+<p><strong>parallel</strong> [options] [<em>command</em> [arguments]] ( <strong>:::</strong> arguments |
+<strong>::::</strong> argfile(s) ) ...</p>
+<p><strong>parallel</strong> --semaphore [options] <em>command</em></p>
+<p><strong>#!/usr/bin/parallel</strong> --shebang [options] [<em>command</em> [arguments]]</p>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p>GNU <strong>parallel</strong> is a shell tool for executing jobs in parallel using
+one or more computers. A job can be a single command or a small
+script that has to be run for each of the lines in the input. The
+typical input is a list of files, a list of hosts, a list of users, a
+list of URLs, or a list of tables. A job can also be a command that
+reads from a pipe. GNU <strong>parallel</strong> can then split the input into
+blocks and pipe a block into each command in parallel.</p>
+<p>If you use xargs and tee today you will find GNU <strong>parallel</strong> very easy to
+use as GNU <strong>parallel</strong> is written to have the same options as xargs. If
+you write loops in shell, you will find GNU <strong>parallel</strong> may be able to
+replace most of the loops and make them run faster by running several
+jobs in parallel.</p>
+<p>GNU <strong>parallel</strong> makes sure output from the commands is the same output as
+you would get had you run the commands sequentially. This makes it
+possible to use output from GNU <strong>parallel</strong> as input for other programs.</p>
+<p>For each line of input GNU <strong>parallel</strong> will execute <em>command</em> with
+the line as arguments. If no <em>command</em> is given, the line of input is
+executed. Several lines will be run in parallel. GNU <strong>parallel</strong> can
+often be used as a substitute for <strong>xargs</strong> or <strong>cat | bash</strong>.</p>
+<p>
+</p>
+<h2><a name="reader_s_guide">Reader's guide</a></h2>
+<p>Before looking at the options you may want to check out the <strong>EXAMPLE</strong>s
+after the list of options. That will give you an idea of what GNU
+<strong>parallel</strong> is capable of.</p>
+<p>You can also watch the intro video for a quick introduction:
+<a href="http://www.youtube.com/playlist?list=PL284C9FF2488BC6D1">http://www.youtube.com/playlist?list=PL284C9FF2488BC6D1</a></p>
+<p>
+</p>
+<hr />
+<h1><a name="options">OPTIONS</a></h1>
+<dl>
+<dt><strong><a name="command" class="item"><em>command</em></a></strong></dt>
+
+<dd>
+<p>Command to execute.  If <em>command</em> or the following arguments contain
+replacement strings (such as <strong>{}</strong>) every instance will be substituted
+with the input.</p>
+<p>If <em>command</em> is given, GNU <strong>parallel</strong> solve the same tasks as
+<strong>xargs</strong>. If <em>command</em> is not given GNU <strong>parallel</strong> will behave
+similar to <strong>cat | sh</strong>.</p>
+<p>The <em>command</em> must be an executable, a script, a composed command, or
+a function. If it is a Bash function you need to <strong>export -f</strong> the
+function first. An alias will, however, not work (see why
+<a href="http://www.perlmonks.org/index.pl?node_id=484296).">http://www.perlmonks.org/index.pl?node_id=484296).</a></p>
+</dd>
+<dt><strong><a name="__" class="item"><strong>{}</strong></a></strong></dt>
+
+<dd>
+<p>Input line. This replacement string will be replaced by a full line
+read from the input source. The input source is normally stdin
+(standard input), but can also be given with <strong>-a</strong>, <strong>:::</strong>, or
+<strong>::::</strong>.</p>
+<p>The replacement string <strong>{}</strong> can be changed with <strong>-I</strong>.</p>
+<p>If the command line contains no replacement strings then <strong>{}</strong> will be
+appended to the command line.</p>
+</dd>
+<dt><strong><a name="___" class="item"><strong>{.}</strong></a></strong></dt>
+
+<dd>
+<p>Input line without extension. This replacement string will be replaced
+by the input with the extension removed. If the input line contains
+<strong>.</strong> after the last <strong>/</strong> the last <strong>.</strong> till the end of the string will
+be removed and <strong>{.}</strong> will be replaced with the
+remaining. E.g. <em>foo.jpg</em> becomes <em>foo</em>, <em>subdir/foo.jpg</em> becomes
+<em>subdir/foo</em>, <em>sub.dir/foo.jpg</em> becomes <em>sub.dir/foo</em>,
+<em>sub.dir/bar</em> remains <em>sub.dir/bar</em>. If the input line does not
+contain <strong>.</strong> it will remain unchanged.</p>
+<p>The replacement string <strong>{.}</strong> can be changed with <strong>--er</strong>.</p>
+<p>To understand replacement strings see <strong>{}</strong>.</p>
+</dd>
+<dt><strong><a name="___" class="item"><strong>{/}</strong></a></strong></dt>
+
+<dd>
+<p>Basename of input line. This replacement string will be replaced by
+the input with the directory part removed.</p>
+<p>The replacement string <strong>{/}</strong> can be changed with
+<strong>--basenamereplace</strong>.</p>
+<p>To understand replacement strings see <strong>{}</strong>.</p>
+</dd>
+<dt><strong><a name="____" class="item"><strong>{//}</strong></a></strong></dt>
+
+<dd>
+<p>Dirname of input line. This replacement string will be replaced by the
+dir of the input line. See <strong>dirname</strong>(1).</p>
+<p>The replacement string <strong>{//}</strong> can be changed with
+<strong>--dirnamereplace</strong>.</p>
+<p>To understand replacement strings see <strong>{}</strong>.</p>
+</dd>
+<dt><strong><a name="____" class="item"><strong>{/.}</strong></a></strong></dt>
+
+<dd>
+<p>Basename of input line without extension. This replacement string will
+be replaced by the input with the directory and extension part
+removed. It is a combination of <strong>{/}</strong> and <strong>{.}</strong>.</p>
+<p>The replacement string <strong>{/.}</strong> can be changed with
+<strong>--basenameextensionreplace</strong>.</p>
+<p>To understand replacement strings see <strong>{}</strong>.</p>
+</dd>
+<dt><strong><a name="___" class="item"><strong>{#}</strong></a></strong></dt>
+
+<dd>
+<p>Sequence number of the job to run. This replacement string will be
+replaced by the sequence number of the job being run. It contains the
+same number as $PARALLEL_SEQ.</p>
+<p>The replacement string <strong>{#}</strong> can be changed with <strong>--seqreplace</strong>.</p>
+<p>To understand replacement strings see <strong>{}</strong>.</p>
+</dd>
+<dt><strong><a name="n" class="item"><strong>{</strong><em>n</em><strong>}</strong></a></strong></dt>
+
+<dd>
+<p>Argument from input source <em>n</em> or the <em>n</em>'th argument. This
+positional replacement string will be replaced by the input from input
+source <em>n</em> (when used with <strong>-a</strong> or <strong>::::</strong>) or with the <em>n</em>'th
+argument (when used with <strong>-N</strong>). If <em>n</em> is negative it refers to the
+<em>n</em>'th last argument.</p>
+<p>To understand replacement strings see <strong>{}</strong>.</p>
+</dd>
+<dt><strong><a name="n2" class="item"><strong>{</strong><em>n</em>.<strong>}</strong></a></strong></dt>
+
+<dd>
+<p>Argument from input source <em>n</em> or the <em>n</em>'th argument without
+extension. It is a combination of <strong>{</strong><em>n</em><strong>}</strong> and <strong>{.}</strong>.</p>
+<p>This positional replacement string will be replaced by the input from
+input source <em>n</em> (when used with <strong>-a</strong> or <strong>::::</strong>) or with the
+<em>n</em>'th argument (when used with <strong>-N</strong>). The input will have the
+extension removed.</p>
+<p>To understand positional replacement strings see <strong>{</strong><em>n</em><strong>}</strong>.</p>
+</dd>
+<dt><strong><a name="n3" class="item"><strong>{</strong><em>n</em>/<strong>}</strong></a></strong></dt>
+
+<dd>
+<p>Basename of argument from input source <em>n</em> or the <em>n</em>'th argument.
+It is a combination of <strong>{</strong><em>n</em><strong>}</strong> and <strong>{/}</strong>.</p>
+<p>This positional replacement string will be replaced by the input from
+input source <em>n</em> (when used with <strong>-a</strong> or <strong>::::</strong>) or with the
+<em>n</em>'th argument (when used with <strong>-N</strong>). The input will have the
+directory (if any) removed.</p>
+<p>To understand positional replacement strings see <strong>{</strong><em>n</em><strong>}</strong>.</p>
+</dd>
+<dt><strong><a name="n4" class="item"><strong>{</strong><em>n</em>//<strong>}</strong></a></strong></dt>
+
+<dd>
+<p>Dirname of argument from input source <em>n</em> or the <em>n</em>'th argument.
+It is a combination of <strong>{</strong><em>n</em><strong>}</strong> and <strong>{//}</strong>.</p>
+<p>This positional replacement string will be replaced by the dir of the
+input from input source <em>n</em> (when used with <strong>-a</strong> or <strong>::::</strong>) or with
+the <em>n</em>'th argument (when used with <strong>-N</strong>). See <strong>dirname</strong>(1).</p>
+<p>To understand positional replacement strings see <strong>{</strong><em>n</em><strong>}</strong>.</p>
+</dd>
+<dt><strong><a name="n5" class="item"><strong>{</strong><em>n</em>/.<strong>}</strong></a></strong></dt>
+
+<dd>
+<p>Basename of argument from input source <em>n</em> or the <em>n</em>'th argument
+without extension.  It is a combination of <strong>{</strong><em>n</em><strong>}</strong>, <strong>{/}</strong>, and
+<strong>{.}</strong>.</p>
+<p>This positional replacement string will be replaced by the input from
+input source <em>n</em> (when used with <strong>-a</strong> or <strong>::::</strong>) or with the
+<em>n</em>'th argument (when used with <strong>-N</strong>). The input will have the
+directory (if any) and extension removed.</p>
+<p>To understand positional replacement strings see <strong>{</strong><em>n</em><strong>}</strong>.</p>
+</dd>
+<dt><strong><a name="arguments" class="item"><strong>:::</strong> <em>arguments</em></a></strong></dt>
+
+<dd>
+<p>Use arguments from the command line as input source instead of stdin
+(standard input). Unlike other options for GNU <strong>parallel</strong> <strong>:::</strong> is
+placed after the <em>command</em> and before the arguments.</p>
+<p>The following are equivalent:</p>
+<pre>
+  (echo file1; echo file2) | parallel gzip
+  parallel gzip ::: file1 file2
+  parallel gzip {} ::: file1 file2
+  parallel --arg-sep ,, gzip {} ,, file1 file2
+  parallel --arg-sep ,, gzip ,, file1 file2
+  parallel ::: &quot;gzip file1&quot; &quot;gzip file2&quot;</pre>
+<p>To avoid treating <strong>:::</strong> as special use <strong>--arg-sep</strong> to set the
+argument separator to something else. See also <strong>--arg-sep</strong>.</p>
+<p>stdin (standard input) will be passed to the first process run.</p>
+<p>If multiple <strong>:::</strong> are given, each group will be treated as an input
+source, and all combinations of input sources will be
+generated. E.g. ::: 1 2 ::: a b c will result in the combinations
+(1,a) (1,b) (1,c) (2,a) (2,b) (2,c). This is useful for replacing
+nested for-loops.</p>
+<p><strong>:::</strong> and <strong>::::</strong> can be mixed. So these are equivalent:</p>
+<pre>
+  parallel echo {1} {2} {3} ::: 6 7 ::: 4 5 ::: 1 2 3
+  parallel echo {1} {2} {3} :::: &lt;(seq 6 7) &lt;(seq 4 5) :::: &lt;(seq 1 3)
+  parallel -a &lt;(seq 6 7) echo {1} {2} {3} :::: &lt;(seq 4 5) :::: &lt;(seq 1 3)
+  parallel -a &lt;(seq 6 7) -a &lt;(seq 4 5) echo {1} {2} {3} ::: 1 2 3
+  seq 6 7 | parallel -a - -a &lt;(seq 4 5) echo {1} {2} {3} ::: 1 2 3
+  seq 4 5 | parallel echo {1} {2} {3} :::: &lt;(seq 6 7) - ::: 1 2 3</pre>
+</dd>
+<dt><strong><a name="argfiles" class="item"><strong>::::</strong> <em>argfiles</em></a></strong></dt>
+
+<dd>
+<p>Another way to write <strong>-a</strong> <em>argfile1</em> <strong>-a</strong> <em>argfile2</em> ...</p>
+<p><strong>:::</strong> and <strong>::::</strong> can be mixed.</p>
+<p>See <strong>-a</strong>, <strong>:::</strong> and <strong>--xapply</strong>.</p>
+</dd>
+<dt><strong><a name="null" class="item"><strong>--null</strong></a></strong></dt>
+
+<dt><strong><a name="_0" class="item"><strong>-0</strong></a></strong></dt>
+
+<dd>
+<p>Use NUL as delimiter.  Normally input lines will end in \n
+(newline). If they end in \0 (NUL), then use this option. It is useful
+for processing arguments that may contain \n (newline).</p>
+</dd>
+<dt><strong><a name="arg_file_input_file" class="item"><strong>--arg-file</strong> <em>input-file</em></a></strong></dt>
+
+<dt><strong><a name="a_input_file" class="item"><strong>-a</strong> <em>input-file</em></a></strong></dt>
+
+<dd>
+<p>Use <em>input-file</em> as input source. If you use this option, stdin
+(standard input) is given to the first process run.  Otherwise, stdin
+(standard input) is redirected from /dev/null.</p>
+<p>If multiple <strong>-a</strong> are given, each <em>input-file</em> will be treated as an
+input source, and all combinations of input sources will be
+generated. E.g. The file <strong>foo</strong> contains <strong>1 2</strong>, the file <strong>bar</strong>
+contains <strong>a b c</strong>.  <strong>-a foo</strong> <strong>-a bar</strong> will result in the combinations
+(1,a) (1,b) (1,c) (2,a) (2,b) (2,c). This is useful for replacing
+nested for-loops.</p>
+<p>See also <strong>--xapply</strong> and <strong>{</strong><em>n</em><strong>}</strong>.</p>
+</dd>
+<dt><strong><a name="arg_file_sep_sep_str" class="item"><strong>--arg-file-sep</strong> <em>sep-str</em></a></strong></dt>
+
+<dd>
+<p>Use <em>sep-str</em> instead of <strong>::::</strong> as separator string between command
+and argument files. Useful if <strong>::::</strong> is used for something else by the
+command.</p>
+<p>See also: <strong>::::</strong>.</p>
+</dd>
+<dt><strong><a name="arg_sep_sep_str" class="item"><strong>--arg-sep</strong> <em>sep-str</em></a></strong></dt>
+
+<dd>
+<p>Use <em>sep-str</em> instead of <strong>:::</strong> as separator string. Useful if <strong>:::</strong>
+is used for something else by the command.</p>
+<p>Also useful if you command uses <strong>:::</strong> but you still want to read
+arguments from stdin (standard input): Simply change <strong>--arg-sep</strong> to a
+string that is not in the command line.</p>
+<p>See also: <strong>:::</strong>.</p>
+</dd>
+<dt><strong><a name="file" class="item"><strong>--basefile</strong> <em>file</em> (alpha testing)</a></strong></dt>
+
+<dt><strong><strong>--bf</strong> <em>file</em> (alpha testing)</strong></dt>
+
+<dd>
+<p><em>file</em> will be transferred to each sshlogin before a jobs is
+started. It will be removed if <strong>--cleanup</strong> is active. The file may be
+a script to run or some common base data needed for the jobs.
+Multiple <strong>--bf</strong> can be specified to transfer more basefiles. The
+<em>file</em> will be transferred the same way as <strong>--transfer</strong>.</p>
+</dd>
+<dt><strong><a name="basenamereplace_replace_str" class="item"><strong>--basenamereplace</strong> <em>replace-str</em></a></strong></dt>
+
+<dt><strong><a name="bnr_replace_str" class="item"><strong>--bnr</strong> <em>replace-str</em></a></strong></dt>
+
+<dd>
+<p>Use the replacement string <em>replace-str</em> instead of <strong>{/}</strong> for
+basename of input line.</p>
+</dd>
+<dt><strong><a name="basenameextensionreplace_replace_str" class="item"><strong>--basenameextensionreplace</strong> <em>replace-str</em></a></strong></dt>
+
+<dt><strong><a name="bner_replace_str" class="item"><strong>--bner</strong> <em>replace-str</em></a></strong></dt>
+
+<dd>
+<p>Use the replacement string <em>replace-str</em> instead of <strong>{/.}</strong> for basename of input line without extension.</p>
+</dd>
+<dt><strong><a name="bg" class="item"><strong>--bg</strong></a></strong></dt>
+
+<dd>
+<p>Run command in background thus GNU <strong>parallel</strong> will not wait for
+completion of the command before exiting. This is the default if
+<strong>--semaphore</strong> is set.</p>
+<p>See also: <strong>--fg</strong>, <strong>man sem</strong>.</p>
+<p>Implies <strong>--semaphore</strong>.</p>
+</dd>
+<dt><strong><a name="bibtex" class="item"><strong>--bibtex</strong></a></strong></dt>
+
+<dd>
+<p>Print the BibTeX entry for GNU <strong>parallel</strong>.</p>
+</dd>
+<dt><strong><a name="block_size" class="item"><strong>--block</strong> <em>size</em></a></strong></dt>
+
+<dt><strong><a name="block_size_size" class="item"><strong>--block-size</strong> <em>size</em></a></strong></dt>
+
+<dd>
+<p>Size of block in bytes. The size can be postfixed with K, M, G, T, P,
+k, m, g, t, or p which would multiply the size with 1024, 1048576,
+1073741824, 1099511627776, 1125899906842624, 1000, 1000000,
+1000000000, 1000000000000, or 1000000000000000 respectively.</p>
+<p>GNU <strong>parallel</strong> tries to meet the block size but can be off by the
+length of one record. For performance reasons <em>size</em> should be bigger
+than a single record.</p>
+<p><em>size</em> defaults to 1M.</p>
+<p>See <strong>--pipe</strong> for use of this.</p>
+</dd>
+<dt><strong><a name="cleanup" class="item"><strong>--cleanup</strong> (alpha testing)</a></strong></dt>
+
+<dd>
+<p>Remove transferred files. <strong>--cleanup</strong> will remove the transferred files
+on the remote computer after processing is done.</p>
+<pre>
+  find log -name '*gz' | parallel \
+    --sshlogin server.example.com --transfer --return {.}.bz2 \
+    --cleanup &quot;zcat {} | bzip -9 &gt;{.}.bz2&quot;</pre>
+<p>With <strong>--transfer</strong> the file transferred to the remote computer will be
+removed on the remote computer.  Directories created will not be removed
+- even if they are empty.</p>
+<p>With <strong>--return</strong> the file transferred from the remote computer will be
+removed on the remote computer.  Directories created will not be removed
+- even if they are empty.</p>
+<p><strong>--cleanup</strong> is ignored when not used with <strong>--transfer</strong> or <strong>--return</strong>.</p>
+</dd>
+<dt><strong><a name="colsep_regexp" class="item"><strong>--colsep</strong> <em>regexp</em></a></strong></dt>
+
+<dt><strong><a name="c_regexp" class="item"><strong>-C</strong> <em>regexp</em></a></strong></dt>
+
+<dd>
+<p>Column separator. The input will be treated as a table with <em>regexp</em>
+separating the columns. The n'th column can be access using
+<strong>{</strong><em>n</em><strong>}</strong> or <strong>{</strong><em>n</em>.<strong>}</strong>. E.g. <strong>{3}</strong> is the 3rd column.</p>
+<p><strong>--colsep</strong> implies <strong>--trim rl</strong>.</p>
+<p><em>regexp</em> is a Perl Regular Expression:
+<a href="http://perldoc.perl.org/perlre.html">http://perldoc.perl.org/perlre.html</a></p>
+</dd>
+<dt><strong><a name="ctrlc" class="item"><strong>--ctrlc</strong></a></strong></dt>
+
+<dd>
+<p>Sends SIGINT to tasks running on remote computers thus killing them.</p>
+</dd>
+<dt><strong><a name="delimiter_delim" class="item"><strong>--delimiter</strong> <em>delim</em></a></strong></dt>
+
+<dt><strong><a name="d_delim" class="item"><strong>-d</strong> <em>delim</em></a></strong></dt>
+
+<dd>
+<p>Input items are terminated by the specified character.  Quotes and
+backslash are not special; every character in the input is taken
+literally.  Disables the end-of-file string, which is treated like any
+other argument.  This can be used when the input consists of simply
+newline-separated items, although it is almost always better to design
+your program to use --null where this is possible.  The specified
+delimiter may be a single character, a C-style character escape such
+as \n, or an octal or hexadecimal escape code.  Octal and
+hexadecimal escape codes are understood as for the printf command.
+Multibyte characters are not supported.</p>
+</dd>
+<dt><strong><a name="dirnamereplace_replace_str" class="item"><strong>--dirnamereplace</strong> <em>replace-str</em></a></strong></dt>
+
+<dt><strong><a name="dnr_replace_str" class="item"><strong>--dnr</strong> <em>replace-str</em></a></strong></dt>
+
+<dd>
+<p>Use the replacement string <em>replace-str</em> instead of <strong>{//}</strong> for
+dirname of input line.</p>
+</dd>
+<dt><strong><a name="e_eof_str" class="item"><strong>-E</strong> <em>eof-str</em></a></strong></dt>
+
+<dd>
+<p>Set the end of file string to eof-str.  If the end of file string
+occurs as a line of input, the rest of the input is ignored.  If
+neither <strong>-E</strong> nor <strong>-e</strong> is used, no end of file string is used.</p>
+</dd>
+<dt><strong><a name="delay_secs" class="item"><strong>--delay</strong> <em>secs</em></a></strong></dt>
+
+<dd>
+<p>Delay starting next job <em>secs</em> seconds. GNU <strong>parallel</strong> will pause
+<em>secs</em> seconds after starting each job. <em>secs</em> can be less than 1
+seconds.</p>
+</dd>
+<dt><strong><a name="dry_run" class="item"><strong>--dry-run</strong></a></strong></dt>
+
+<dd>
+<p>Print the job to run on stdout (standard output), but do not run the
+job. Use <strong>-v -v</strong> to include the ssh/rsync wrapping if the job would
+be run on a remote computer. Do not count on this literaly, though, as
+the job may be scheduled on another computer or the local computer if
+: is in the list.</p>
+</dd>
+<dt><strong><a name="eof_eof_str" class="item"><strong>--eof</strong>[=<em>eof-str</em>]</a></strong></dt>
+
+<dt><strong><a name="e_eof_str" class="item"><strong>-e</strong>[<em>eof-str</em>]</a></strong></dt>
+
+<dd>
+<p>This option is a synonym for the <strong>-E</strong> option.  Use <strong>-E</strong> instead,
+because it is POSIX compliant for <strong>xargs</strong> while this option is not.
+If <em>eof-str</em> is omitted, there is no end of file string.  If neither
+<strong>-E</strong> nor <strong>-e</strong> is used, no end of file string is used.</p>
+</dd>
+<dt><strong><a name="env_var" class="item"><strong>--env</strong> <em>var</em></a></strong></dt>
+
+<dd>
+<p>Copy environment variable <em>var</em>. This will copy <em>var</em> to the
+environment that the command is run in. This is especially useful for
+remote execution.</p>
+<p>In Bash <em>var</em> can also be a Bash function - just remember to <strong>export
+-f</strong> the function.</p>
+<p>The variable '_' is special. It will copy all enviroment variables
+except for the ones mentioned in ~/.parallel/ignored_vars.</p>
+<p>See also: <strong>--record-env</strong>.</p>
+</dd>
+<dt><strong><a name="eta" class="item"><strong>--eta</strong></a></strong></dt>
+
+<dd>
+<p>Show the estimated number of seconds before finishing. This forces GNU
+<strong>parallel</strong> to read all jobs before starting to find the number of
+jobs. GNU <strong>parallel</strong> normally only reads the next job to run.
+Implies <strong>--progress</strong>.</p>
+</dd>
+<dt><strong><a name="fg" class="item"><strong>--fg</strong></a></strong></dt>
+
+<dd>
+<p>Run command in foreground thus GNU <strong>parallel</strong> will wait for
+completion of the command before exiting.</p>
+<p>See also <strong>--bg</strong>, <strong>man sem</strong>.</p>
+<p>Implies <strong>--semaphore</strong>.</p>
+</dd>
+<dt><strong><a name="filter_hosts" class="item"><strong>--filter-hosts</strong></a></strong></dt>
+
+<dd>
+<p>Remove down hosts. For each remote host: check that login through ssh
+works. If not: do not use this host.</p>
+<p>Currently you can <em>not</em> put <strong>--filter-hosts</strong> in a profile,
+$PARALLEL, /etc/parallel/config or similar. This is because GNU
+<strong>parallel</strong> uses GNU <strong>parallel</strong> to compute this, so you will get an
+infinite loop. This will likely be fixed in a later release.</p>
+</dd>
+<dt><strong><a name="gnu" class="item"><strong>--gnu</strong></a></strong></dt>
+
+<dd>
+<p>Behave like GNU <strong>parallel</strong>. If <strong>--tollef</strong> and <strong>--gnu</strong> are both set,
+<strong>--gnu</strong> takes precedence.</p>
+</dd>
+<dt><strong><a name="group" class="item"><strong>--group</strong></a></strong></dt>
+
+<dd>
+<p>Group output. Output from each jobs is grouped together and is only
+printed when the command is finished. stderr (standard error) first
+followed by stdout (standard output). This takes some CPU time. In
+rare situations GNU <strong>parallel</strong> takes up lots of CPU time and if it is
+acceptable that the outputs from different commands are mixed
+together, then disabling grouping with <strong>-u</strong> can speedup GNU
+<strong>parallel</strong> by a factor of 10.</p>
+<p><strong>--group</strong> is the default. Can be reversed with <strong>-u</strong>.</p>
+</dd>
+<dt><strong><a name="help" class="item"><strong>--help</strong></a></strong></dt>
+
+<dt><strong><a name="h" class="item"><strong>-h</strong></a></strong></dt>
+
+<dd>
+<p>Print a summary of the options to GNU <strong>parallel</strong> and exit.</p>
+</dd>
+<dt><strong><a name="halt_on_error_0_1_2" class="item"><strong>--halt-on-error</strong> &lt;0|1|2&gt;</a></strong></dt>
+
+<dt><strong><a name="halt_0_1_2" class="item"><strong>--halt</strong> &lt;0|1|2&gt;</a></strong></dt>
+
+<dd>
+<ol>
+<li>
+<p>Do not halt if a job fails. Exit status will be the number of jobs
+failed. This is the default.</p>
+</li>
+<li>
+<p>Do not start new jobs if a job fails, but complete the running jobs
+including cleanup. The exit status will be the exit status from the
+last failing job.</p>
+</li>
+<li>
+<p>Kill off all jobs immediately and exit without cleanup. The exit
+status will be the exit status from the failing job.</p>
+</li>
+</ol>
+</dd>
+<dt><strong><a name="header_regexp" class="item"><strong>--header</strong> <em>regexp</em></a></strong></dt>
+
+<dd>
+<p>Use regexp as header. For normal usage the matched header (typically
+the first line: <strong>--header '.*\n'</strong>) will be split using <strong>--colsep</strong>
+(which will default to '\t') and column names can be used as
+replacement variables: <strong>{column name}</strong>.</p>
+<p>For <strong>--pipe</strong> the matched header will be prepended to each output.</p>
+<p><strong>--header :</strong> is an alias for <strong>--header '.*\n'</strong>.</p>
+<p>If <em>regexp</em> is a number, it will match that many lines.</p>
+</dd>
+<dt><strong><a name="i_replace_str" class="item"><strong>-I</strong> <em>replace-str</em></a></strong></dt>
+
+<dd>
+<p>Use the replacement string <em>replace-str</em> instead of {}.</p>
+</dd>
+<dt><strong><a name="replace_replace_str" class="item"><strong>--replace</strong>[=<em>replace-str</em>]</a></strong></dt>
+
+<dt><strong><a name="i_replace_str" class="item"><strong>-i</strong>[<em>replace-str</em>]</a></strong></dt>
+
+<dd>
+<p>This option is a synonym for <strong>-I</strong><em>replace-str</em> if <em>replace-str</em> is
+specified, and for <strong>-I</strong>{} otherwise.  This option is deprecated;
+use <strong>-I</strong> instead.</p>
+</dd>
+<dt><strong><a name="logfile" class="item"><strong>--joblog</strong> <em>logfile</em> (beta testing)</a></strong></dt>
+
+<dd>
+<p>Logfile for executed jobs. Save a list of the executed jobs to
+<em>logfile</em> in the following TAB separated format: sequence number,
+sshlogin, start time as seconds since epoch, run time in seconds,
+bytes in files transferred, bytes in files returned, exit status,
+and command run.</p>
+<p>To convert the times into ISO-8601 strict do:</p>
+<p><strong>perl -a -F&quot;\t&quot; -ne 'chomp($F[2]=`date -d \@$F[2] +%FT%T`); print join(&quot;\t&quot;,@F)'</strong></p>
+<p>See also <strong>--resume</strong>.</p>
+</dd>
+<dt><strong><a name="jobs_n" class="item"><strong>--jobs</strong> <em>N</em></a></strong></dt>
+
+<dt><strong><a name="j_n" class="item"><strong>-j</strong> <em>N</em></a></strong></dt>
+
+<dt><strong><a name="max_procs_n" class="item"><strong>--max-procs</strong> <em>N</em></a></strong></dt>
+
+<dt><strong><a name="p_n" class="item"><strong>-P</strong> <em>N</em></a></strong></dt>
+
+<dd>
+<p>Number of jobslots. Run up to N jobs in parallel.  0 means as many as
+possible. Default is 100% which will run one job per CPU core.</p>
+<p>If <strong>--semaphore</strong> is set default is 1 thus making a mutex.</p>
+</dd>
+<dt><strong><a name="jobs_n2" class="item"><strong>--jobs</strong> <em>+N</em></a></strong></dt>
+
+<dt><strong><a name="j_n2" class="item"><strong>-j</strong> <em>+N</em></a></strong></dt>
+
+<dt><strong><a name="max_procs_n2" class="item"><strong>--max-procs</strong> <em>+N</em></a></strong></dt>
+
+<dt><strong><a name="p_n2" class="item"><strong>-P</strong> <em>+N</em></a></strong></dt>
+
+<dd>
+<p>Add N to the number of CPU cores.  Run this many jobs in parallel.
+See also <strong>--use-cpus-instead-of-cores</strong>.</p>
+</dd>
+<dt><strong><a name="jobs_n3" class="item"><strong>--jobs</strong> <em>-N</em></a></strong></dt>
+
+<dt><strong><a name="j_n3" class="item"><strong>-j</strong> <em>-N</em></a></strong></dt>
+
+<dt><strong><a name="max_procs_n3" class="item"><strong>--max-procs</strong> <em>-N</em></a></strong></dt>
+
+<dt><strong><a name="p_n3" class="item"><strong>-P</strong> <em>-N</em></a></strong></dt>
+
+<dd>
+<p>Subtract N from the number of CPU cores.  Run this many jobs in parallel.
+If the evaluated number is less than 1 then 1 will be used.  See also
+<strong>--use-cpus-instead-of-cores</strong>.</p>
+</dd>
+<dt><strong><a name="jobs_n4" class="item"><strong>--jobs</strong> <em>N</em>%</a></strong></dt>
+
+<dt><strong><a name="j_n4" class="item"><strong>-j</strong> <em>N</em>%</a></strong></dt>
+
+<dt><strong><a name="max_procs_n4" class="item"><strong>--max-procs</strong> <em>N</em>%</a></strong></dt>
+
+<dt><strong><a name="p_n4" class="item"><strong>-P</strong> <em>N</em>%</a></strong></dt>
+
+<dd>
+<p>Multiply N% with the number of CPU cores.  Run this many jobs in parallel.
+If the evaluated number is less than 1 then 1 will be used.  See also
+<strong>--use-cpus-instead-of-cores</strong>.</p>
+</dd>
+<dt><strong><a name="jobs_procfile" class="item"><strong>--jobs</strong> <em>procfile</em></a></strong></dt>
+
+<dt><strong><a name="j_procfile" class="item"><strong>-j</strong> <em>procfile</em></a></strong></dt>
+
+<dt><strong><a name="max_procs_procfile" class="item"><strong>--max-procs</strong> <em>procfile</em></a></strong></dt>
+
+<dt><strong><a name="p_procfile" class="item"><strong>-P</strong> <em>procfile</em></a></strong></dt>
+
+<dd>
+<p>Read parameter from file. Use the content of <em>procfile</em> as parameter
+for <em>-j</em>. E.g. <em>procfile</em> could contain the string 100% or +2 or
+10. If <em>procfile</em> is changed when a job completes, <em>procfile</em> is
+read again and the new number of jobs is computed. If the number is
+lower than before, running jobs will be allowed to finish but new jobs
+will not be started until the wanted number of jobs has been reached.
+This makes it possible to change the number of simultaneous running
+jobs while GNU <strong>parallel</strong> is running.</p>
+</dd>
+<dt><strong><a name="keep_order" class="item"><strong>--keep-order</strong></a></strong></dt>
+
+<dt><strong><a name="k" class="item"><strong>-k</strong></a></strong></dt>
+
+<dd>
+<p>Keep sequence of output same as the order of input. Normally the
+output of a job will be printed as soon as the job completes. Try this
+to see the difference:</p>
+<pre>
+  parallel -j4 sleep {}\; echo {} ::: 2 1 4 3
+  parallel -j4 -k sleep {}\; echo {} ::: 2 1 4 3</pre>
+</dd>
+<dt><strong><a name="l_max_lines" class="item"><strong>-L</strong> <em>max-lines</em></a></strong></dt>
+
+<dd>
+<p>When used with <strong>--pipe</strong>: Read records of <em>max-lines</em>.</p>
+<p>When used otherwise: Use at most <em>max-lines</em> nonblank input lines per
+command line.  Trailing blanks cause an input line to be logically
+continued on the next input line.</p>
+<p><strong>-L 0</strong> means read one line, but insert 0 arguments on the command
+line.</p>
+<p>Implies <strong>-X</strong> unless <strong>-m</strong>, <strong>--xargs</strong>, or <strong>--pipe</strong> is set.</p>
+</dd>
+<dt><strong><a name="max_lines_max_lines" class="item"><strong>--max-lines</strong>[=<em>max-lines</em>]</a></strong></dt>
+
+<dt><strong><a name="l_max_lines" class="item"><strong>-l</strong>[<em>max-lines</em>]</a></strong></dt>
+
+<dd>
+<p>When used with <strong>--pipe</strong>: Read records of <em>max-lines</em>.</p>
+<p>When used otherwise: Synonym for the <strong>-L</strong> option.  Unlike <strong>-L</strong>, the
+<em>max-lines</em> argument is optional.  If <em>max-lines</em> is not specified,
+it defaults to one.  The <strong>-l</strong> option is deprecated since the POSIX
+standard specifies <strong>-L</strong> instead.</p>
+<p><strong>-l 0</strong> is an alias for <strong>-l 1</strong>.</p>
+<p>Implies <strong>-X</strong> unless <strong>-m</strong>, <strong>--xargs</strong>, or <strong>--pipe</strong> is set.</p>
+</dd>
+<dt><strong><a name="line_buffer" class="item"><strong>--line-buffer</strong></a></strong></dt>
+
+<dd>
+<p>Buffer output on line basis. <strong>--group</strong> will keep the output together
+for a whole job. <strong>--ungroup</strong> allows output to mixup with half a line
+coming from one job and half a line coming from another
+job. <strong>--line-buffer</strong> fits between these two: GNU <strong>parallel</strong> will
+print a full line, but will allow for mixing lines of different jobs.</p>
+<p><strong>--line-buffer</strong> is slower than both <strong>--group</strong> and <strong>--ungroup</strong>.</p>
+</dd>
+<dt><strong><a name="load_max_load" class="item"><strong>--load</strong> <em>max-load</em></a></strong></dt>
+
+<dd>
+<p>Do not start new jobs on a given computer unless the number of running
+processes on the computer is less than <em>max-load</em>. <em>max-load</em> uses
+the same syntax as <strong>--jobs</strong>, so <em>100%</em> for one per CPU is a valid
+setting. Only difference is 0 which is interpreted as 0.01.</p>
+</dd>
+<dt><strong><a name="controlmaster" class="item"><strong>--controlmaster</strong> (experimental)</a></strong></dt>
+
+<dt><strong><a name="m" class="item"><strong>-M</strong> (experimental)</a></strong></dt>
+
+<dd>
+<p>Use ssh's ControlMaster to make ssh connections faster. Useful if jobs
+run remote and are very fast to run. This is disabled for sshlogins
+that specify their own ssh command.</p>
+</dd>
+<dt><strong><a name="xargs" class="item"><strong>--xargs</strong></a></strong></dt>
+
+<dd>
+<p>Multiple arguments. Insert as many arguments as the command line
+length permits.</p>
+<p>If <strong>{}</strong> is not used the arguments will be appended to the
+line.  If <strong>{}</strong> is used multiple times each <strong>{}</strong> will be replaced
+with all the arguments.</p>
+<p>Support for <strong>--xargs</strong> with <strong>--sshlogin</strong> is limited and may fail.</p>
+<p>See also <strong>-X</strong> for context replace. If in doubt use <strong>-X</strong> as that will
+most likely do what is needed.</p>
+</dd>
+<dt><strong><a name="m" class="item"><strong>-m</strong></a></strong></dt>
+
+<dd>
+<p>Multiple arguments. Insert as many arguments as the command line
+length permits. If multiple jobs are being run in parallel: distribute
+the arguments evenly among the jobs. Use <strong>-j1</strong> to avoid this.</p>
+<p>If <strong>{}</strong> is not used the arguments will be appended to the
+line.  If <strong>{}</strong> is used multiple times each <strong>{}</strong> will be replaced
+with all the arguments.</p>
+<p>Support for <strong>-m</strong> with <strong>--sshlogin</strong> is limited and may fail.</p>
+<p>See also <strong>-X</strong> for context replace. If in doubt use <strong>-X</strong> as that will
+most likely do what is needed.</p>
+</dd>
+<dt><strong><a name="minversion_version" class="item"><strong>--minversion</strong> <em>version</em></a></strong></dt>
+
+<dd>
+<p>Print the version GNU <strong>parallel</strong> and exit.  If the current version of
+GNU <strong>parallel</strong> is less than <em>version</em> the exit code is
+255. Otherwise it is 0.</p>
+<p>This is useful for scripts that depend on features only available from
+a certain version of GNU <strong>parallel</strong>.</p>
+</dd>
+<dt><strong><a name="nonall" class="item"><strong>--nonall</strong> (beta testing)</a></strong></dt>
+
+<dd>
+<p><strong>--onall</strong> with no arguments. Run the command on all computers given
+with <strong>--sshlogin</strong> but take no arguments. GNU <strong>parallel</strong> will log
+into <strong>--jobs</strong> number of computers in parallel and run the job on the
+computer. <strong>-j</strong> adjusts how many computers to log into in parallel.</p>
+<p>This is useful for running the same command (e.g. uptime) on a list of
+servers.</p>
+</dd>
+<dt><strong><a name="onall" class="item"><strong>--onall</strong> (beta testing)</a></strong></dt>
+
+<dd>
+<p>Run all the jobs on all computers given with <strong>--sshlogin</strong>. GNU
+<strong>parallel</strong> will log into <strong>--jobs</strong> number of computers in parallel
+and run one job at a time on the computer. The order of the jobs will
+not be changed, but some computers may finish before others. <strong>-j</strong>
+adjusts how many computers to log into in parallel.</p>
+<p>When using <strong>--group</strong> the output will be grouped by each server, so
+all the output from one server will be grouped together.</p>
+</dd>
+<dt><strong><a name="files" class="item"><strong>--output-as-files</strong> (beta testing)</a></strong></dt>
+
+<dt><strong><a name="outputasfiles" class="item"><strong>--outputasfiles</strong> (beta testing)</a></strong></dt>
+
+<dt><strong><strong>--files</strong> (beta testing)</strong></dt>
+
+<dd>
+<p>Instead of printing the output to stdout (standard output) the output
+of each job is saved in a file and the filename is then printed.</p>
+</dd>
+<dt><strong><a name="pipe" class="item"><strong>--pipe</strong></a></strong></dt>
+
+<dt><strong><a name="spreadstdin" class="item"><strong>--spreadstdin</strong></a></strong></dt>
+
+<dd>
+<p>Spread input to jobs on stdin (standard input). Read a block of data
+from stdin (standard input) and give one block of data as input to one
+job.</p>
+<p>The block size is determined by <strong>--block</strong>. The strings <strong>--recstart</strong>
+and <strong>--recend</strong> tell GNU <strong>parallel</strong> how a record starts and/or
+ends. The block read will have the final partial record removed before
+the block is passed on to the job. The partial record will be
+prepended to next block.</p>
+<p>If <strong>--recstart</strong> is given this will be used to split at record start.</p>
+<p>If <strong>--recend</strong> is given this will be used to split at record end.</p>
+<p>If both <strong>--recstart</strong> and <strong>--recend</strong> are given both will have to
+match to find a split position.</p>
+<p>If neither <strong>--recstart</strong> nor <strong>--recend</strong> are given <strong>--recend</strong>
+defaults to '\n'. To have no record separator use <strong>--recend &quot;&quot;</strong>.</p>
+<p><strong>--files</strong> is often used with <strong>--pipe</strong>.</p>
+</dd>
+<dt><strong><a name="plain" class="item"><strong>--plain</strong></a></strong></dt>
+
+<dd>
+<p>Ignore any <strong>--profile</strong>, $PARALLEL, ~/.parallel/config, and
+<strong>--tollef</strong> to get full control on the command line (used by GNU
+<strong>parallel</strong> internally when called with <strong>--sshlogin</strong>).</p>
+</dd>
+<dt><strong><a name="progress" class="item"><strong>--progress</strong></a></strong></dt>
+
+<dd>
+<p>Show progress of computations. List the computers involved in the task
+with number of CPU cores detected and the max number of jobs to
+run. After that show progress for each computer: number of running
+jobs, number of completed jobs, and percentage of all jobs done by
+this computer. The percentage will only be available after all jobs
+have been scheduled as GNU <strong>parallel</strong> only read the next job when
+ready to schedule it - this is to avoid wasting time and memory by
+reading everything at startup.</p>
+<p>By sending GNU <strong>parallel</strong> SIGUSR2 you can toggle turning on/off
+<strong>--progress</strong> on a running GNU <strong>parallel</strong> process.</p>
+<p>See also <strong>--eta</strong>.</p>
+</dd>
+<dt><strong><a name="max_args_max_args" class="item"><strong>--max-args</strong>=<em>max-args</em></a></strong></dt>
+
+<dt><strong><a name="n_max_args" class="item"><strong>-n</strong> <em>max-args</em></a></strong></dt>
+
+<dd>
+<p>Use at most <em>max-args</em> arguments per command line.  Fewer than
+<em>max-args</em> arguments will be used if the size (see the <strong>-s</strong> option)
+is exceeded, unless the <strong>-x</strong> option is given, in which case
+GNU <strong>parallel</strong> will exit.</p>
+<p><strong>-n 0</strong> means read one argument, but insert 0 arguments on the command
+line.</p>
+<p>Implies <strong>-X</strong> unless <strong>-m</strong> is set.</p>
+</dd>
+<dt><strong><a name="max_replace_args_max_args" class="item"><strong>--max-replace-args</strong>=<em>max-args</em></a></strong></dt>
+
+<dt><strong><a name="n_max_args" class="item"><strong>-N</strong> <em>max-args</em></a></strong></dt>
+
+<dd>
+<p>Use at most <em>max-args</em> arguments per command line. Like <strong>-n</strong> but
+also makes replacement strings <strong>{1}</strong> .. <strong>{</strong><em>max-args</em><strong>}</strong> that
+represents argument 1 .. <em>max-args</em>. If too few args the <strong>{</strong><em>n</em><strong>}</strong> will
+be empty.</p>
+<p><strong>-N 0</strong> means read one argument, but insert 0 arguments on the command
+line.</p>
+<p>This will set the owner of the homedir to the user:</p>
+<p><strong>tr ':' '\n' &lt; /etc/passwd | parallel -N7 chown {1} {6}</strong></p>
+<p>Implies <strong>-X</strong> unless <strong>-m</strong> or <strong>--pipe</strong> is set.</p>
+<p>When used with <strong>--pipe</strong> <strong>-N</strong> is the number of records to read. This
+is somewhat slower than <strong>--block</strong>.</p>
+</dd>
+<dt><strong><a name="max_line_length_allowed" class="item"><strong>--max-line-length-allowed</strong></a></strong></dt>
+
+<dd>
+<p>Print the maximal number of characters allowed on the command line and
+exit (used by GNU <strong>parallel</strong> itself to determine the line length
+on remote computers).</p>
+</dd>
+<dt><strong><a name="number_of_cpus" class="item"><strong>--number-of-cpus</strong></a></strong></dt>
+
+<dd>
+<p>Print the number of physical CPUs and exit (used by GNU <strong>parallel</strong>
+itself to determine the number of physical CPUs on remote computers).</p>
+</dd>
+<dt><strong><a name="number_of_cores" class="item"><strong>--number-of-cores</strong></a></strong></dt>
+
+<dd>
+<p>Print the number of CPU cores and exit (used by GNU <strong>parallel</strong> itself
+to determine the number of CPU cores on remote computers).</p>
+</dd>
+<dt><strong><a name="nice_niceness" class="item"><strong>--nice</strong> <em>niceness</em></a></strong></dt>
+
+<dd>
+<p>Run the command at this niceness. For simple commands you can just add
+<strong>nice</strong> in front of the command. But if the command consists of more
+sub commands (Like: ls|wc) then prepending <strong>nice</strong> will not always
+work. <strong>--nice</strong> will make sure all sub commands are niced.</p>
+</dd>
+<dt><strong><a name="interactive" class="item"><strong>--interactive</strong></a></strong></dt>
+
+<dt><strong><a name="p" class="item"><strong>-p</strong></a></strong></dt>
+
+<dd>
+<p>Prompt the user about whether to run each command line and read a line
+from the terminal.  Only run the command line if the response starts
+with 'y' or 'Y'.  Implies <strong>-t</strong>.</p>
+</dd>
+<dt><strong><a name="profile_profilename" class="item"><strong>--profile</strong> <em>profilename</em></a></strong></dt>
+
+<dt><strong><a name="j_profilename" class="item"><strong>-J</strong> <em>profilename</em></a></strong></dt>
+
+<dd>
+<p>Use profile <em>profilename</em> for options. This is useful if you want to
+have multiple profiles. You could have one profile for running jobs in
+parallel on the local computer and a different profile for running jobs
+on remote computers. See the section PROFILE FILES for examples.</p>
+<p><em>profilename</em> corresponds to the file ~/.parallel/<em>profilename</em>.</p>
+<p>You can give multiple profiles by repeating <strong>--profile</strong>. If parts of
+the profiles conflict, the later ones will be used.</p>
+<p>Default: config</p>
+</dd>
+<dt><strong><a name="quote" class="item"><strong>--quote</strong></a></strong></dt>
+
+<dt><strong><a name="q" class="item"><strong>-q</strong></a></strong></dt>
+
+<dd>
+<p>Quote <em>command</em>.  This will quote the command line so special
+characters are not interpreted by the shell. See the section
+QUOTING. Most people will never need this.  Quoting is disabled by
+default.</p>
+</dd>
+<dt><strong><a name="no_run_if_empty" class="item"><strong>--no-run-if-empty</strong></a></strong></dt>
+
+<dt><strong><a name="r" class="item"><strong>-r</strong></a></strong></dt>
+
+<dd>
+<p>If the stdin (standard input) only contains whitespace, do not run the command.</p>
+<p>If used with <strong>--pipe</strong> this is slow.</p>
+</dd>
+<dt><strong><a name="record_env" class="item"><strong>--record-env</strong></a></strong></dt>
+
+<dd>
+<p>Record current environment variables in ~/.parallel/ignored_vars. This
+is useful before using <strong>--env _</strong>.</p>
+<p>See also <strong>--env</strong>.</p>
+</dd>
+<dt><strong><a name="recstart_startstring" class="item"><strong>--recstart</strong> <em>startstring</em></a></strong></dt>
+
+<dt><strong><a name="recend_endstring" class="item"><strong>--recend</strong> <em>endstring</em></a></strong></dt>
+
+<dd>
+<p>If <strong>--recstart</strong> is given <em>startstring</em> will be used to split at record start.</p>
+<p>If <strong>--recend</strong> is given <em>endstring</em> will be used to split at record end.</p>
+<p>If both <strong>--recstart</strong> and <strong>--recend</strong> are given the combined string
+<em>endstring</em><em>startstring</em> will have to match to find a split
+position. This is useful if either <em>startstring</em> or <em>endstring</em>
+match in the middle of a record.</p>
+<p>If neither <strong>--recstart</strong> nor <strong>--recend</strong> are given then <strong>--recend</strong>
+defaults to '\n'. To have no record separator use <strong>--recend &quot;&quot;</strong>.</p>
+<p><strong>--recstart</strong> and <strong>--recend</strong> are used with <strong>--pipe</strong>.</p>
+<p>Use <strong>--regexp</strong> to interpret <strong>--recstart</strong> and <strong>--recend</strong> as regular
+expressions. This is slow, however.</p>
+</dd>
+<dt><strong><a name="regexp" class="item"><strong>--regexp</strong></a></strong></dt>
+
+<dd>
+<p>Use <strong>--regexp</strong> to interpret <strong>--recstart</strong> and <strong>--recend</strong> as regular
+expressions. This is slow, however.</p>
+</dd>
+<dt><strong><a name="remove_rec_sep" class="item"><strong>--remove-rec-sep</strong></a></strong></dt>
+
+<dt><strong><a name="removerecsep" class="item"><strong>--removerecsep</strong></a></strong></dt>
+
+<dt><strong><a name="rrs" class="item"><strong>--rrs</strong></a></strong></dt>
+
+<dd>
+<p>Remove the text matched by <strong>--recstart</strong> and <strong>--recend</strong> before piping
+it to the command.</p>
+<p>Only used with <strong>--pipe</strong>.</p>
+</dd>
+<dt><strong><a name="results_prefix" class="item"><strong>--results</strong> <em>prefix</em></a></strong></dt>
+
+<dt><strong><a name="res_prefix" class="item"><strong>--res</strong> <em>prefix</em></a></strong></dt>
+
+<dd>
+<p>Save the output into files. The files will be stored in a directory tree
+rooted at <em>prefix</em>.  Within this directory tree, each command will result
+in two files: <em>prefix</em>/&lt;ARGS&gt;/stdout and <em>prefix</em>/&lt;ARGS&gt;/stderr, where
+&lt;ARGS&gt; is a sequence of directories representing the header of the input
+source (if using <strong>--header :</strong>) or the number of the input source and
+corresponding values.</p>
+<p>E.g:</p>
+<pre>
+  parallel --header : --results foo echo {a} {b} ::: a I II ::: b III IIII</pre>
+<p>will generate the files:</p>
+<pre>
+  foo/a/I/b/III/stderr
+  foo/a/I/b/IIII/stderr
+  foo/a/II/b/III/stderr
+  foo/a/II/b/IIII/stderr
+  foo/a/I/b/III/stdout
+  foo/a/I/b/IIII/stdout
+  foo/a/II/b/III/stdout
+  foo/a/II/b/IIII/stdout</pre>
+<p>and</p>
+<pre>
+  parallel --results foo echo {1} {2} ::: I II ::: III IIII</pre>
+<p>will generate the files:</p>
+<pre>
+  foo/1/I/2/III/stderr
+  foo/1/I/2/IIII/stderr
+  foo/1/II/2/III/stderr
+  foo/1/II/2/IIII/stderr
+  foo/1/I/2/III/stdout
+  foo/1/I/2/IIII/stdout
+  foo/1/II/2/III/stdout
+  foo/1/II/2/IIII/stdout</pre>
+<p>See also <strong>--files</strong>, <strong>--header</strong>, <strong>--joblog</strong>.</p>
+</dd>
+<dt><strong><a name="resume" class="item"><strong>--resume</strong></a></strong></dt>
+
+<dd>
+<p>Resumes from the last unfinished job. By reading <strong>--joblog</strong> GNU
+<strong>parallel</strong> will figure out the last unfinished job and continue from
+there. As GNU <strong>parallel</strong> only looks at the sequence numbers in
+<strong>--joblog</strong> then the input, the command, and <strong>--joblog</strong> all have to
+remain unchanged; otherwise GNU <strong>parallel</strong> may run wrong commands.</p>
+<p>See also <strong>--joblog</strong>, <strong>--resume-failed</strong>.</p>
+</dd>
+<dt><strong><a name="resume_failed" class="item"><strong>--resume-failed</strong></a></strong></dt>
+
+<dd>
+<p>Retry all failed and resume from the last unfinished job. By reading
+<strong>--joblog</strong> GNU <strong>parallel</strong> will figure out the failed jobs and run
+those again. After that it will resume last unfinished job and
+continue from there. As GNU <strong>parallel</strong> only looks at the sequence
+numbers in <strong>--joblog</strong> then the input, the command, and <strong>--joblog</strong>
+all have to remain unchanged; otherwise GNU <strong>parallel</strong> may run wrong
+commands.</p>
+<p>See also <strong>--joblog</strong>, <strong>--resume</strong>.</p>
+</dd>
+<dt><strong><a name="retries_n" class="item"><strong>--retries</strong> <em>n</em></a></strong></dt>
+
+<dd>
+<p>If a job fails, retry it on another computer. Do this <em>n</em> times. If
+there are fewer than <em>n</em> computers in <strong>--sshlogin</strong> GNU <strong>parallel</strong> will
+re-use the computers. This is useful if some jobs fail for no apparent
+reason (such as network failure).</p>
+</dd>
+<dt><strong><a name="filename" class="item"><strong>--return</strong> <em>filename</em> (alpha testing)</a></strong></dt>
+
+<dd>
+<p>Transfer files from remote computers. <strong>--return</strong> is used with
+<strong>--sshlogin</strong> when the arguments are files on the remote computers. When
+processing is done the file <em>filename</em> will be transferred
+from the remote computer using <strong>rsync</strong> and will be put relative to
+the default login dir. E.g.</p>
+<pre>
+  echo foo/bar.txt | parallel \
+    --sshlogin server.example.com --return {.}.out touch {.}.out</pre>
+<p>This will transfer the file <em>$HOME/foo/bar.out</em> from the computer
+<em>server.example.com</em> to the file <em>foo/bar.out</em> after running
+<strong>touch foo/bar.out</strong> on <em>server.example.com</em>.</p>
+<pre>
+  echo /tmp/foo/bar.txt | parallel \
+    --sshlogin server.example.com --return {.}.out touch {.}.out</pre>
+<p>This will transfer the file <em>/tmp/foo/bar.out</em> from the computer
+<em>server.example.com</em> to the file <em>/tmp/foo/bar.out</em> after running
+<strong>touch /tmp/foo/bar.out</strong> on <em>server.example.com</em>.</p>
+<p>Multiple files can be transferred by repeating the options multiple
+times:</p>
+<pre>
+  echo /tmp/foo/bar.txt | \
+    parallel --sshlogin server.example.com \
+    --return {.}.out --return {.}.out2 touch {.}.out {.}.out2</pre>
+<p><strong>--return</strong> is often used with <strong>--transfer</strong> and <strong>--cleanup</strong>.</p>
+<p><strong>--return</strong> is ignored when used with <strong>--sshlogin :</strong> or when not used
+with <strong>--sshlogin</strong>.</p>
+</dd>
+<dt><strong><a name="round_robin" class="item"><strong>--round-robin</strong></a></strong></dt>
+
+<dt><strong><a name="round" class="item"><strong>--round</strong></a></strong></dt>
+
+<dd>
+<p>Normally <strong>--pipe</strong> will give a single block to each instance of the
+command. With <strong>--round-robin</strong> all blocks will at random be written to
+commands already running. This is useful if the command takes a long
+time to initialize.</p>
+<p><strong>--keep-order</strong> will not work with <strong>--round-robin</strong> as it is
+impossible to track which input block corresponds to which output.</p>
+</dd>
+<dt><strong><a name="max_chars_max_chars" class="item"><strong>--max-chars</strong>=<em>max-chars</em></a></strong></dt>
+
+<dt><strong><a name="s_max_chars" class="item"><strong>-s</strong> <em>max-chars</em></a></strong></dt>
+
+<dd>
+<p>Use at most <em>max-chars</em> characters per command line, including the
+command and initial-arguments and the terminating nulls at the ends of
+the argument strings.  The largest allowed value is system-dependent,
+and is calculated as the argument length limit for exec, less the size
+of your environment.  The default value is the maximum.</p>
+<p>Implies <strong>-X</strong> unless <strong>-m</strong> is set.</p>
+</dd>
+<dt><strong><a name="show_limits" class="item"><strong>--show-limits</strong></a></strong></dt>
+
+<dd>
+<p>Display the limits on the command-line length which are imposed by the
+operating system and the <strong>-s</strong> option.  Pipe the input from /dev/null
+(and perhaps specify --no-run-if-empty) if you don't want GNU <strong>parallel</strong>
+to do anything.</p>
+</dd>
+<dt><strong><a name="semaphore" class="item"><strong>--semaphore</strong></a></strong></dt>
+
+<dd>
+<p>Work as a counting semaphore. <strong>--semaphore</strong> will cause GNU
+<strong>parallel</strong> to start <em>command</em> in the background. When the number of
+simultaneous jobs is reached, GNU <strong>parallel</strong> will wait for one of
+these to complete before starting another command.</p>
+<p><strong>--semaphore</strong> implies <strong>--bg</strong> unless <strong>--fg</strong> is specified.</p>
+<p><strong>--semaphore</strong> implies <strong>--semaphorename `tty`</strong> unless
+<strong>--semaphorename</strong> is specified.</p>
+<p>Used with <strong>--fg</strong>, <strong>--wait</strong>, and <strong>--semaphorename</strong>.</p>
+<p>The command <strong>sem</strong> is an alias for <strong>parallel --semaphore</strong>.</p>
+<p>See also <strong>man sem</strong>.</p>
+</dd>
+<dt><strong><a name="semaphorename_name" class="item"><strong>--semaphorename</strong> <em>name</em></a></strong></dt>
+
+<dt><strong><a name="id_name" class="item"><strong>--id</strong> <em>name</em></a></strong></dt>
+
+<dd>
+<p>Use <strong>name</strong> as the name of the semaphore. Default is the name of the
+controlling tty (output from <strong>tty</strong>).</p>
+<p>The default normally works as expected when used interactively, but
+when used in a script <em>name</em> should be set. <em>$$</em> or <em>my_task_name</em>
+are often a good value.</p>
+<p>The semaphore is stored in ~/.parallel/semaphores/</p>
+<p>Implies <strong>--semaphore</strong>.</p>
+<p>See also <strong>man sem</strong>.</p>
+</dd>
+<dt><strong><a name="secs" class="item"><strong>--semaphoretimeout</strong> <em>secs</em> (not implemented)</a></strong></dt>
+
+<dd>
+<p>If the semaphore is not released within secs seconds, take it anyway.</p>
+<p>Implies <strong>--semaphore</strong>.</p>
+<p>See also <strong>man sem</strong>.</p>
+</dd>
+<dt><strong><a name="seqreplace_replace_str" class="item"><strong>--seqreplace</strong> <em>replace-str</em></a></strong></dt>
+
+<dd>
+<p>Use the replacement string <em>replace-str</em> instead of <strong>{#}</strong> for
+job sequence number.</p>
+</dd>
+<dt><strong><a name="shebang" class="item"><strong>--shebang</strong></a></strong></dt>
+
+<dt><strong><a name="hashbang" class="item"><strong>--hashbang</strong></a></strong></dt>
+
+<dd>
+<p>GNU <strong>parallel</strong> can be called as a shebang (#!) command as the first
+line of a script. The content of the file will be treated as
+inputsource.</p>
+<p>Like this:</p>
+<pre>
+  #!/usr/bin/parallel --shebang -r traceroute</pre>
+<pre>
+  foss.org.my
+  debian.org
+  freenetproject.org</pre>
+<p><strong>--shebang</strong> must be set as the first option.</p>
+</dd>
+<dt><strong><a name="shebang_wrap" class="item"><strong>--shebang-wrap</strong></a></strong></dt>
+
+<dd>
+<p>GNU <strong>parallel</strong> can parallelize scripts by wrapping the shebang
+line. If the program can be run like this:</p>
+<pre>
+  cat arguments | parallel the_program</pre>
+<p>then the script can be changed to:</p>
+<pre>
+  #!/usr/bin/parallel --shebang-wrap /the/original/parser --with-options</pre>
+<p>E.g.</p>
+<pre>
+  #!/usr/bin/parallel --shebang-wrap /usr/bin/python</pre>
+<p>If the program can be run like this:</p>
+<pre>
+  cat data | parallel --pipe the_program</pre>
+<p>then the script can be changed to:</p>
+<pre>
+  #!/usr/bin/parallel --shebang-wrap --pipe /the/original/parser --with-options</pre>
+<p>E.g.</p>
+<pre>
+  #!/usr/bin/parallel --shebang-wrap --pipe /usr/bin/perl -w</pre>
+<p><strong>--shebang-wrap</strong> must be set as the first option.</p>
+</dd>
+<dt><strong><a name="shellquote" class="item"><strong>--shellquote</strong></a></strong></dt>
+
+<dd>
+<p>Does not run the command but quotes it. Useful for making quoted
+composed commands for GNU <strong>parallel</strong>.</p>
+</dd>
+<dt><strong><a name="skip_first_line" class="item"><strong>--skip-first-line</strong></a></strong></dt>
+
+<dd>
+<p>Do not use the first line of input (used by GNU <strong>parallel</strong> itself
+when called with <strong>--shebang</strong>).</p>
+</dd>
+<dt><strong><a name="sshdelay_secs" class="item"><strong>--sshdelay</strong> <em>secs</em></a></strong></dt>
+
+<dd>
+<p>Delay starting next ssh by <em>secs</em> seconds. GNU <strong>parallel</strong> will pause
+<em>secs</em> seconds after starting each ssh. <em>secs</em> can be less than 1
+seconds.</p>
+</dd>
+<dt><strong><a name="s_ncpu_sshlogin_ncpu_sshlogin" class="item"><strong>-S</strong> <em>[ncpu/]sshlogin[,[ncpu/]sshlogin[,...]]</em></a></strong></dt>
+
+<dt><strong><a name="sshlogin_ncpu_sshlogin_ncpu_sshlogin" class="item"><strong>--sshlogin</strong> <em>[ncpu/]sshlogin[,[ncpu/]sshlogin[,...]]</em></a></strong></dt>
+
+<dd>
+<p>Distribute jobs to remote computers. The jobs will be run on a list of
+remote computers.  GNU <strong>parallel</strong> will determine the number of CPU
+cores on the remote computers and run the number of jobs as specified by
+<strong>-j</strong>.  If the number <em>ncpu</em> is given GNU <strong>parallel</strong> will use this
+number for number of CPU cores on the host. Normally <em>ncpu</em> will not
+be needed.</p>
+<p>An <em>sshlogin</em> is of the form:</p>
+<pre>
+  [sshcommand [options]] [username@]hostname</pre>
+<p>The sshlogin must not require a password.</p>
+<p>The sshlogin ':' is special, it means 'no ssh' and will therefore run
+on the local computer.</p>
+<p>The sshlogin '..' is special, it read sshlogins from ~/.parallel/sshloginfile</p>
+<p>The sshlogin '-' is special, too, it read sshlogins from stdin
+(standard input).</p>
+<p>To specify more sshlogins separate the sshlogins by comma or repeat
+the options multiple times.</p>
+<p>For examples: see <strong>--sshloginfile</strong>.</p>
+<p>The remote host must have GNU <strong>parallel</strong> installed.</p>
+<p><strong>--sshlogin</strong> is known to cause problems with <strong>-m</strong> and <strong>-X</strong>.</p>
+<p><strong>--sshlogin</strong> is often used with <strong>--transfer</strong>, <strong>--return</strong>,
+<strong>--cleanup</strong>, and <strong>--trc</strong>.</p>
+</dd>
+<dt><strong><a name="sshloginfile_filename" class="item"><strong>--sshloginfile</strong> <em>filename</em></a></strong></dt>
+
+<dt><strong><a name="slf_filename" class="item"><strong>--slf</strong> <em>filename</em></a></strong></dt>
+
+<dd>
+<p>File with sshlogins. The file consists of sshlogins on separate
+lines. Empty lines and lines starting with '#' are ignored. Example:</p>
+<pre>
+  server.example.com
+  username@server2.example.com
+  8/my-8-core-server.example.com
+  2/my_other_username@my-dualcore.example.net
+  # This server has SSH running on port 2222
+  ssh -p 2222 server.example.net
+  4/ssh -p 2222 quadserver.example.net
+  # Use a different ssh program
+  myssh -p 2222 -l myusername hexacpu.example.net
+  # Use a different ssh program with default number of cores
+  //usr/local/bin/myssh -p 2222 -l myusername hexacpu.example.net
+  # Use a different ssh program with 6 cores
+  6//usr/local/bin/myssh -p 2222 -l myusername hexacpu.example.net
+  # Assume 16 cores on the local computer
+  16/:</pre>
+<p>When using a different ssh program the last argument must be the hostname.</p>
+<p>Multiple <strong>--sshloginfile</strong> are allowed.</p>
+<p>GNU <strong>parallel</strong> will first look for the file in current dir; if that
+fails it look for the file in ~/.parallel.</p>
+<p>The sshloginfile '..' is special, it read sshlogins from
+~/.parallel/sshloginfile</p>
+<p>The sshloginfile '.' is special, it read sshlogins from
+/etc/parallel/sshloginfile</p>
+<p>The sshloginfile '-' is special, too, it read sshlogins from stdin
+(standard input).</p>
+</dd>
+<dt><strong><a name="noswap" class="item"><strong>--noswap</strong></a></strong></dt>
+
+<dd>
+<p>Do not start new jobs on a given computer if there is both swap-in and
+swap-out activity.</p>
+<p>The swap activity is only sampled every 10 seconds as the sampling
+takes 1 second to do.</p>
+<p>Swap activity is computed as (swap-in)*(swap-out) which in practice is
+a good value: swapping out is not a problem, swapping in is not a
+problem, but both swapping in and out usually indicates a problem.</p>
+</dd>
+<dt><strong><a name="silent" class="item"><strong>--silent</strong></a></strong></dt>
+
+<dd>
+<p>Silent.  The job to be run will not be printed. This is the default.
+Can be reversed with <strong>-v</strong>.</p>
+</dd>
+<dt><strong><a name="tty" class="item"><strong>--tty</strong></a></strong></dt>
+
+<dd>
+<p>Open terminal tty. If GNU <strong>parallel</strong> is used for starting an
+interactive program then this option may be needed. It will start only
+one job at a time (i.e. <strong>-j1</strong>), not buffer the output (i.e. <strong>-u</strong>),
+and it will open a tty for the job. When the job is done, the next job
+will get the tty.</p>
+</dd>
+<dt><strong><a name="tag" class="item"><strong>--tag</strong></a></strong></dt>
+
+<dd>
+<p>Tag lines with arguments. Each output line will be prepended with the
+arguments and TAB (\t). When combined with <strong>--onall</strong> or <strong>--nonall</strong>
+the lines will be prepended with the sshlogin instead.</p>
+<p><strong>--tag</strong> is ignored when using <strong>-u</strong>.</p>
+</dd>
+<dt><strong><a name="tagstring_str" class="item"><strong>--tagstring</strong> <em>str</em></a></strong></dt>
+
+<dd>
+<p>Tag lines with a string. Each output line will be prepended with
+<em>str</em> and TAB (\t). <em>str</em> can contain replacement strings such as
+{}.</p>
+<p><strong>--tagstring</strong> is ignored when using <strong>-u</strong>, <strong>--onall</strong>, and <strong>--nonall</strong>.</p>
+</dd>
+<dt><strong><a name="tmpdir_dirname" class="item"><strong>--tmpdir</strong> <em>dirname</em></a></strong></dt>
+
+<dd>
+<p>Directory for temporary files. GNU <strong>parallel</strong> normally buffers output
+into temporary files in /tmp. By setting <strong>--tmpdir</strong> you can use a
+different dir for the files. Setting <strong>--tmpdir</strong> is equivalent to
+setting $TMPDIR.</p>
+</dd>
+<dt><strong><a name="timeout_val" class="item"><strong>--timeout</strong> <em>val</em></a></strong></dt>
+
+<dd>
+<p>Time out for command. If the command runs for longer than <em>val</em>
+seconds it will get killed with SIGTERM, followed by SIGTERM 200 ms
+later, followed by SIGKILL 200 ms later.</p>
+<p>If <em>val</em> is followed by a % then the timeout will dynamically be
+computed as a percentage of the median average runtime. Only values
+&gt; 100% will make sense.</p>
+</dd>
+<dt><strong><a name="tollef" class="item"><strong>--tollef</strong> (obsolete - will be retired 20140222)</a></strong></dt>
+
+<dd>
+<p>Make GNU <strong>parallel</strong> behave more like Tollef's parallel command. It
+activates <strong>-u</strong>, <strong>-q</strong>, and <strong>--arg-sep --</strong>. It also causes <strong>-l</strong> to
+change meaning to <strong>--load</strong>.</p>
+<p>Not giving '--' is unsupported.</p>
+<p><strong>Do not use --tollef unless you know what you are doing</strong>.</p>
+<p>To override use <strong>--gnu</strong>.</p>
+</dd>
+<dt><strong><a name="verbose" class="item"><strong>--verbose</strong></a></strong></dt>
+
+<dt><strong><a name="t" class="item"><strong>-t</strong></a></strong></dt>
+
+<dd>
+<p>Print the job to be run on stderr (standard error).</p>
+<p>See also <strong>-v</strong>, <strong>-p</strong>.</p>
+</dd>
+<dt><strong><a name="transfer" class="item"><strong>--transfer</strong> (alpha testing)</a></strong></dt>
+
+<dd>
+<p>Transfer files to remote computers. <strong>--transfer</strong> is used with
+<strong>--sshlogin</strong> when the arguments are files and should be transferred to
+the remote computers. The files will be transferred using <strong>rsync</strong> and
+will be put relative to the default login dir. E.g.</p>
+<pre>
+  echo foo/bar.txt | parallel \
+    --sshlogin server.example.com --transfer wc</pre>
+<p>This will transfer the file <em>foo/bar.txt</em> to the computer
+<em>server.example.com</em> to the file <em>$HOME/foo/bar.txt</em> before running
+<strong>wc foo/bar.txt</strong> on <em>server.example.com</em>.</p>
+<pre>
+  echo /tmp/foo/bar.txt | parallel \
+    --sshlogin server.example.com --transfer wc</pre>
+<p>This will transfer the file <em>foo/bar.txt</em> to the computer
+<em>server.example.com</em> to the file <em>/tmp/foo/bar.txt</em> before running
+<strong>wc /tmp/foo/bar.txt</strong> on <em>server.example.com</em>.</p>
+<p><strong>--transfer</strong> is often used with <strong>--return</strong> and <strong>--cleanup</strong>.</p>
+<p><strong>--transfer</strong> is ignored when used with <strong>--sshlogin :</strong> or when not used with <strong>--sshlogin</strong>.</p>
+</dd>
+<dt><strong><a name="trc_filename" class="item"><strong>--trc</strong> <em>filename</em></a></strong></dt>
+
+<dd>
+<p>Transfer, Return, Cleanup. Short hand for:</p>
+<p><strong>--transfer</strong> <strong>--return</strong> <em>filename</em> <strong>--cleanup</strong></p>
+</dd>
+<dt><strong><a name="trim_n_l_r_lr_rl" class="item"><strong>--trim</strong> &lt;n|l|r|lr|rl&gt;</a></strong></dt>
+
+<dd>
+<p>Trim white space in input.</p>
+<dl>
+<dt><strong>n</strong></dt>
+
+<dd>
+<p>No trim. Input is not modified. This is the default.</p>
+</dd>
+<dt><strong><a name="l" class="item">l</a></strong></dt>
+
+<dd>
+<p>Left trim. Remove white space from start of input. E.g. &quot; a bc &quot; -&gt; &quot;a bc &quot;.</p>
+</dd>
+<dt><strong>r</strong></dt>
+
+<dd>
+<p>Right trim. Remove white space from end of input. E.g. &quot; a bc &quot; -&gt; &quot; a bc&quot;.</p>
+</dd>
+<dt><strong><a name="lr" class="item">lr</a></strong></dt>
+
+<dt><strong><a name="rl" class="item">rl</a></strong></dt>
+
+<dd>
+<p>Both trim. Remove white space from both start and end of input. E.g. &quot;
+a bc &quot; -&gt; &quot;a bc&quot;. This is the default if <strong>--colsep</strong> is used.</p>
+</dd>
+</dl>
+</dd>
+<dt><strong><a name="ungroup" class="item"><strong>--ungroup</strong></a></strong></dt>
+
+<dt><strong><a name="u" class="item"><strong>-u</strong></a></strong></dt>
+
+<dd>
+<p>Ungroup output.  Output is printed as soon as possible and by passes
+GNU <strong>parallel</strong> internal processing. This may cause output from
+different commands to be mixed thus should only be used if you do not
+care about the output. Compare these:</p>
+<p><strong>parallel -j0 'sleep {};echo -n start{};sleep {};echo {}end' ::: 1 2 3 4</strong></p>
+<p><strong>parallel -u -j0 'sleep {};echo -n start{};sleep {};echo {}end' ::: 1 2 3 4</strong></p>
+<p>It also disables <strong>--tag</strong>. GNU <strong>parallel</strong> runs faster with <strong>-u</strong>. Can
+be reversed with <strong>--group</strong>.</p>
+</dd>
+<dt><strong><a name="extensionreplace_replace_str" class="item"><strong>--extensionreplace</strong> <em>replace-str</em></a></strong></dt>
+
+<dt><strong><a name="er_replace_str" class="item"><strong>--er</strong> <em>replace-str</em></a></strong></dt>
+
+<dd>
+<p>Use the replacement string <em>replace-str</em> instead of {.} for input line without extension.</p>
+</dd>
+<dt><strong><a name="use_cpus_instead_of_cores" class="item"><strong>--use-cpus-instead-of-cores</strong></a></strong></dt>
+
+<dd>
+<p>Count the number of physical CPUs instead of CPU cores. When computing
+how many jobs to run simultaneously relative to the number of CPU cores
+you can ask GNU <strong>parallel</strong> to instead look at the number of physical
+CPUs. This will make sense for computers that have hyperthreading as
+two jobs running on one CPU with hyperthreading will run slower than
+two jobs running on two physical CPUs. Some multi-core CPUs can run
+faster if only one thread is running per physical CPU. Most users will
+not need this option.</p>
+</dd>
+<dt><strong><a name="v" class="item"><strong>-v</strong></a></strong></dt>
+
+<dd>
+<p>Verbose.  Print the job to be run on stdout (standard output). Can be reversed
+with <strong>--silent</strong>. See also <strong>-t</strong>.</p>
+<p>Use <strong>-v</strong> <strong>-v</strong> to print the wrapping ssh command when running remotely.</p>
+</dd>
+<dt><strong><a name="version" class="item"><strong>--version</strong></a></strong></dt>
+
+<dt><strong><a name="v" class="item"><strong>-V</strong></a></strong></dt>
+
+<dd>
+<p>Print the version GNU <strong>parallel</strong> and exit.</p>
+</dd>
+<dt><strong><a name="workdir_mydir" class="item"><strong>--workdir</strong> <em>mydir</em></a></strong></dt>
+
+<dt><strong><a name="wd_mydir" class="item"><strong>--wd</strong> <em>mydir</em></a></strong></dt>
+
+<dd>
+<p>Files transferred using <strong>--transfer</strong> and <strong>--return</strong> will be relative
+to <em>mydir</em> on remote computers, and the command will be executed in
+the dir <em>mydir</em>.</p>
+<p>The special <em>mydir</em> value <strong>...</strong> will create working dirs under
+<strong>~/.parallel/tmp/</strong> on the remote computers. If <strong>--cleanup</strong> is given
+these dirs will be removed.</p>
+<p>The special <em>mydir</em> value <strong>.</strong> uses the current working dir.  If the
+current working dir is beneath your home dir, the value <strong>.</strong> is
+treated as the relative path to your home dir. This means that if your
+home dir is different on remote computers (e.g. if your login is
+different) the relative path will still be relative to your home dir.</p>
+<p>To see the difference try:</p>
+<p><strong>parallel -S server pwd ::: &quot;&quot;</strong></p>
+<p><strong>parallel --wd . -S server pwd ::: &quot;&quot;</strong></p>
+<p><strong>parallel --wd ... -S server pwd ::: &quot;&quot;</strong></p>
+</dd>
+<dt><strong><a name="wait" class="item"><strong>--wait</strong></a></strong></dt>
+
+<dd>
+<p>Wait for all commands to complete.</p>
+<p>Implies <strong>--semaphore</strong>.</p>
+<p>See also <strong>man sem</strong>.</p>
+</dd>
+<dt><strong><a name="x" class="item"><strong>-X</strong></a></strong></dt>
+
+<dd>
+<p>Multiple arguments with context replace. Insert as many arguments as
+the command line length permits. If multiple jobs are being run in
+parallel: distribute the arguments evenly among the jobs. Use <strong>-j1</strong>
+to avoid this.</p>
+<p>If <strong>{}</strong> is not used the arguments will be appended to the line.  If
+<strong>{}</strong> is used as part of a word (like <em>pic{}.jpg</em>) then the whole
+word will be repeated. If <strong>{}</strong> is used multiple times each <strong>{}</strong> will
+be replaced with the arguments.</p>
+<p>Normally <strong>-X</strong> will do the right thing, whereas <strong>-m</strong> can give
+unexpected results if <strong>{}</strong> is used as part of a word.</p>
+<p>Support for <strong>-X</strong> with <strong>--sshlogin</strong> is limited and may fail.</p>
+<p>See also <strong>-m</strong>.</p>
+</dd>
+<dt><strong><a name="exit" class="item"><strong>--exit</strong></a></strong></dt>
+
+<dt><strong><a name="x" class="item"><strong>-x</strong></a></strong></dt>
+
+<dd>
+<p>Exit if the size (see the <strong>-s</strong> option) is exceeded.</p>
+</dd>
+<dt><strong><a name="xapply" class="item"><strong>--xapply</strong></a></strong></dt>
+
+<dd>
+<p>Read multiple input sources like <strong>xapply</strong>. If multiple input sources
+are given, one argument will be read from each of the input
+sources. The arguments can be accessed in the command as <strong>{1}</strong>
+.. <strong>{</strong><em>n</em><strong>}</strong>, so <strong>{1}</strong> will be a line from the first input source, and
+<strong>{6}</strong> will refer to the line with the same line number from the 6th
+input source.</p>
+<p>Compare these two:</p>
+<pre>
+  parallel echo {1} {2} ::: 1 2 3 ::: a b c
+  parallel --xapply echo {1} {2} ::: 1 2 3 ::: a b c</pre>
+<p>Arguments will be recycled if one input source has more arguments than the others:</p>
+<pre>
+  parallel --xapply echo {1} {2} {3} ::: 1 2 ::: I II III ::: a b c d e f g</pre>
+<p>See also <strong>--header</strong>.</p>
+</dd>
+</dl>
+<p>
+</p>
+<hr />
+<h1><a name="example__working_as_xargs__n1__argument_appending">EXAMPLE: Working as xargs -n1. Argument appending</a></h1>
+<p>GNU <strong>parallel</strong> can work similar to <strong>xargs -n1</strong>.</p>
+<p>To compress all html files using <strong>gzip</strong> run:</p>
+<p><strong>find . -name '*.html' | parallel gzip</strong></p>
+<p>If the file names may contain a newline use <strong>-0</strong>. Substitute FOO BAR with
+FUBAR in all files in this dir and subdirs:</p>
+<p><strong>find . -type f -print0 | parallel -q0 perl -i -pe 's/FOO BAR/FUBAR/g'</strong></p>
+<p>Note <strong>-q</strong> is needed because of the space in 'FOO BAR'.</p>
+<p>
+</p>
+<hr />
+<h1><a name="example__reading_arguments_from_command_line">EXAMPLE: Reading arguments from command line</a></h1>
+<p>GNU <strong>parallel</strong> can take the arguments from command line instead of
+stdin (standard input). To compress all html files in the current dir
+using <strong>gzip</strong> run:</p>
+<p><strong>parallel gzip ::: *.html</strong></p>
+<p>To convert *.wav to *.mp3 using LAME running one process per CPU core
+run:</p>
+<p><strong>parallel lame {} -o {.}.mp3 ::: *.wav</strong></p>
+<p>
+</p>
+<hr />
+<h1><a name="example__inserting_multiple_arguments">EXAMPLE: Inserting multiple arguments</a></h1>
+<p>When moving a lot of files like this: <strong>mv *.log destdir</strong> you will
+sometimes get the error:</p>
+<p><strong>bash: /bin/mv: Argument list too long</strong></p>
+<p>because there are too many files. You can instead do:</p>
+<p><strong>ls | grep -E '\.log$' | parallel mv {} destdir</strong></p>
+<p>This will run <strong>mv</strong> for each file. It can be done faster if <strong>mv</strong> gets
+as many arguments that will fit on the line:</p>
+<p><strong>ls | grep -E '\.log$' | parallel -m mv {} destdir</strong></p>
+<p>
+</p>
+<hr />
+<h1><a name="example__context_replace">EXAMPLE: Context replace</a></h1>
+<p>To remove the files <em>pict0000.jpg</em> .. <em>pict9999.jpg</em> you could do:</p>
+<p><strong>seq -w 0 9999 | parallel rm pict{}.jpg</strong></p>
+<p>You could also do:</p>
+<p><strong>seq -w 0 9999 | perl -pe 's/(.*)/pict$1.jpg/' | parallel -m rm</strong></p>
+<p>The first will run <strong>rm</strong> 10000 times, while the last will only run
+<strong>rm</strong> as many times needed to keep the command line length short
+enough to avoid <strong>Argument list too long</strong> (it typically runs 1-2 times).</p>
+<p>You could also run:</p>
+<p><strong>seq -w 0 9999 | parallel -X rm pict{}.jpg</strong></p>
+<p>This will also only run <strong>rm</strong> as many times needed to keep the command
+line length short enough.</p>
+<p>
+</p>
+<hr />
+<h1><a name="example__compute_intensive_jobs_and_substitution">EXAMPLE: Compute intensive jobs and substitution</a></h1>
+<p>If ImageMagick is installed this will generate a thumbnail of a jpg
+file:</p>
+<p><strong>convert -geometry 120 foo.jpg thumb_foo.jpg</strong></p>
+<p>This will run with number-of-cpu-cores jobs in parallel for all jpg
+files in a directory:</p>
+<p><strong>ls *.jpg | parallel convert -geometry 120 {} thumb_{}</strong></p>
+<p>To do it recursively use <strong>find</strong>:</p>
+<p><strong>find . -name '*.jpg' | parallel convert -geometry 120 {} {}_thumb.jpg</strong></p>
+<p>Notice how the argument has to start with <strong>{}</strong> as <strong>{}</strong> will include path
+(e.g. running <strong>convert -geometry 120 ./foo/bar.jpg
+thumb_./foo/bar.jpg</strong> would clearly be wrong). The command will
+generate files like ./foo/bar.jpg_thumb.jpg.</p>
+<p>Use <strong>{.}</strong> to avoid the extra .jpg in the file name. This command will
+make files like ./foo/bar_thumb.jpg:</p>
+<p><strong>find . -name '*.jpg' | parallel convert -geometry 120 {} {.}_thumb.jpg</strong></p>
+<p>
+</p>
+<hr />
+<h1><a name="example__substitution_and_redirection">EXAMPLE: Substitution and redirection</a></h1>
+<p>This will generate an uncompressed version of .gz-files next to the .gz-file:</p>
+<p><strong>parallel zcat {} &quot;</strong>&gt;<strong>&quot;{.} ::: *.gz</strong></p>
+<p>Quoting of &gt; is necessary to postpone the redirection. Another
+solution is to quote the whole command:</p>
+<p><strong>parallel &quot;zcat {} </strong>&gt;<strong>{.}&quot; ::: *.gz</strong></p>
+<p>Other special shell characters (such as * ; $ &gt; &lt; | &gt;&gt; &lt;&lt;) also need
+to be put in quotes, as they may otherwise be interpreted by the shell
+and not given to GNU <strong>parallel</strong>.</p>
+<p>
+</p>
+<hr />
+<h1><a name="example__composed_commands">EXAMPLE: Composed commands</a></h1>
+<p>A job can consist of several commands. This will print the number of
+files in each directory:</p>
+<p><strong>ls | parallel 'echo -n {}&quot; &quot;; ls {}|wc -l'</strong></p>
+<p>To put the output in a file called &lt;name&gt;.dir:</p>
+<p><strong>ls | parallel '(echo -n {}&quot; &quot;; ls {}|wc -l) </strong>&gt; <strong>{}.dir'</strong></p>
+<p>Even small shell scripts can be run by GNU <strong>parallel</strong>:</p>
+<p><strong>find . | parallel 'a={}; name=${a##*/}; upper=$(echo &quot;$name&quot; | tr &quot;[:lower:]&quot; &quot;[:upper:]&quot;); echo &quot;$name - $upper&quot;'</strong></p>
+<p><strong>ls | parallel 'mv {} &quot;$(echo {} | tr &quot;[:upper:]&quot; &quot;[:lower:]&quot;)&quot;'</strong></p>
+<p>Given a list of URLs, list all URLs that fail to download. Print the
+line number and the URL.</p>
+<p><strong>cat urlfile | parallel &quot;wget {} 2</strong>&gt;<strong>/dev/null || grep -n {} urlfile&quot;</strong></p>
+<p>Create a mirror directory with the same filenames except all files and
+symlinks are empty files.</p>
+<p><strong>cp -rs /the/source/dir mirror_dir; find mirror_dir -type l | parallel -m rm {} '&amp;&amp;' touch {}</strong></p>
+<p>Find the files in a list that do not exist</p>
+<p><strong>cat file_list | parallel 'if [ ! -e {} ] ; then echo {}; fi'</strong></p>
+<p>
+</p>
+<hr />
+<h1><a name="example__calling_bash_functions">EXAMPLE: Calling Bash functions</a></h1>
+<p>If the composed command is longer than a line, it becomes hard to
+read. In Bash you can use functions. Just remember to <strong>export -f</strong> the
+function.</p>
+<pre>
+  doit() {
+    echo Doing it for $1
+    sleep 2
+    echo Done with $1
+  }
+  export -f doit
+  parallel doit ::: 1 2 3</pre>
+<pre>
+  doubleit() {
+    echo Doing it for $1 $2
+    sleep 2
+    echo Done with $1 $2
+  }
+  export -f doubleit
+  parallel doubleit ::: 1 2 3 ::: a b</pre>
+<p>
+</p>
+<hr />
+<h1><a name="example__removing_file_extension_when_processing_files">EXAMPLE: Removing file extension when processing files</a></h1>
+<p>When processing files removing the file extension using <strong>{.}</strong> is
+often useful.</p>
+<p>Create a directory for each zip-file and unzip it in that dir:</p>
+<p><strong>parallel 'mkdir {.}; cd {.}; unzip ../{}' ::: *.zip</strong></p>
+<p>Recompress all .gz files in current directory using <strong>bzip2</strong> running 1
+job per CPU core in parallel:</p>
+<p><strong>parallel &quot;zcat {} | bzip2 </strong>&gt;<strong>{.}.bz2 &amp;&amp; rm {}&quot; ::: *.gz</strong></p>
+<p>Convert all WAV files to MP3 using LAME:</p>
+<p><strong>find sounddir -type f -name '*.wav' | parallel lame {} -o {.}.mp3</strong></p>
+<p>Put all converted in the same directory:</p>
+<p><strong>find sounddir -type f -name '*.wav' | parallel lame {} -o mydir/{/.}.mp3</strong></p>
+<p>
+</p>
+<hr />
+<h1><a name="example__removing_two_file_extensions_when_processing_files_and_calling_gnu_parallel_from_itself">EXAMPLE: Removing two file extensions when processing files and
+calling GNU Parallel from itself</a></h1>
+<p>If you have directory with tar.gz files and want these extracted in
+the corresponding dir (e.g foo.tar.gz will be extracted in the dir
+foo) you can do:</p>
+<p><strong>ls *.tar.gz| parallel --er {tar} 'echo {tar}|parallel &quot;mkdir -p {.} ; tar -C {.} -xf {.}.tar.gz&quot;'</strong></p>
+<p>
+</p>
+<hr />
+<h1><a name="example__download_10_images_for_each_of_the_past_30_days">EXAMPLE: Download 10 images for each of the past 30 days</a></h1>
+<p>Let us assume a website stores images like:</p>
+<pre>
+  <a href="http://www.example.com/path/to/YYYYMMDD_##.jpg">http://www.example.com/path/to/YYYYMMDD_##.jpg</a></pre>
+<p>where YYYYMMDD is the date and ## is the number 01-10. This will
+download images for the past 30 days:</p>
+<p><strong>parallel wget <a href="http://www.example.com/path/to/'$(date">http://www.example.com/path/to/'$(date</a> -d &quot;today -{1} days&quot; +%Y%m%d)_{2}.jpg' ::: $(seq 30) ::: $(seq -w 10)</strong></p>
+<p><strong>$(date -d &quot;today -{1} days&quot; +%Y%m%d)</strong> will give the dates in
+YYYYMMDD with {1} days subtracted.</p>
+<p>
+</p>
+<hr />
+<h1><a name="example__breadth_first_parallel_web_crawler_mirrorer">EXAMPLE: Breadth first parallel web crawler/mirrorer</a></h1>
+<p>This script below will crawl and mirror a URL in parallel.  It
+downloads first pages that are 1 click down, then 2 clicks down, then
+3; instead of the normal depth first, where the first link link on
+each page is fetched first.</p>
+<p>Run like this:</p>
+<p><strong>PARALLEL=-j100 ./parallel-crawl <a href="http://gatt.org.yeslab.org/">http://gatt.org.yeslab.org/</a></strong></p>
+<p>Remove the <strong>wget</strong> part if you only want a web crawler.</p>
+<p>It works by fetching a page from a list of URLs and looking for links
+in that page that are within the same starting URL and that have not
+already been seen. These links are added to a new queue. When all the
+pages from the list is done, the new queue is moved to the list of
+URLs and the process is started over until no unseen links are found.</p>
+<pre>
+  #!/bin/bash</pre>
+<pre>
+  # E.g. <a href="http://gatt.org.yeslab.org/">http://gatt.org.yeslab.org/</a>
+  URL=$1
+  # Stay inside the start dir
+  BASEURL=$(echo $URL | perl -pe 's:#.*::; s:(//.*/)[^/]*:$1:')
+  URLLIST=$(mktemp urllist.XXXX)
+  URLLIST2=$(mktemp urllist.XXXX)
+  SEEN=$(mktemp seen.XXXX)</pre>
+<pre>
+  # Spider to get the URLs
+  echo $URL &gt;$URLLIST
+  cp $URLLIST $SEEN</pre>
+<pre>
+  while [ -s $URLLIST ] ; do
+    cat $URLLIST |
+      parallel lynx -listonly -image_links -dump {} \; wget -qm -l1 -Q1 {} \; echo Spidered: {} \&gt;\&amp;2 |
+      perl -ne 's/#.*//; s/\s+\d+.\s(\S+)$/$1/ and do { $seen{$1}++ or print }' |
+      grep -F $BASEURL |
+      grep -v -x -F -f $SEEN | tee -a $SEEN &gt; $URLLIST2
+    mv $URLLIST2 $URLLIST
+  done</pre>
+<pre>
+  rm -f $URLLIST $URLLIST2 $SEEN</pre>
+<p>
+</p>
+<hr />
+<h1><a name="example__process_files_from_a_tar_file_while_unpacking">EXAMPLE: Process files from a tar file while unpacking</a></h1>
+<p>If the files to be processed are in a tar file then unpacking one file
+and processing it immediately may be faster than first unpacking all
+files.</p>
+<p><strong>tar xvf foo.tgz | perl -ne 'print $l;$l=$_;END{print $l}' |
+parallel echo</strong></p>
+<p>The Perl one-liner is needed to avoid race condition.</p>
+<p>
+</p>
+<hr />
+<h1><a name="example__rewriting_a_for_loop_and_a_while_read_loop">EXAMPLE: Rewriting a for-loop and a while-read-loop</a></h1>
+<p>for-loops like this:</p>
+<pre>
+  (for x in `cat list` ; do
+    do_something $x
+  done) | process_output</pre>
+<p>and while-read-loops like this:</p>
+<pre>
+  cat list | (while read x ; do
+    do_something $x
+  done) | process_output</pre>
+<p>can be written like this:</p>
+<p><strong>cat list | parallel do_something | process_output</strong></p>
+<p>For example: Find which host name in a list has IP address 1.2.3 4:</p>
+<p><strong>cat hosts.txt | parallel -P 100 host | grep 1.2.3.4</strong></p>
+<p>If the processing requires more steps the for-loop like this:</p>
+<pre>
+ (for x in `cat list` ; do
+   no_extension=${x%.*};
+   do_something $x scale $no_extension.jpg
+   do_step2 &lt;$x $no_extension
+ done) | process_output</pre>
+<p>and while-loops like this:</p>
+<pre>
+ cat list | (while read x ; do
+   no_extension=${x%.*};
+   do_something $x scale $no_extension.jpg
+   do_step2 &lt;$x $no_extension
+ done) | process_output</pre>
+<p>can be written like this:</p>
+<p><strong>cat list | parallel &quot;do_something {} scale {.}.jpg ; do_step2 &lt;{} {.}&quot; | process_output</strong></p>
+<p>
+</p>
+<hr />
+<h1><a name="example__rewriting_nested_for_loops">EXAMPLE: Rewriting nested for-loops</a></h1>
+<p>Nested for-loops like this:</p>
+<pre>
+  (for x in `cat xlist` ; do
+    for y in `cat ylist` ; do
+      do_something $x $y
+    done
+  done) | process_output</pre>
+<p>can be written like this:</p>
+<p><strong>parallel do_something {1} {2} :::: xlist ylist | process_output</strong></p>
+<p>Nested for-loops like this:</p>
+<pre>
+  (for gender in M F ; do
+    for size in S M L XL XXL ; do
+      echo $gender $size
+    done
+  done) | sort</pre>
+<p>can be written like this:</p>
+<p><strong>parallel echo {1} {2} ::: M F ::: S M L XL XXL | sort</strong></p>
+<p>
+</p>
+<hr />
+<h1><a name="example__finding_the_lowest_difference_between_files">EXAMPLE: Finding the lowest difference between files</a></h1>
+<p><strong>diff</strong> is good for finding differences in text files. <strong>diff | wc -l</strong>
+gives an indication of the size of the difference. To find the
+differences between all files in the current dir do:</p>
+<p><strong>parallel --tag 'diff {1} {2} | wc -l' ::: * ::: * | sort -nk3</strong></p>
+<p>This way it is possible to see if some files are closer to other
+files.</p>
+<p>
+</p>
+<hr />
+<h1><a name="example__for_loops_with_column_names">EXAMPLE: for-loops with column names</a></h1>
+<p>When doing multiple nested for-loops it can be easier to keep track of
+the loop variable if is is named instead of just having a number. Use
+<strong>--header :</strong> to let the first argument be an named alias for the
+positional replacement string:</p>
+<pre>
+  parallel --header : echo {gender} {size} ::: gender M F ::: size S M L XL XXL</pre>
+<p>This also works if the input file is a file with columns:</p>
+<pre>
+  cat addressbook.tsv | parallel --colsep '\t' --header : echo {Name} {E-mail address}</pre>
+<p>
+</p>
+<hr />
+<h1><a name="example__count_the_differences_between_all_files_in_a_dir">EXAMPLE: Count the differences between all files in a dir</a></h1>
+<p>Using <strong>--results</strong> the results are saved in /tmp/diffcount*.</p>
+<pre>
+  parallel --results /tmp/diffcount &quot;diff -U 0 {1} {2} |tail -n +3 |grep -v '^@'|wc -l&quot; ::: * ::: *</pre>
+<p>To see the difference between file A and file B look at the file
+'/tmp/diffcount 1 A 2 B' where spaces are TABs (\t).</p>
+<p>
+</p>
+<hr />
+<h1><a name="example__speeding_up_fast_jobs">EXAMPLE: Speeding up fast jobs</a></h1>
+<p>Starting a job on the local machine takes around 3 ms. This can be a
+big overhead if the job takes very few ms to run. Often you can group
+small jobs together using <strong>-X</strong> which will make the overhead less
+significant. Compare the speed of these:</p>
+<pre>
+    seq -w 0 9999 | parallel touch pict{}.jpg</pre>
+<pre>
+    seq -w 0 9999 | parallel -X touch pict{}.jpg</pre>
+<p>If your program cannot take multiple arguments, then you can use GNU
+<strong>parallel</strong> to spawn multiple GNU <strong>parallel</strong>s:</p>
+<pre>
+    seq -w 0 999999 | parallel -j10 --pipe parallel -j0 touch pict{}.jpg</pre>
+<p>If <strong>-j0</strong> normally spawns 506 jobs, then the above will try to spawn
+5060 jobs. It is likely that you this way will hit the limit of number
+of processes and/or filehandles. Look at 'ulimit -n' and 'ulimit -u'
+to raise these limits.</p>
+<p>
+</p>
+<hr />
+<h1><a name="example__using_shell_variables">EXAMPLE: Using shell variables</a></h1>
+<p>When using shell variables you need to quote them correctly as they
+may otherwise be split on spaces.</p>
+<p>Notice the difference between:</p>
+<pre>
+ V=(&quot;My brother's 12\&quot; records are worth &lt;\$\$\$&gt;&quot;'!' Foo Bar)
+ parallel echo ::: ${V[@]} # This is probably not what you want</pre>
+<p>and:</p>
+<pre>
+ V=(&quot;My brother's 12\&quot; records are worth &lt;\$\$\$&gt;&quot;'!' Foo Bar)
+ parallel echo ::: &quot;${V[@]}&quot;</pre>
+<p>When using variables in the actual command that contains special
+characters (e.g. space) you can quote them using <strong>'&quot;$VAR&quot;'</strong> or using
+&quot;'s and <strong>-q</strong>:</p>
+<pre>
+ V=&quot;Here  are  two &quot;
+ parallel echo &quot;'$V'&quot; ::: spaces
+ parallel -q echo &quot;$V&quot; ::: spaces</pre>
+<p>
+</p>
+<hr />
+<h1><a name="example__group_output_lines">EXAMPLE: Group output lines</a></h1>
+<p>When running jobs that output data, you often do not want the output
+of multiple jobs to run together. GNU <strong>parallel</strong> defaults to grouping the
+output of each job, so the output is printed when the job finishes. If
+you want the output to be printed while the job is running you can use
+<strong>-u</strong>.</p>
+<p>Compare the output of:</p>
+<p><strong>parallel traceroute ::: foss.org.my debian.org freenetproject.org</strong></p>
+<p>to the output of:</p>
+<p><strong>parallel -u traceroute ::: foss.org.my debian.org freenetproject.org</strong></p>
+<p>
+</p>
+<hr />
+<h1><a name="example__tag_output_lines">EXAMPLE: Tag output lines</a></h1>
+<p>GNU <strong>parallel</strong> groups the output lines, but it can be hard to see
+where the different jobs begin. <strong>--tag</strong> prepends the argument to make
+that more visible:</p>
+<p><strong>parallel --tag traceroute ::: foss.org.my debian.org freenetproject.org</strong></p>
+<p>Check the uptime of the servers in <em>~/.parallel/sshloginfile</em>:</p>
+<p><strong>parallel --tag -S .. --nonall uptime</strong></p>
+<p>
+</p>
+<hr />
+<h1><a name="example__keep_order_of_output_same_as_order_of_input">EXAMPLE: Keep order of output same as order of input</a></h1>
+<p>Normally the output of a job will be printed as soon as it
+completes. Sometimes you want the order of the output to remain the
+same as the order of the input. This is often important, if the output
+is used as input for another system. <strong>-k</strong> will make sure the order of
+output will be in the same order as input even if later jobs end
+before earlier jobs.</p>
+<p>Append a string to every line in a text file:</p>
+<p><strong>cat textfile | parallel -k echo {} append_string</strong></p>
+<p>If you remove <strong>-k</strong> some of the lines may come out in the wrong order.</p>
+<p>Another example is <strong>traceroute</strong>:</p>
+<p><strong>parallel traceroute ::: foss.org.my debian.org freenetproject.org</strong></p>
+<p>will give traceroute of foss.org.my, debian.org and
+freenetproject.org, but it will be sorted according to which job
+completed first.</p>
+<p>To keep the order the same as input run:</p>
+<p><strong>parallel -k traceroute ::: foss.org.my debian.org freenetproject.org</strong></p>
+<p>This will make sure the traceroute to foss.org.my will be printed
+first.</p>
+<p>A bit more complex example is downloading a huge file in chunks in
+parallel: Some internet connections will deliver more data if you
+download files in parallel. For downloading files in parallel see:
+&quot;EXAMPLE: Download 10 images for each of the past 30 days&quot;. But if you
+are downloading a big file you can download the file in chunks in
+parallel.</p>
+<p>To download byte 10000000-19999999 you can use <strong>curl</strong>:</p>
+<p><strong>curl -r 10000000-19999999 <a href="http://example.com/the/big/file">http://example.com/the/big/file</a></strong> &gt; <strong>file.part</strong></p>
+<p>To download a 1 GB file we need 100 10MB chunks downloaded and
+combined in the correct order.</p>
+<p><strong>seq 0 99 | parallel -k curl -r \
+    {}0000000-{}9999999 <a href="http://example.com/the/big/file">http://example.com/the/big/file</a></strong> &gt; <strong>file</strong></p>
+<p>
+</p>
+<hr />
+<h1><a name="example__parallel_grep">EXAMPLE: Parallel grep</a></h1>
+<p><strong>grep -r</strong> greps recursively through directories. On multicore CPUs
+GNU <strong>parallel</strong> can often speed this up.</p>
+<p><strong>find . -type f | parallel -k -j150% -n 1000 -m grep -H -n STRING {}</strong></p>
+<p>This will run 1.5 job per core, and give 1000 arguments to <strong>grep</strong>.</p>
+<p>
+</p>
+<hr />
+<h1><a name="example__using_remote_computers">EXAMPLE: Using remote computers</a></h1>
+<p>To run commands on a remote computer SSH needs to be set up and you
+must be able to login without entering a password (The commands
+<strong>ssh-copy-id</strong> and <strong>ssh-agent</strong> may help you do that).</p>
+<p>If you need to login to a whole cluster, you typically do not want to
+accept the host key for every host. You want to accept them the first
+time and be warned if they are ever changed. To do that:</p>
+<pre>
+  # Add the servers to the sshloginfile
+  (echo servera; echo serverb) &gt; .parallel/my_cluster
+  # Make sure .ssh/config exist
+  touch .ssh/config
+  cp .ssh/config .ssh/config.backup
+  # Disable StrictHostKeyChecking temporarily
+  (echo 'Host *'; echo StrictHostKeyChecking no) &gt;&gt; .ssh/config
+  parallel --slf my_cluster --nonall true
+  # Remove the disabling of StrictHostKeyChecking
+  mv .ssh/config.backup .ssh/config</pre>
+<p>The servers in <strong>.parallel/my_cluster</strong> are now added in <strong>.ssh/known_hosts</strong>.</p>
+<p>To run <strong>echo</strong> on <strong>server.example.com</strong>:</p>
+<pre>
+  seq 10 | parallel --sshlogin server.example.com echo</pre>
+<p>To run commands on more than one remote computer run:</p>
+<pre>
+  seq 10 | parallel --sshlogin server.example.com,server2.example.net echo</pre>
+<p>Or:</p>
+<pre>
+  seq 10 | parallel --sshlogin server.example.com \
+    --sshlogin server2.example.net echo</pre>
+<p>If the login username is <em>foo</em> on <em>server2.example.net</em> use:</p>
+<pre>
+  seq 10 | parallel --sshlogin server.example.com \
+    --sshlogin foo@server2.example.net echo</pre>
+<p>To distribute the commands to a list of computers, make a file
+<em>mycomputers</em> with all the computers:</p>
+<pre>
+  server.example.com
+  foo@server2.example.com
+  server3.example.com</pre>
+<p>Then run:</p>
+<pre>
+  seq 10 | parallel --sshloginfile mycomputers echo</pre>
+<p>To include the local computer add the special sshlogin ':' to the list:</p>
+<pre>
+  server.example.com
+  foo@server2.example.com
+  server3.example.com
+  :</pre>
+<p>GNU <strong>parallel</strong> will try to determine the number of CPU cores on each
+of the remote computers, and run one job per CPU core - even if the
+remote computers do not have the same number of CPU cores.</p>
+<p>If the number of CPU cores on the remote computers is not identified
+correctly the number of CPU cores can be added in front. Here the
+computer has 8 CPU cores.</p>
+<pre>
+  seq 10 | parallel --sshlogin 8/server.example.com echo</pre>
+<p>
+</p>
+<hr />
+<h1><a name="example__transferring_of_files">EXAMPLE: Transferring of files</a></h1>
+<p>To recompress gzipped files with <strong>bzip2</strong> using a remote computer run:</p>
+<pre>
+  find logs/ -name '*.gz' | \
+    parallel --sshlogin server.example.com \
+    --transfer &quot;zcat {} | bzip2 -9 &gt;{.}.bz2&quot;</pre>
+<p>This will list the .gz-files in the <em>logs</em> directory and all
+directories below. Then it will transfer the files to
+<em>server.example.com</em> to the corresponding directory in
+<em>$HOME/logs</em>. On <em>server.example.com</em> the file will be recompressed
+using <strong>zcat</strong> and <strong>bzip2</strong> resulting in the corresponding file with
+<em>.gz</em> replaced with <em>.bz2</em>.</p>
+<p>If you want the resulting bz2-file to be transferred back to the local
+computer add <em>--return {.}.bz2</em>:</p>
+<pre>
+  find logs/ -name '*.gz' | \
+    parallel --sshlogin server.example.com \
+    --transfer --return {.}.bz2 &quot;zcat {} | bzip2 -9 &gt;{.}.bz2&quot;</pre>
+<p>After the recompressing is done the <em>.bz2</em>-file is transferred back to
+the local computer and put next to the original <em>.gz</em>-file.</p>
+<p>If you want to delete the transferred files on the remote computer add
+<em>--cleanup</em>. This will remove both the file transferred to the remote
+computer and the files transferred from the remote computer:</p>
+<pre>
+  find logs/ -name '*.gz' | \
+    parallel --sshlogin server.example.com \
+    --transfer --return {.}.bz2 --cleanup &quot;zcat {} | bzip2 -9 &gt;{.}.bz2&quot;</pre>
+<p>If you want run on several computers add the computers to <em>--sshlogin</em>
+either using ',' or multiple <em>--sshlogin</em>:</p>
+<pre>
+  find logs/ -name '*.gz' | \
+    parallel --sshlogin server.example.com,server2.example.com \
+    --sshlogin server3.example.com \
+    --transfer --return {.}.bz2 --cleanup &quot;zcat {} | bzip2 -9 &gt;{.}.bz2&quot;</pre>
+<p>You can add the local computer using <em>--sshlogin :</em>. This will disable the
+removing and transferring for the local computer only:</p>
+<pre>
+  find logs/ -name '*.gz' | \
+    parallel --sshlogin server.example.com,server2.example.com \
+    --sshlogin server3.example.com \
+    --sshlogin : \
+    --transfer --return {.}.bz2 --cleanup &quot;zcat {} | bzip2 -9 &gt;{.}.bz2&quot;</pre>
+<p>Often <em>--transfer</em>, <em>--return</em> and <em>--cleanup</em> are used together. They can be
+shortened to <em>--trc</em>:</p>
+<pre>
+  find logs/ -name '*.gz' | \
+    parallel --sshlogin server.example.com,server2.example.com \
+    --sshlogin server3.example.com \
+    --sshlogin : \
+    --trc {.}.bz2 &quot;zcat {} | bzip2 -9 &gt;{.}.bz2&quot;</pre>
+<p>With the file <em>mycomputers</em> containing the list of computers it becomes:</p>
+<pre>
+  find logs/ -name '*.gz' | parallel --sshloginfile mycomputers \
+    --trc {.}.bz2 &quot;zcat {} | bzip2 -9 &gt;{.}.bz2&quot;</pre>
+<p>If the file <em>~/.parallel/sshloginfile</em> contains the list of computers
+the special short hand <em>-S ..</em> can be used:</p>
+<pre>
+  find logs/ -name '*.gz' | parallel -S .. \
+    --trc {.}.bz2 &quot;zcat {} | bzip2 -9 &gt;{.}.bz2&quot;</pre>
+<p>
+</p>
+<hr />
+<h1><a name="example__distributing_work_to_local_and_remote_computers">EXAMPLE: Distributing work to local and remote computers</a></h1>
+<p>Convert *.mp3 to *.ogg running one process per CPU core on local computer and server2:</p>
+<pre>
+  parallel --trc {.}.ogg -S server2,: \
+  'mpg321 -w - {} | oggenc -q0 - -o {.}.ogg' ::: *.mp3</pre>
+<p>
+</p>
+<hr />
+<h1><a name="example__running_the_same_command_on_remote_computers">EXAMPLE: Running the same command on remote computers</a></h1>
+<p>To run the command <strong>uptime</strong> on remote computers you can do:</p>
+<p><strong>parallel --tag --nonall -S server1,server2 uptime</strong></p>
+<p><strong>--nonall</strong> reads no arguments. If you have a list of jobs you want
+run on each computer you can do:</p>
+<p><strong>parallel --tag --onall -S server1,server2 echo ::: 1 2 3</strong></p>
+<p>Remove <strong>--tag</strong> if you do not want the sshlogin added before the
+output.</p>
+<p>If you have a lot of hosts use '-j0' to access more hosts in parallel.</p>
+<p>
+</p>
+<hr />
+<h1><a name="example__parallelizing_rsync">EXAMPLE: Parallelizing rsync</a></h1>
+<p><strong>rsync</strong> is a great tool, but sometimes it will not fill up the
+available bandwidth. This is often a problem when copying several big
+files over high speed connections.</p>
+<p>The following will start one <strong>rsync</strong> per big file in <em>src-dir</em> to
+<em>dest-dir</em> on the server <em>fooserver</em>:</p>
+<p><strong>cd src-dir; find . -type f -size +100000 | parallel -v ssh fooserver
+mkdir -p /dest-dir/{//}\;rsync -Havessh {} fooserver:/dest-dir/{}</strong></p>
+<p>The dirs created may end up with wrong permissions and smaller files
+are not being transferred. To fix those run <strong>rsync</strong> a final time:</p>
+<p><strong>rsync -Havessh src-dir/ fooserver:/dest-dir/</strong></p>
+<p>If you are unable to push data, but need to pull them and the files
+are called digits.png (e.g. 000000.png) you might be able to do:</p>
+<p><strong>seq -w 0 99 | parallel rsync -Havessh fooserver:src-path/*{}.png destdir/</strong></p>
+<p>
+</p>
+<hr />
+<h1><a name="example__use_multiple_inputs_in_one_command">EXAMPLE: Use multiple inputs in one command</a></h1>
+<p>Copy files like foo.es.ext to foo.ext:</p>
+<p><strong>ls *.es.* | perl -pe 'print; s/\.es//' | parallel -N2 cp {1} {2}</strong></p>
+<p>The perl command spits out 2 lines for each input. GNU <strong>parallel</strong>
+takes 2 inputs (using <strong>-N2</strong>) and replaces {1} and {2} with the inputs.</p>
+<p>Count in binary:</p>
+<p><strong>parallel -k echo ::: 0 1 ::: 0 1 ::: 0 1 ::: 0 1 ::: 0 1 ::: 0 1</strong></p>
+<p>Print the number on the opposing sides of a six sided die:</p>
+<p><strong>parallel --xapply -a &lt;(seq 6) -a &lt;(seq 6 -1 1) echo</strong></p>
+<p><strong>parallel --xapply echo :::: &lt;(seq 6) &lt;(seq 6 -1 1)</strong></p>
+<p>Convert files from all subdirs to PNG-files with consecutive numbers
+(useful for making input PNG's for <strong>ffmpeg</strong>):</p>
+<p><strong>parallel --xapply -a &lt;(find . -type f | sort) -a &lt;(seq $(find . -type f|wc -l)) convert {1} {2}.png</strong></p>
+<p>Alternative version:</p>
+<p><strong>find . -type f | sort | parallel convert {} {#}.png</strong></p>
+<p>
+</p>
+<hr />
+<h1><a name="example__use_a_table_as_input">EXAMPLE: Use a table as input</a></h1>
+<p>Content of table_file.tsv:</p>
+<pre>
+  foo&lt;TAB&gt;bar
+  baz &lt;TAB&gt; quux</pre>
+<p>To run:</p>
+<pre>
+  cmd -o bar -i foo
+  cmd -o quux -i baz</pre>
+<p>you can run:</p>
+<p><strong>parallel -a table_file.tsv --colsep '\t' cmd -o {2} -i {1}</strong></p>
+<p>Note: The default for GNU <strong>parallel</strong> is to remove the spaces around the columns. To keep the spaces:</p>
+<p><strong>parallel -a table_file.tsv --trim n --colsep '\t' cmd -o {2} -i {1}</strong></p>
+<p>
+</p>
+<hr />
+<h1><a name="example__run_the_same_command_10_times">EXAMPLE: Run the same command 10 times</a></h1>
+<p>If you want to run the same command with the same arguments 10 times
+in parallel you can do:</p>
+<p><strong>seq 10 | parallel -n0 my_command my_args</strong></p>
+<p>
+</p>
+<hr />
+<h1><a name="example__working_as_cat___sh__resource_inexpensive_jobs_and_evaluation">EXAMPLE: Working as cat | sh. Resource inexpensive jobs and evaluation</a></h1>
+<p>GNU <strong>parallel</strong> can work similar to <strong>cat | sh</strong>.</p>
+<p>A resource inexpensive job is a job that takes very little CPU, disk
+I/O and network I/O. Ping is an example of a resource inexpensive
+job. wget is too - if the webpages are small.</p>
+<p>The content of the file jobs_to_run:</p>
+<pre>
+  ping -c 1 10.0.0.1
+  wget <a href="http://example.com/status.cgi?ip=10.0.0.1">http://example.com/status.cgi?ip=10.0.0.1</a>
+  ping -c 1 10.0.0.2
+  wget <a href="http://example.com/status.cgi?ip=10.0.0.2">http://example.com/status.cgi?ip=10.0.0.2</a>
+  ...
+  ping -c 1 10.0.0.255
+  wget <a href="http://example.com/status.cgi?ip=10.0.0.255">http://example.com/status.cgi?ip=10.0.0.255</a></pre>
+<p>To run 100 processes simultaneously do:</p>
+<p><strong>parallel -j 100 &lt; jobs_to_run</strong></p>
+<p>As there is not a <em>command</em> the jobs will be evaluated by the shell.</p>
+<p>
+</p>
+<hr />
+<h1><a name="example__processing_a_big_file_using_more_cores">EXAMPLE: Processing a big file using more cores</a></h1>
+<p>To process a big file or some output you can use <strong>--pipe</strong> to split up
+the data into blocks and pipe the blocks into the processing program.</p>
+<p>If the program is <strong>gzip -9</strong> you can do:</p>
+<p><strong>cat bigfile | parallel --pipe --recend '' -k gzip -9 </strong>&gt;<strong>bigfile.gz</strong></p>
+<p>This will split <strong>bigfile</strong> into blocks of 1 MB and pass that to <strong>gzip
+-9</strong> in parallel. One <strong>gzip</strong> will be run per CPU core. The output of
+<strong>gzip -9</strong> will be kept in order and saved to <strong>bigfile.gz</strong></p>
+<p><strong>gzip</strong> works fine if the output is appended, but some processing does
+not work like that - for example sorting. For this GNU <strong>parallel</strong> can
+put the output of each command into a file. This will sort a big file
+in parallel:</p>
+<p><strong>cat bigfile | parallel --pipe --files sort | parallel -Xj1 sort -m {} ';' rm {} </strong>&gt;<strong>bigfile.sort</strong></p>
+<p>Here <strong>bigfile</strong> is split into blocks of around 1MB, each block ending
+in '\n' (which is the default for <strong>--recend</strong>). Each block is passed
+to <strong>sort</strong> and the output from <strong>sort</strong> is saved into files. These
+files are passed to the second <strong>parallel</strong> that runs <strong>sort -m</strong> on the
+files before it removes the files. The output is saved to
+<strong>bigfile.sort</strong>.</p>
+<p>
+</p>
+<hr />
+<h1><a name="example__working_as_mutex_and_counting_semaphore">EXAMPLE: Working as mutex and counting semaphore</a></h1>
+<p>The command <strong>sem</strong> is an alias for <strong>parallel --semaphore</strong>.</p>
+<p>A counting semaphore will allow a given number of jobs to be started
+in the background.  When the number of jobs are running in the
+background, GNU <strong>sem</strong> will wait for one of these to complete before
+starting another command. <strong>sem --wait</strong> will wait for all jobs to
+complete.</p>
+<p>Run 10 jobs concurrently in the background:</p>
+<pre>
+  for i in *.log ; do
+    echo $i
+    sem -j10 gzip $i &quot;;&quot; echo done
+  done
+  sem --wait</pre>
+<p>A mutex is a counting semaphore allowing only one job to run. This
+will edit the file <em>myfile</em> and prepends the file with lines with the
+numbers 1 to 3.</p>
+<pre>
+  seq 3 | parallel sem sed -i -e 'i{}' myfile</pre>
+<p>As <em>myfile</em> can be very big it is important only one process edits
+the file at the same time.</p>
+<p>Name the semaphore to have multiple different semaphores active at the
+same time:</p>
+<pre>
+  seq 3 | parallel sem --id mymutex sed -i -e 'i{}' myfile</pre>
+<p>
+</p>
+<hr />
+<h1><a name="example__start_editor_with_filenames_from_stdin__standard_input_">EXAMPLE: Start editor with filenames from stdin (standard input)</a></h1>
+<p>You can use GNU <strong>parallel</strong> to start interactive programs like emacs or vi:</p>
+<p><strong>cat filelist | parallel --tty -X emacs</strong></p>
+<p><strong>cat filelist | parallel --tty -X vi</strong></p>
+<p>If there are more files than will fit on a single command line, the
+editor will be started again with the remaining files.</p>
+<p>
+</p>
+<hr />
+<h1><a name="example__running_sudo">EXAMPLE: Running sudo</a></h1>
+<p><strong>sudo</strong> requires a password to run a command as root. It caches the
+access, so you only need to enter the password again if you have not
+used <strong>sudo</strong> for a while.</p>
+<p>The command:</p>
+<pre>
+  parallel sudo echo ::: This is a bad idea</pre>
+<p>is no good, as you would be prompted for the sudo password for each of
+the jobs. You can either do:</p>
+<pre>
+  sudo echo This
+  parallel sudo echo ::: is a good idea</pre>
+<p>or:</p>
+<pre>
+  sudo parallel echo ::: This is a good idea</pre>
+<p>This way you only have to enter the sudo password once.</p>
+<p>
+</p>
+<hr />
+<h1><a name="example__gnu_parallel_as_queue_system_batch_manager">EXAMPLE: GNU Parallel as queue system/batch manager</a></h1>
+<p>GNU <strong>parallel</strong> can work as a simple job queue system or batch manager.
+The idea is to put the jobs into a file and have GNU <strong>parallel</strong> read
+from that continuously. As GNU <strong>parallel</strong> will stop at end of file we
+use <strong>tail</strong> to continue reading:</p>
+<p><strong>true </strong>&gt;<strong>jobqueue</strong>; <strong>tail -f jobqueue | parallel</strong></p>
+<p>To submit your jobs to the queue:</p>
+<p><strong>echo my_command my_arg </strong>&gt;&gt;<strong> jobqueue</strong></p>
+<p>You can of course use <strong>-S</strong> to distribute the jobs to remote
+computers:</p>
+<p><strong>echo </strong>&gt;<strong>jobqueue</strong>; <strong>tail -f jobqueue | parallel -S ..</strong></p>
+<p>There are a two small issues when using GNU <strong>parallel</strong> as queue
+system/batch manager:</p>
+<ul>
+<li>
+<p>You will get a warning if you do not submit JobSlots jobs within
+the first second. E.g. if you have 8 cores and use -j+2 you have to
+submit 10 jobs. These can be dummy jobs (e.g. echo foo). You can also
+simply ignore the warning.  For parallel versions 20110322 and higher,
+the warnings will not appear.</p>
+</li>
+<li>
+<p>You have to submit JobSlot number of jobs before they will start, and
+after that you can submit one at a time, and job will start
+immediately if free slots are available.  Output from the running or
+completed jobs are held back and will only be printed when JobSlots
+more jobs has been started (unless you use --ungroup or -u, in which
+case the output from the jobs are printed immediately).  E.g. if you
+have 10 jobslots then the output from the first completed job will
+only be printed when job 11 has started, and the output of second
+completed job will only be printed when job 12 has started.</p>
+</li>
+</ul>
+<p>
+</p>
+<hr />
+<h1><a name="example__gnu_parallel_as_dir_processor">EXAMPLE: GNU Parallel as dir processor</a></h1>
+<p>If you have a dir in which users drop files that needs to be processed
+you can do this on GNU/Linux (If you know what <strong>inotifywait</strong> is
+called on other platforms file a bug report):</p>
+<p><strong>inotifywait -q -m -r -e MOVED_TO -e CLOSE_WRITE --format %w%f my_dir | parallel
+-u echo</strong></p>
+<p>This will run the command <strong>echo</strong> on each file put into <strong>my_dir</strong> or
+subdirs of <strong>my_dir</strong>.</p>
+<p>You can of course use <strong>-S</strong> to distribute the jobs to remote
+computers:</p>
+<p><strong>inotifywait -q -m -r -e MOVED_TO -e CLOSE_WRITE --format %w%f my_dir
+| parallel -S ..  -u echo</strong></p>
+<p>If the files to be processed are in a tar file then unpacking one file
+and processing it immediately may be faster than first unpacking all
+files. Set up the dir processor as above and unpack into the dir.</p>
+<p>Using GNU Parallel as dir processor has the same limitations as using
+GNU Parallel as queue system/batch manager.</p>
+<p>
+</p>
+<hr />
+<h1><a name="quoting">QUOTING</a></h1>
+<p>GNU <strong>parallel</strong> is very liberal in quoting. You only need to quote
+characters that have special meaning in shell:</p>
+<p>( ) $ ` ' &quot; &lt; &gt; ; | \</p>
+<p>and depending on context these needs to be quoted, too:</p>
+<p>~ &amp; # ! ? space * {</p>
+<p>Therefore most people will never need more quoting than putting '\'
+in front of the special characters.</p>
+<p>Often you can simply put \' around every ':</p>
+<pre>
+  perl -ne '/^\S+\s+\S+$/ and print $ARGV,&quot;\n&quot;' file</pre>
+<p>can be quoted:</p>
+<pre>
+  parallel perl -ne \''/^\S+\s+\S+$/ and print $ARGV,&quot;\n&quot;'\' ::: file</pre>
+<p>However, when you want to use a shell variable you need to quote the
+$-sign. Here is an example using $PARALLEL_SEQ. This variable is set
+by GNU <strong>parallel</strong> itself, so the evaluation of the $ must be done by
+the sub shell started by GNU <strong>parallel</strong>:</p>
+<p><strong>seq 10 | parallel -N2 echo seq:\$PARALLEL_SEQ arg1:{1} arg2:{2}</strong></p>
+<p>If the variable is set before GNU <strong>parallel</strong> starts you can do this:</p>
+<p><strong>VAR=this_is_set_before_starting</strong></p>
+<p><strong>echo test | parallel echo {} $VAR</strong></p>
+<p>Prints: <strong>test this_is_set_before_starting</strong></p>
+<p>It is a little more tricky if the variable contains more than one space in a row:</p>
+<p><strong>VAR=&quot;two  spaces  between  each  word&quot;</strong></p>
+<p><strong>echo test | parallel echo {} \'&quot;$VAR&quot;\'</strong></p>
+<p>Prints: <strong>test two  spaces  between  each  word</strong></p>
+<p>If the variable should not be evaluated by the shell starting GNU
+<strong>parallel</strong> but be evaluated by the sub shell started by GNU
+<strong>parallel</strong>, then you need to quote it:</p>
+<p><strong>echo test | parallel VAR=this_is_set_after_starting \; echo {} \$VAR</strong></p>
+<p>Prints: <strong>test this_is_set_after_starting</strong></p>
+<p>It is a little more tricky if the variable contains space:</p>
+<p><strong>echo test | parallel VAR='&quot;two  spaces  between  each  word&quot;' echo {} \'&quot;$VAR&quot;\'</strong></p>
+<p>Prints: <strong>test two  spaces  between  each  word</strong></p>
+<p>$$ is the shell variable containing the process id of the shell. This
+will print the process id of the shell running GNU <strong>parallel</strong>:</p>
+<p><strong>seq 10 | parallel echo $$</strong></p>
+<p>And this will print the process ids of the sub shells started by GNU
+<strong>parallel</strong>.</p>
+<p><strong>seq 10 | parallel echo \$\$</strong></p>
+<p>If the special characters should not be evaluated by the sub shell
+then you need to protect it against evaluation from both the shell
+starting GNU <strong>parallel</strong> and the sub shell:</p>
+<p><strong>echo test | parallel echo {} \\\$VAR</strong></p>
+<p>Prints: <strong>test $VAR</strong></p>
+<p>GNU <strong>parallel</strong> can protect against evaluation by the sub shell by
+using -q:</p>
+<p><strong>echo test | parallel -q echo {} \$VAR</strong></p>
+<p>Prints: <strong>test $VAR</strong></p>
+<p>This is particularly useful if you have lots of quoting. If you want to run a perl script like this:</p>
+<p><strong>perl -ne '/^\S+\s+\S+$/ and print $ARGV,&quot;\n&quot;' file</strong></p>
+<p>It needs to be quoted like this:</p>
+<p><strong>ls | parallel perl -ne '/^\\S+\\s+\\S+\$/\ and\ print\ \$ARGV,\&quot;\\n\&quot;'</strong>
+<strong>ls | parallel perl -ne \''/^\S+\s+\S+$/ and print $ARGV,&quot;\n&quot;'\'</strong></p>
+<p>Notice how spaces, \'s, &quot;'s, and $'s need to be quoted. GNU <strong>parallel</strong>
+can do the quoting by using option -q:</p>
+<p><strong>ls | parallel -q  perl -ne '/^\S+\s+\S+$/ and print $ARGV,&quot;\n&quot;'</strong></p>
+<p>However, this means you cannot make the sub shell interpret special
+characters. For example because of <strong>-q</strong> this WILL NOT WORK:</p>
+<p><strong>ls *.gz | parallel -q &quot;zcat {} </strong>&gt;<strong>{.}&quot;</strong></p>
+<p><strong>ls *.gz | parallel -q &quot;zcat {} | bzip2 </strong>&gt;<strong>{.}.bz2&quot;</strong></p>
+<p>because &gt; and | need to be interpreted by the sub shell.</p>
+<p>If you get errors like:</p>
+<pre>
+  sh: -c: line 0: syntax error near unexpected token
+  sh: Syntax error: Unterminated quoted string
+  sh: -c: line 0: unexpected EOF while looking for matching `''
+  sh: -c: line 1: syntax error: unexpected end of file</pre>
+<p>then you might try using <strong>-q</strong>.</p>
+<p>If you are using <strong>bash</strong> process substitution like <strong>&lt;(cat foo)</strong> then
+you may try <strong>-q</strong> and prepending <em>command</em> with <strong>bash -c</strong>:</p>
+<p><strong>ls | parallel -q bash -c 'wc -c &lt;(echo {})'</strong></p>
+<p>Or for substituting output:</p>
+<p><strong>ls | parallel -q bash -c 'tar c {} | tee </strong>&gt;<strong>(gzip </strong>&gt;<strong>{}.tar.gz) | bzip2 </strong>&gt;<strong>{}.tar.bz2'</strong></p>
+<p><strong>Conclusion</strong>: To avoid dealing with the quoting problems it may be
+easier just to write a small script or a function (remember to
+<strong>export -f</strong> the function) and have GNU <strong>parallel</strong> call that.</p>
+<p>
+</p>
+<hr />
+<h1><a name="list_running_jobs">LIST RUNNING JOBS</a></h1>
+<p>If you want a list of the jobs currently running you can run:</p>
+<p><strong>killall -USR1 parallel</strong></p>
+<p>GNU <strong>parallel</strong> will then print the currently running jobs on stderr
+(standard error).</p>
+<p>
+</p>
+<hr />
+<h1><a name="complete_running_jobs_but_do_not_start_new_jobs">COMPLETE RUNNING JOBS BUT DO NOT START NEW JOBS</a></h1>
+<p>If you regret starting a lot of jobs you can simply break GNU <strong>parallel</strong>,
+but if you want to make sure you do not have half-completed jobs you
+should send the signal <strong>SIGTERM</strong> to GNU <strong>parallel</strong>:</p>
+<p><strong>killall -TERM parallel</strong></p>
+<p>This will tell GNU <strong>parallel</strong> to not start any new jobs, but wait until
+the currently running jobs are finished before exiting.</p>
+<p>
+</p>
+<hr />
+<h1><a name="environment_variables">ENVIRONMENT VARIABLES</a></h1>
+<dl>
+<dt><strong><a name="_parallel_pid" class="item">$PARALLEL_PID</a></strong></dt>
+
+<dd>
+<p>The environment variable $PARALLEL_PID is set by GNU <strong>parallel</strong> and
+is visible to the jobs started from GNU <strong>parallel</strong>. This makes it
+possible for the jobs to communicate directly to GNU <strong>parallel</strong>.
+Remember to quote the $, so it gets evaluated by the correct
+shell.</p>
+<p><strong>Example:</strong> If each of the jobs tests a solution and one of jobs finds
+the solution the job can tell GNU <strong>parallel</strong> not to start more jobs
+by: <strong>kill -TERM $PARALLEL_PID</strong>. This only works on the local
+computer.</p>
+</dd>
+<dt><strong><a name="_parallel_seq" class="item">$PARALLEL_SEQ</a></strong></dt>
+
+<dd>
+<p>$PARALLEL_SEQ will be set to the sequence number of the job
+running. Remember to quote the $, so it gets evaluated by the correct
+shell.</p>
+<p><strong>Example:</strong></p>
+<p><strong>seq 10 | parallel -N2 echo seq:'$'PARALLEL_SEQ arg1:{1} arg2:{2}</strong></p>
+</dd>
+<dt><strong><a name="_tmpdir" class="item">$TMPDIR</a></strong></dt>
+
+<dd>
+<p>Directory for temporary files. See: <strong>--tmpdir</strong>.</p>
+</dd>
+<dt><strong><a name="_parallel" class="item">$PARALLEL</a></strong></dt>
+
+<dd>
+<p>The environment variable $PARALLEL will be used as default options for
+GNU <strong>parallel</strong>. If the variable contains special shell characters
+(e.g. $, *, or space) then these need to be to be escaped with \.</p>
+<p><strong>Example:</strong></p>
+<p><strong>cat list | parallel -j1 -k -v ls</strong></p>
+<p>can be written as:</p>
+<p><strong>cat list | PARALLEL=&quot;-kvj1&quot; parallel ls</strong></p>
+<p><strong>cat list | parallel -j1 -k -v -S&quot;myssh user@server&quot; ls</strong></p>
+<p>can be written as:</p>
+<p><strong>cat list | PARALLEL='-kvj1 -S myssh\ user@server' parallel echo</strong></p>
+<p>Notice the \ in the middle is needed because 'myssh' and 'user@server'
+must be one argument.</p>
+</dd>
+</dl>
+<p>
+</p>
+<hr />
+<h1><a name="default_profile__config_file_">DEFAULT PROFILE (CONFIG FILE)</a></h1>
+<p>The file ~/.parallel/config (formerly known as .parallelrc) will be
+read if it exists.  Lines starting with '#' will be ignored. It can be
+formatted like the environment variable $PARALLEL, but it is often
+easier to simply put each option on its own line.</p>
+<p>Options on the command line takes precedence over the environment
+variable $PARALLEL which takes precedence over the file
+~/.parallel/config.</p>
+<p>
+</p>
+<hr />
+<h1><a name="profile_files">PROFILE FILES</a></h1>
+<p>If <strong>--profile</strong> set, GNU <strong>parallel</strong> will read the profile from that file instead of
+~/.parallel/config. You can have multiple <strong>--profiles</strong>.</p>
+<p>Example: Profile for running a command on every sshlogin in
+~/.ssh/sshlogins and prepend the output with the sshlogin:</p>
+<pre>
+  echo --tag -S .. --nonall &gt; ~/.parallel/n
+  parallel -Jn uptime</pre>
+<p>Example: Profile for running every command with <strong>-j-1</strong> and <strong>nice</strong></p>
+<pre>
+  echo -j-1 nice &gt; ~/.parallel/nice_profile
+  parallel -J nice_profile bzip2 -9 ::: *</pre>
+<p>Example: Profile for running a perl script before every command:</p>
+<pre>
+  echo &quot;perl -e '\$a=\$\$; print \$a,\&quot; \&quot;,'\$PARALLEL_SEQ',\&quot; \&quot;;';&quot; &gt; ~/.parallel/pre_perl
+  parallel -J pre_perl echo ::: *</pre>
+<p>Note how the $ and &quot; need to be quoted using \.</p>
+<p>Example: Profile for running distributed jobs with <strong>nice</strong> on the
+remote computers:</p>
+<pre>
+  echo -S .. nice &gt; ~/.parallel/dist
+  parallel -J dist --trc {.}.bz2 bzip2 -9 ::: *</pre>
+<p>
+</p>
+<hr />
+<h1><a name="exit_status">EXIT STATUS</a></h1>
+<p>If <strong>--halt-on-error</strong> 0 or not specified:</p>
+<ol>
+<li>
+<p>All jobs ran without error.</p>
+</li>
+<li><strong><a name="253" class="item">1-253</a></strong>
+
+<p>Some of the jobs failed. The exit status gives the number of failed jobs</p>
+</li>
+<li>
+<p>More than 253 jobs failed.</p>
+</li>
+<li>
+<p>Other error.</p>
+</li>
+</ol>
+<p>If <strong>--halt-on-error</strong> 1 or 2: Exit status of the failing job.</p>
+<p>
+</p>
+<hr />
+<h1><a name="differences_between_gnu_parallel_and_alternatives">DIFFERENCES BETWEEN GNU Parallel AND ALTERNATIVES</a></h1>
+<p>There are a lot programs with some of the functionality of GNU
+<strong>parallel</strong>. GNU <strong>parallel</strong> strives to include the best of the
+functionality without sacrificing ease of use.</p>
+<p>
+</p>
+<h2><a name="summary_table">SUMMARY TABLE</a></h2>
+<p>The following features are in some of the comparable tools:</p>
+<p>Inputs
+ I1. Arguments can be read from stdin
+ I2. Arguments can be read from a file
+ I3. Arguments can be read from multiple files
+ I4. Arguments can be read from command line
+ I5. Arguments can be read from a table
+ I6. Arguments can be read from the same file using #! (shebang)
+ I7. Line oriented input as default (Quoting of special chars not needed)</p>
+<p>Manipulation of input
+ M1. Composed command
+ M2. Multiple arguments can fill up an execution line
+ M3. Arguments can be put anywhere in the execution line
+ M4. Multiple arguments can be put anywhere in the execution line
+ M5. Arguments can be replaced with context
+ M6. Input can be treated as complete execution line</p>
+<p>Outputs
+ O1. Grouping output so output from different jobs do not mix
+ O2. Send stderr (standard error) to stderr (standard error)
+ O3. Send stdout (standard output) to stdout (standard output)
+ O4. Order of output can be same as order of input
+ O5. Stdout only contains stdout (standard output) from the command
+ O6. Stderr only contains stderr (standard error) from the command</p>
+<p>Execution
+ E1. Running jobs in parallel
+ E2. List running jobs
+ E3. Finish running jobs, but do not start new jobs
+ E4. Number of running jobs can depend on number of cpus
+ E5. Finish running jobs, but do not start new jobs after first failure
+ E6. Number of running jobs can be adjusted while running</p>
+<p>Remote execution
+ R1. Jobs can be run on remote computers
+ R2. Basefiles can be transferred
+ R3. Argument files can be transferred
+ R4. Result files can be transferred
+ R5. Cleanup of transferred files
+ R6. No config files needed
+ R7. Do not run more than SSHD's MaxStartup can handle
+ R8. Configurable SSH command
+ R9. Retry if connection breaks occasionally</p>
+<p>Semaphore
+ S1. Possibility to work as a mutex
+ S2. Possibility to work as a counting semaphore</p>
+<p>Legend
+ - = no
+ x = not applicable
+ ID = yes</p>
+<p>As every new version of the programs are not tested the table may be
+outdated. Please file a bug-report if you find errors (See REPORTING
+BUGS).</p>
+<p>parallel:
+I1 I2 I3 I4 I5 I6 I7
+M1 M2 M3 M4 M5 M6
+O1 O2 O3 O4 O5 O6
+E1 E2 E3 E4 E5 E6
+R1 R2 R3 R4 R5 R6 R7 R8 R9
+S1 S2</p>
+<p>xargs:
+I1 I2 -  -  -  -  -
+-  M2 M3 -  -  -
+-  O2 O3 -  O5 O6
+E1 -  -  -  -  -
+-  -  -  -  -  x  -  -  -
+-  -</p>
+<p>find -exec:
+-  -  -  x  -  x  -
+-  M2 M3 -  -  -  -
+-  O2 O3 O4 O5 O6
+-  -  -  -  -  -  -
+-  -  -  -  -  -  -  -  -
+x  x</p>
+<p>make -j:
+-  -  -  -  -  -  -
+-  -  -  -  -  -
+O1 O2 O3 -  x  O6
+E1 -  -  -  E5 -
+-  -  -  -  -  -  -  -  -
+-  -</p>
+<p>ppss:
+I1 I2 -  -  -  -  I7
+M1 -  M3 -  -  M6
+O1 -  -  x  -  -
+E1 E2 ?E3 E4 - -
+R1 R2 R3 R4 -  -  ?R7 ? ?
+-  -</p>
+<p>pexec:
+I1 I2 -  I4 I5 -  -
+M1 -  M3 -  -  M6
+O1 O2 O3 -  O5 O6
+E1 -  -  E4 -  E6
+R1 -  -  -  -  R6 -  -  -
+S1 -</p>
+<p>xjobs: TODO - Please file a bug-report if you know what features xjobs
+supports (See REPORTING BUGS).</p>
+<p>prll: TODO - Please file a bug-report if you know what features prll
+supports (See REPORTING BUGS).</p>
+<p>dxargs: TODO - Please file a bug-report if you know what features dxargs
+supports (See REPORTING BUGS).</p>
+<p>mdm/middelman: TODO - Please file a bug-report if you know what
+features mdm/middelman supports (See REPORTING BUGS).</p>
+<p>xapply: TODO - Please file a bug-report if you know what features xapply
+supports (See REPORTING BUGS).</p>
+<p>paexec: TODO - Please file a bug-report if you know what features paexec
+supports (See REPORTING BUGS).</p>
+<p>ClusterSSH: TODO - Please file a bug-report if you know what features ClusterSSH
+supports (See REPORTING BUGS).</p>
+<p>
+</p>
+<h2><a name="differences_between_xargs_and_gnu_parallel">DIFFERENCES BETWEEN xargs AND GNU Parallel</a></h2>
+<p><strong>xargs</strong> offer some of the same possibilities as GNU <strong>parallel</strong>.</p>
+<p><strong>xargs</strong> deals badly with special characters (such as space, ' and
+&quot;). To see the problem try this:</p>
+<pre>
+  touch important_file
+  touch 'not important_file'
+  ls not* | xargs rm
+  mkdir -p &quot;My brother's 12\&quot; records&quot;
+  ls | xargs rmdir</pre>
+<p>You can specify <strong>-0</strong> or <strong>-d &quot;\n&quot;</strong>, but many input generators are not
+optimized for using <strong>NUL</strong> as separator but are optimized for
+<strong>newline</strong> as separator. E.g <strong>head</strong>, <strong>tail</strong>, <strong>awk</strong>, <strong>ls</strong>, <strong>echo</strong>,
+<strong>sed</strong>, <strong>tar -v</strong>, <strong>perl</strong> (<strong>-0</strong> and \0 instead of \n), <strong>locate</strong>
+(requires using <strong>-0</strong>), <strong>find</strong> (requires using <strong>-print0</strong>), <strong>grep</strong>
+(requires user to use <strong>-z</strong> or <strong>-Z</strong>), <strong>sort</strong> (requires using <strong>-z</strong>).</p>
+<p>So GNU <strong>parallel</strong>'s newline separation can be emulated with:</p>
+<p><strong>cat | xargs -d &quot;\n&quot; -n1 <em>command</em></strong></p>
+<p><strong>xargs</strong> can run a given number of jobs in parallel, but has no
+support for running number-of-cpu-cores jobs in parallel.</p>
+<p><strong>xargs</strong> has no support for grouping the output, therefore output may
+run together, e.g. the first half of a line is from one process and
+the last half of the line is from another process. The example
+<strong>Parallel grep</strong> cannot be done reliably with <strong>xargs</strong> because of
+this. To see this in action try:</p>
+<pre>
+  parallel perl -e '\$a=\&quot;1{}\&quot;x10000000\;print\ \$a,\&quot;\\n\&quot;' '&gt;' {} ::: a b c d e f
+  ls -l a b c d e f
+  parallel -kP4 -n1 grep 1 &gt; out.par ::: a b c d e f
+  echo a b c d e f | xargs -P4 -n1 grep 1 &gt; out.xargs-unbuf
+  echo a b c d e f | xargs -P4 -n1 grep --line-buffered 1 &gt; out.xargs-linebuf
+  echo a b c d e f | xargs -n1 grep --line-buffered 1 &gt; out.xargs-serial
+  ls -l out*
+  md5sum out*</pre>
+<p><strong>xargs</strong> has no support for keeping the order of the output, therefore
+if running jobs in parallel using <strong>xargs</strong> the output of the second
+job cannot be postponed till the first job is done.</p>
+<p><strong>xargs</strong> has no support for running jobs on remote computers.</p>
+<p><strong>xargs</strong> has no support for context replace, so you will have to create the
+arguments.</p>
+<p>If you use a replace string in <strong>xargs</strong> (<strong>-I</strong>) you can not force
+<strong>xargs</strong> to use more than one argument.</p>
+<p>Quoting in <strong>xargs</strong> works like <strong>-q</strong> in GNU <strong>parallel</strong>. This means
+composed commands and redirection require using <strong>bash -c</strong>.</p>
+<p><strong>ls | parallel &quot;wc {} </strong>&gt; <strong>{}.wc&quot;</strong></p>
+<p>becomes (assuming you have 8 cores)</p>
+<p><strong>ls | xargs -d &quot;\n&quot; -P8 -I {} bash -c &quot;wc {} </strong>&gt;<strong> {}.wc&quot;</strong></p>
+<p>and</p>
+<p><strong>ls | parallel &quot;echo {}; ls {}|wc&quot;</strong></p>
+<p>becomes (assuming you have 8 cores)</p>
+<p><strong>ls | xargs -d &quot;\n&quot; -P8 -I {} bash -c &quot;echo {}; ls {}|wc&quot;</strong></p>
+<p>
+</p>
+<h2><a name="differences_between_find__exec_and_gnu_parallel">DIFFERENCES BETWEEN find -exec AND GNU Parallel</a></h2>
+<p><strong>find -exec</strong> offer some of the same possibilities as GNU <strong>parallel</strong>.</p>
+<p><strong>find -exec</strong> only works on files. So processing other input (such as
+hosts or URLs) will require creating these inputs as files. <strong>find
+-exec</strong> has no support for running commands in parallel.</p>
+<p>
+</p>
+<h2><a name="differences_between_make__j_and_gnu_parallel">DIFFERENCES BETWEEN make -j AND GNU Parallel</a></h2>
+<p><strong>make -j</strong> can run jobs in parallel, but requires a crafted Makefile
+to do this. That results in extra quoting to get filename containing
+newline to work correctly.</p>
+<p><strong>make -j</strong> has no support for grouping the output, therefore output
+may run together, e.g. the first half of a line is from one process
+and the last half of the line is from another process. The example
+<strong>Parallel grep</strong> cannot be done reliably with <strong>make -j</strong> because of
+this.</p>
+<p>(Very early versions of GNU <strong>parallel</strong> were coincidently implemented
+using <strong>make -j</strong>).</p>
+<p>
+</p>
+<h2><a name="differences_between_ppss_and_gnu_parallel">DIFFERENCES BETWEEN ppss AND GNU Parallel</a></h2>
+<p><strong>ppss</strong> is also a tool for running jobs in parallel.</p>
+<p>The output of <strong>ppss</strong> is status information and thus not useful for
+using as input for another command. The output from the jobs are put
+into files.</p>
+<p>The argument replace string ($ITEM) cannot be changed. Arguments must
+be quoted - thus arguments containing special characters (space '&quot;&amp;!*)
+may cause problems. More than one argument is not supported. File
+names containing newlines are not processed correctly. When reading
+input from a file null cannot be used as a terminator. <strong>ppss</strong> needs
+to read the whole input file before starting any jobs.</p>
+<p>Output and status information is stored in ppss_dir and thus requires
+cleanup when completed. If the dir is not removed before running
+<strong>ppss</strong> again it may cause nothing to happen as <strong>ppss</strong> thinks the
+task is already done. GNU <strong>parallel</strong> will normally not need cleaning
+up if running locally and will only need cleaning up if stopped
+abnormally and running remote (<strong>--cleanup</strong> may not complete if
+stopped abnormally). The example <strong>Parallel grep</strong> would require extra
+postprocessing if written using <strong>ppss</strong>.</p>
+<p>For remote systems PPSS requires 3 steps: config, deploy, and
+start. GNU <strong>parallel</strong> only requires one step.</p>
+<p>
+</p>
+<h3><a name="examples_from_ppss_manual">EXAMPLES FROM ppss MANUAL</a></h3>
+<p>Here are the examples from <strong>ppss</strong>'s manual page with the equivalent
+using GNU <strong>parallel</strong>:</p>
+<p><strong>1</strong> ./ppss.sh standalone -d /path/to/files -c 'gzip '</p>
+<p><strong>1</strong> find /path/to/files -type f | parallel gzip</p>
+<p><strong>2</strong> ./ppss.sh standalone -d /path/to/files -c 'cp &quot;$ITEM&quot; /destination/dir '</p>
+<p><strong>2</strong> find /path/to/files -type f | parallel cp {} /destination/dir</p>
+<p><strong>3</strong> ./ppss.sh standalone -f list-of-urls.txt -c 'wget -q '</p>
+<p><strong>3</strong> parallel -a list-of-urls.txt wget -q</p>
+<p><strong>4</strong> ./ppss.sh standalone -f list-of-urls.txt -c 'wget -q &quot;$ITEM&quot;'</p>
+<p><strong>4</strong> parallel -a list-of-urls.txt wget -q {}</p>
+<p><strong>5</strong> ./ppss config -C config.cfg -c 'encode.sh ' -d /source/dir -m
+192.168.1.100 -u ppss -k ppss-key.key -S ./encode.sh -n nodes.txt -o
+/some/output/dir --upload --download ; ./ppss deploy -C config.cfg ;
+./ppss start -C config</p>
+<p><strong>5</strong> # parallel does not use configs. If you want a different username put it in nodes.txt: user@hostname</p>
+<p><strong>5</strong> find source/dir -type f | parallel --sshloginfile nodes.txt --trc {.}.mp3 lame -a {} -o {.}.mp3 --preset standard --quiet</p>
+<p><strong>6</strong> ./ppss stop -C config.cfg</p>
+<p><strong>6</strong> killall -TERM parallel</p>
+<p><strong>7</strong> ./ppss pause -C config.cfg</p>
+<p><strong>7</strong> Press: CTRL-Z or killall -SIGTSTP parallel</p>
+<p><strong>8</strong> ./ppss continue -C config.cfg</p>
+<p><strong>8</strong> Enter: fg or killall -SIGCONT parallel</p>
+<p><strong>9</strong> ./ppss.sh status -C config.cfg</p>
+<p><strong>9</strong> killall -SIGUSR2 parallel</p>
+<p>
+</p>
+<h2><a name="differences_between_pexec_and_gnu_parallel">DIFFERENCES BETWEEN pexec AND GNU Parallel</a></h2>
+<p><strong>pexec</strong> is also a tool for running jobs in parallel.</p>
+<p>Here are the examples from <strong>pexec</strong>'s info page with the equivalent
+using GNU <strong>parallel</strong>:</p>
+<p><strong>1</strong> pexec -o sqrt-%s.dat -p &quot;$(seq 10)&quot; -e NUM -n 4 -c -- \
+  'echo &quot;scale=10000;sqrt($NUM)&quot; | bc'</p>
+<p><strong>1</strong> seq 10 | parallel -j4 'echo &quot;scale=10000;sqrt({})&quot; | bc &gt; sqrt-{}.dat'</p>
+<p><strong>2</strong> pexec -p &quot;$(ls myfiles*.ext)&quot; -i %s -o %s.sort -- sort</p>
+<p><strong>2</strong> ls myfiles*.ext | parallel sort {} &quot;&gt;{}.sort&quot;</p>
+<p><strong>3</strong> pexec -f image.list -n auto -e B -u star.log -c -- \
+  'fistar $B.fits -f 100 -F id,x,y,flux -o $B.star'</p>
+<p><strong>3</strong> parallel -a image.list \
+  'fistar {}.fits -f 100 -F id,x,y,flux -o {}.star' 2&gt;star.log</p>
+<p><strong>4</strong> pexec -r *.png -e IMG -c -o - -- \
+  'convert $IMG ${IMG%.png}.jpeg ; &quot;echo $IMG: done&quot;'</p>
+<p><strong>4</strong> ls *.png | parallel 'convert {} {.}.jpeg; echo {}: done'</p>
+<p><strong>5</strong> pexec -r *.png -i %s -o %s.jpg -c 'pngtopnm | pnmtojpeg'</p>
+<p><strong>5</strong> ls *.png | parallel 'pngtopnm &lt; {} | pnmtojpeg &gt; {}.jpg'</p>
+<p><strong>6</strong> for p in *.png ; do echo ${p%.png} ; done | \
+  pexec -f - -i %s.png -o %s.jpg -c 'pngtopnm | pnmtojpeg'</p>
+<p><strong>6</strong> ls *.png | parallel 'pngtopnm &lt; {} | pnmtojpeg &gt; {.}.jpg'</p>
+<p><strong>7</strong> LIST=$(for p in *.png ; do echo ${p%.png} ; done)
+  pexec -r $LIST -i %s.png -o %s.jpg -c 'pngtopnm | pnmtojpeg'</p>
+<p><strong>7</strong> ls *.png | parallel 'pngtopnm &lt; {} | pnmtojpeg &gt; {.}.jpg'</p>
+<p><strong>8</strong> pexec -n 8 -r *.jpg -y unix -e IMG -c \
+  'pexec -j -m blockread -d $IMG | \
+  jpegtopnm | pnmscale 0.5 | pnmtojpeg | \
+  pexec -j -m blockwrite -s th_$IMG'</p>
+<p><strong>8</strong> Combining GNU <strong>parallel</strong> and GNU <strong>sem</strong>.</p>
+<p><strong>8</strong> ls *jpg | parallel -j8 'sem --id blockread cat {} | jpegtopnm |' \
+  'pnmscale 0.5 | pnmtojpeg | sem --id blockwrite cat &gt; th_{}'</p>
+<p><strong>8</strong> If reading and writing is done to the same disk, this may be
+faster as only one process will be either reading or writing:</p>
+<p><strong>8</strong> ls *jpg | parallel -j8 'sem --id diskio cat {} | jpegtopnm |' \
+  'pnmscale 0.5 | pnmtojpeg | sem --id diskio cat &gt; th_{}'</p>
+<p>
+</p>
+<h2><a name="differences_between_xjobs_and_gnu_parallel">DIFFERENCES BETWEEN xjobs AND GNU Parallel</a></h2>
+<p><strong>xjobs</strong> is also a tool for running jobs in parallel. It only supports
+running jobs on your local computer.</p>
+<p><strong>xjobs</strong> deals badly with special characters just like <strong>xargs</strong>. See
+the section <strong>DIFFERENCES BETWEEN xargs AND GNU Parallel</strong>.</p>
+<p>Here are the examples from <strong>xjobs</strong>'s man page with the equivalent
+using GNU <strong>parallel</strong>:</p>
+<p><strong>1</strong> ls -1 *.zip | xjobs unzip</p>
+<p><strong>1</strong> ls *.zip | parallel unzip</p>
+<p><strong>2</strong> ls -1 *.zip | xjobs -n unzip</p>
+<p><strong>2</strong> ls *.zip | parallel unzip &gt;/dev/null</p>
+<p><strong>3</strong> find . -name '*.bak' | xjobs gzip</p>
+<p><strong>3</strong> find . -name '*.bak' | parallel gzip</p>
+<p><strong>4</strong> ls -1 *.jar | sed 's/\(.*\)/\1 &gt; \1.idx/' | xjobs jar tf</p>
+<p><strong>4</strong> ls *.jar | parallel jar tf {} '&gt;' {}.idx</p>
+<p><strong>5</strong> xjobs -s script</p>
+<p><strong>5</strong> cat script | parallel</p>
+<p><strong>6</strong> mkfifo /var/run/my_named_pipe;
+xjobs -s /var/run/my_named_pipe &amp;
+echo unzip 1.zip &gt;&gt; /var/run/my_named_pipe;
+echo tar cf /backup/myhome.tar /home/me &gt;&gt; /var/run/my_named_pipe</p>
+<p><strong>6</strong> mkfifo /var/run/my_named_pipe;
+cat /var/run/my_named_pipe | parallel &amp;
+echo unzip 1.zip &gt;&gt; /var/run/my_named_pipe;
+echo tar cf /backup/myhome.tar /home/me &gt;&gt; /var/run/my_named_pipe</p>
+<p>
+</p>
+<h2><a name="differences_between_prll_and_gnu_parallel">DIFFERENCES BETWEEN prll AND GNU Parallel</a></h2>
+<p><strong>prll</strong> is also a tool for running jobs in parallel. It does not
+support running jobs on remote computers.</p>
+<p><strong>prll</strong> encourages using BASH aliases and BASH functions instead of
+scripts. GNU <strong>parallel</strong> will never support running aliases (see why
+<a href="http://www.perlmonks.org/index.pl?node_id=484296).">http://www.perlmonks.org/index.pl?node_id=484296).</a> However, scripts,
+composed commands, or functions exported with <strong>export -f</strong> work just
+fine.</p>
+<p><strong>prll</strong> generates a lot of status information on stderr (standard
+error) which makes it harder to use the stderr (standard error) output
+of the job directly as input for another program.</p>
+<p>Here is the example from <strong>prll</strong>'s man page with the equivalent
+using GNU <strong>parallel</strong>:</p>
+<p>prll -s 'mogrify -flip $1' *.jpg</p>
+<p>parallel mogrify -flip ::: *.jpg</p>
+<p>
+</p>
+<h2><a name="differences_between_dxargs_and_gnu_parallel">DIFFERENCES BETWEEN dxargs AND GNU Parallel</a></h2>
+<p><strong>dxargs</strong> is also a tool for running jobs in parallel.</p>
+<p><strong>dxargs</strong> does not deal well with more simultaneous jobs than SSHD's
+MaxStartup. <strong>dxargs</strong> is only built for remote run jobs, but does not
+support transferring of files.</p>
+<p>
+</p>
+<h2><a name="differences_between_mdm_middleman_and_gnu_parallel">DIFFERENCES BETWEEN mdm/middleman AND GNU Parallel</a></h2>
+<p>middleman(mdm) is also a tool for running jobs in parallel.</p>
+<p>Here are the shellscripts of <a href="http://mdm.berlios.de/usage.html">http://mdm.berlios.de/usage.html</a> ported
+to GNU <strong>parallel</strong>:</p>
+<p><strong>seq 19 | parallel buffon -o - | sort -n </strong>&gt;<strong> result</strong></p>
+<p><strong>cat files | parallel cmd</strong></p>
+<p><strong>find dir -execdir sem cmd {} \;</strong></p>
+<p>
+</p>
+<h2><a name="differences_between_xapply_and_gnu_parallel">DIFFERENCES BETWEEN xapply AND GNU Parallel</a></h2>
+<p><strong>xapply</strong> can run jobs in parallel on the local computer.</p>
+<p>Here are the examples from <strong>xapply</strong>'s man page with the equivalent
+using GNU <strong>parallel</strong>:</p>
+<p><strong>1</strong> xapply '(cd %1 &amp;&amp; make all)' */</p>
+<p><strong>1</strong> parallel 'cd {} &amp;&amp; make all' ::: */</p>
+<p><strong>2</strong> xapply -f 'diff %1 ../version5/%1' manifest | more</p>
+<p><strong>2</strong> parallel diff {} ../version5/{} &lt; manifest | more</p>
+<p><strong>3</strong> xapply -p/dev/null -f 'diff %1 %2' manifest1 checklist1</p>
+<p><strong>3</strong> parallel --xapply diff {1} {2} :::: manifest1 checklist1</p>
+<p><strong>4</strong> xapply 'indent' *.c</p>
+<p><strong>4</strong> parallel indent ::: *.c</p>
+<p><strong>5</strong> find ~ksb/bin -type f ! -perm -111 -print | xapply -f -v 'chmod a+x' -</p>
+<p><strong>5</strong> find ~ksb/bin -type f ! -perm -111 -print | parallel -v chmod a+x</p>
+<p><strong>6</strong> find */ -... | fmt 960 1024 | xapply -f -i /dev/tty 'vi' -</p>
+<p><strong>6</strong> sh &lt;(find */ -... | parallel -s 1024 echo vi)</p>
+<p><strong>6</strong> find */ -... | parallel -s 1024 -Xuj1 vi</p>
+<p><strong>7</strong> find ... | xapply -f -5 -i /dev/tty 'vi' - - - - -</p>
+<p><strong>7</strong> sh &lt;(find ... |parallel -n5 echo vi)</p>
+<p><strong>7</strong> find ... |parallel -n5 -uj1 vi</p>
+<p><strong>8</strong> xapply -fn &quot;&quot; /etc/passwd</p>
+<p><strong>8</strong> parallel -k echo &lt; /etc/passwd</p>
+<p><strong>9</strong> tr ':' '\012' &lt; /etc/passwd | xapply -7 -nf 'chown %1 %6' - - - - - - -</p>
+<p><strong>9</strong> tr ':' '\012' &lt; /etc/passwd | parallel -N7 chown {1} {6}</p>
+<p><strong>10</strong> xapply '[ -d %1/RCS ] || echo %1' */</p>
+<p><strong>10</strong> parallel '[ -d {}/RCS ] || echo {}' ::: */</p>
+<p><strong>11</strong> xapply -f '[ -f %1 ] &amp;&amp; echo %1' List | ...</p>
+<p><strong>11</strong> parallel '[ -f {} ] &amp;&amp; echo {}' &lt; List | ...</p>
+<p>
+</p>
+<h2><a name="differences_between_paexec_and_gnu_parallel">DIFFERENCES BETWEEN paexec AND GNU Parallel</a></h2>
+<p><strong>paexec</strong> can run jobs in parallel on both the local and remote computers.</p>
+<p><strong>paexec</strong> requires commands to print a blank line as the last
+output. This means you will have to write a wrapper for most programs.</p>
+<p><strong>paexec</strong> has a job dependency facility so a job can depend on another
+job to be executed successfully. Sort of a poor-man's <strong>make</strong>.</p>
+<p>Here are the examples from <strong>paexec</strong>'s example catalog with the equivalent
+using GNU <strong>parallel</strong>:</p>
+<ol>
+<li><strong><a name="div_x_run" class="item">_div_X_run:</a></strong>
+
+<pre>
+  ../../paexec -s -l -c &quot;`pwd`/1_div_X_cmd&quot; -n +1 &lt;&lt;EOF [...]
+  parallel echo {} '|' `pwd`/1_div_X_cmd &lt;&lt;EOF [...]</pre>
+</dd>
+<dt><strong><a name="all_substr_run" class="item">all_substr_run:</a></strong></dt>
+
+<dd>
+<pre>
+  ../../paexec -lp -c &quot;`pwd`/all_substr_cmd&quot; -n +3 &lt;&lt;EOF [...]
+  parallel echo {} '|' `pwd`/all_substr_cmd &lt;&lt;EOF [...]</pre>
+</dd>
+<dt><strong><a name="cc_wrapper_run" class="item">cc_wrapper_run:</a></strong></dt>
+
+<dd>
+<pre>
+  ../../paexec -c &quot;env CC=gcc CFLAGS=-O2 `pwd`/cc_wrapper_cmd&quot; \
+             -n 'host1 host2' \
+             -t '/usr/bin/ssh -x' &lt;&lt;EOF [...]
+  parallel echo {} '|' &quot;env CC=gcc CFLAGS=-O2 `pwd`/cc_wrapper_cmd&quot; \
+             -S host1,host2 &lt;&lt;EOF [...]
+  # This is not exactly the same, but avoids the wrapper
+  parallel gcc -O2 -c -o {.}.o {} \
+             -S host1,host2 &lt;&lt;EOF [...]</pre>
+</dd>
+<dt><strong><a name="toupper_run" class="item">toupper_run:</a></strong></dt>
+
+<dd>
+<pre>
+  ../../paexec -lp -c &quot;`pwd`/toupper_cmd&quot; -n +10 &lt;&lt;EOF [...]
+  parallel echo {} '|' ./toupper_cmd &lt;&lt;EOF [...]
+  # Without the wrapper:
+  parallel echo {} '| awk {print\ toupper\(\$0\)}' &lt;&lt;EOF [...]</pre>
+</li>
+</ol>
+<p>
+</p>
+<h2><a name="differences_between_clusterssh_and_gnu_parallel">DIFFERENCES BETWEEN ClusterSSH AND GNU Parallel</a></h2>
+<p>ClusterSSH solves a different problem than GNU <strong>parallel</strong>.</p>
+<p>ClusterSSH opens a terminal window for each computer and using a
+master window you can run the same command on all the computers. This
+is typically used for administrating several computers that are almost
+identical.</p>
+<p>GNU <strong>parallel</strong> runs the same (or different) commands with different
+arguments in parallel possibly using remote computers to help
+computing. If more than one computer is listed in <strong>-S</strong> GNU <strong>parallel</strong> may
+only use one of these (e.g. if there are 8 jobs to be run and one
+computer has 8 cores).</p>
+<p>GNU <strong>parallel</strong> can be used as a poor-man's version of ClusterSSH:</p>
+<p><strong>parallel --nonall -S server-a,server-b do_stuff foo bar</strong></p>
+<p>
+</p>
+<hr />
+<h1><a name="bugs">BUGS</a></h1>
+<p>
+</p>
+<h2><a name="quoting_of_newline">Quoting of newline</a></h2>
+<p>Because of the way newline is quoted this will not work:</p>
+<p>echo 1,2,3 | parallel -vkd, &quot;echo 'a{}b'&quot;</p>
+<p>However, these will all work:</p>
+<p>echo 1,2,3 | parallel -vkd, echo a{}b</p>
+<p>echo 1,2,3 | parallel -vkd, &quot;echo 'a'{}'b'&quot;</p>
+<p>echo 1,2,3 | parallel -vkd, &quot;echo 'a'&quot;{}&quot;'b'&quot;</p>
+<p>
+</p>
+<h2><a name="speed">Speed</a></h2>
+<p>
+</p>
+<h3><a name="startup">Startup</a></h3>
+<p>GNU <strong>parallel</strong> is slow at starting up - around 250 ms. Half of the
+startup time is spent finding the maximal length of a command
+line. Setting <strong>-s</strong> will remove this part of the startup time.</p>
+<p>
+</p>
+<h3><a name="job_startup">Job startup</a></h3>
+<p>Starting a job on the local machine takes around 3 ms. This can be a
+big overhead if the job takes very few ms to run. Often you can group
+small jobs together using <strong>-X</strong> which will make the overhead less
+significant.</p>
+<p>Using <strong>--ungroup</strong> the 3 ms can be lowered to around 2 ms.</p>
+<p>
+</p>
+<h3><a name="ssh">SSH</a></h3>
+<p>When using multiple computers GNU <strong>parallel</strong> opens <strong>ssh</strong> connections
+to them to figure out how many connections can be used reliably
+simultaneously (Namely SSHD's MaxStartup). This test is done for each
+host in serial, so if your <strong>--sshloginfile</strong> contains many hosts it may
+be slow.</p>
+<p>If your jobs are short you may see that there are fewer jobs running
+on the remove systems than expected. This is due to time spent logging
+in and out. <strong>-M</strong> may help here.</p>
+<p>
+</p>
+<h3><a name="disk_access">Disk access</a></h3>
+<p>A single disk can normally read data faster if it reads one file at a
+time instead of reading a lot of files in parallel, as this will avoid
+disk seeks. However, newer disk systems with multiple drives can read
+faster if reading from multiple files in parallel.</p>
+<p>If the jobs are of the form read-all-compute-all-write-all, so
+everything is read before anything is written, it may be faster to
+force only one disk access at the time:</p>
+<pre>
+  sem --id diskio cat file | compute | sem --id diskio cat &gt; file</pre>
+<p>If the jobs are of the form read-compute-write, so writing starts
+before all reading is done, it may be faster to force only one reader
+and writer at the time:</p>
+<pre>
+  sem --id read cat file | compute | sem --id write cat &gt; file</pre>
+<p>If the jobs are of the form read-compute-read-compute, it may be
+faster to run more jobs in parallel than the system has CPUs, as some
+of the jobs will be stuck waiting for disk access.</p>
+<p>
+</p>
+<h2><a name="__nice_limits_command_length">--nice limits command length</a></h2>
+<p>The current implementation of <strong>--nice</strong> is too pessimistic in the max
+allowed command length. It only uses a little more than half of what
+it could. This affects <strong>-X</strong> and <strong>-m</strong>. If this becomes a real problem for
+you file a bug-report.</p>
+<p>
+</p>
+<h2><a name="aliases_and_functions_do_not_work">Aliases and functions do not work</a></h2>
+<p>If you get:</p>
+<p><strong>Can't exec &quot;<em>command</em>&quot;: No such file or directory</strong></p>
+<p>or:</p>
+<p><strong>open3: exec of by <em>command</em> failed</strong></p>
+<p>it may be because <em>command</em> is not known, but it could also be
+because <em>command</em> is an alias or a function. If it is a function you
+need to <strong>export -f</strong> the function first. An alias will, however, not
+work (see why <a href="http://www.perlmonks.org/index.pl?node_id=484296),">http://www.perlmonks.org/index.pl?node_id=484296),</a> so
+change your alias to a script.</p>
+<p>
+</p>
+<hr />
+<h1><a name="reporting_bugs">REPORTING BUGS</a></h1>
+<p>Report bugs to &lt;<a href="mailto:bug-parallel@gnu.org">bug-parallel@gnu.org</a>&gt; or
+<a href="https://savannah.gnu.org/bugs/?func=additem&group=parallel">https://savannah.gnu.org/bugs/?func=additem&group=parallel</a></p>
+<p>Your bug report should always include:</p>
+<ul>
+<li>
+<p>The error message you get (if any).</p>
+</li>
+<li>
+<p>The complete output of <strong>parallel --version</strong>. If you are not running
+the latest released version you should specify why you believe the
+problem is not fixed in that version.</p>
+</li>
+<li>
+<p>A complete example that others can run that shows the problem. This
+should preferably be small and simple. A combination of <strong>yes</strong>,
+<strong>seq</strong>, <strong>cat</strong>, <strong>echo</strong>, and <strong>sleep</strong> can reproduce most errors. If
+your example requires large files, see if you can make them by
+something like <strong>seq 1000000</strong> &gt; <strong>file</strong> or <strong>yes | head -n 10000000</strong> &gt;
+<strong>file</strong>. If your example requires remote execution, see if you can
+use <strong>localhost</strong>.</p>
+</li>
+<li>
+<p>The output of your example. If your problem is not easily reproduced
+by others, the output might help them figure out the problem.</p>
+</li>
+<li>
+<p>Whether you have watched the intro videos
+(http://www.youtube.com/playlist?list=PL284C9FF2488BC6D1), walked
+through the tutorial (man parallel_tutorial), and read the EXAMPLE
+section in the man page (man parallel - search for EXAMPLE:).</p>
+</li>
+</ul>
+<p>If you suspect the error is dependent on your environment or
+distribution, please see if you can reproduce the error on one of
+these VirtualBox images:
+<a href="http://sourceforge.net/projects/virtualboximage/files/">http://sourceforge.net/projects/virtualboximage/files/</a></p>
+<p>Specifying the name of your distribution is not enough as you may have
+installed software that is not in the VirtualBox images.</p>
+<p>If you cannot reproduce the error on any of the VirtualBox images
+above, you should assume the debugging will be done through you. That
+will put more burden on you and it is extra important you give any
+information that help.</p>
+<p>
+</p>
+<hr />
+<h1><a name="author">AUTHOR</a></h1>
+<p>When using GNU <strong>parallel</strong> for a publication please cite:</p>
+<p>O. Tange (2011): GNU Parallel - The Command-Line Power Tool, ;login:
+The USENIX Magazine, February 2011:42-47.</p>
+<p>Copyright (C) 2007-10-18 Ole Tange, <a href="http://ole.tange.dk">http://ole.tange.dk</a></p>
+<p>Copyright (C) 2008,2009,2010 Ole Tange, <a href="http://ole.tange.dk">http://ole.tange.dk</a></p>
+<p>Copyright (C) 2010,2011,2012,2013 Ole Tange, <a href="http://ole.tange.dk">http://ole.tange.dk</a> and
+Free Software Foundation, Inc.</p>
+<p>Parts of the manual concerning <strong>xargs</strong> compatibility is inspired by
+the manual of <strong>xargs</strong> from GNU findutils 4.4.2.</p>
+<p>
+</p>
+<hr />
+<h1><a name="license">LICENSE</a></h1>
+<p>Copyright (C) 2007,2008,2009,2010,2011,2012,2013 Free Software Foundation,
+Inc.</p>
+<p>This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 3 of the License, or
+at your option any later version.</p>
+<p>This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.</p>
+<p>You should have received a copy of the GNU General Public License
+along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</p>
+<p>
+</p>
+<h2><a name="documentation_license_i">Documentation license I</a></h2>
+<p>Permission is granted to copy, distribute and/or modify this documentation
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with no
+Invariant Sections, with no Front-Cover Texts, and with no Back-Cover
+Texts.  A copy of the license is included in the file fdl.txt.</p>
+<p>
+</p>
+<h2><a name="documentation_license_ii">Documentation license II</a></h2>
+<p>You are free:</p>
+<dl>
+<dt><strong><a name="to_share" class="item"><strong>to Share</strong></a></strong></dt>
+
+<dd>
+<p>to copy, distribute and transmit the work</p>
+</dd>
+<dt><strong><a name="to_remix" class="item"><strong>to Remix</strong></a></strong></dt>
+
+<dd>
+<p>to adapt the work</p>
+</dd>
+</dl>
+<p>Under the following conditions:</p>
+<dl>
+<dt><strong><a name="attribution" class="item"><strong>Attribution</strong></a></strong></dt>
+
+<dd>
+<p>You must attribute the work in the manner specified by the author or
+licensor (but not in any way that suggests that they endorse you or
+your use of the work).</p>
+</dd>
+<dt><strong><a name="share_alike" class="item"><strong>Share Alike</strong></a></strong></dt>
+
+<dd>
+<p>If you alter, transform, or build upon this work, you may distribute
+the resulting work only under the same, similar or a compatible
+license.</p>
+</dd>
+</dl>
+<p>With the understanding that:</p>
+<dl>
+<dt><strong><a name="waiver" class="item"><strong>Waiver</strong></a></strong></dt>
+
+<dd>
+<p>Any of the above conditions can be waived if you get permission from
+the copyright holder.</p>
+</dd>
+<dt><strong><a name="public_domain" class="item"><strong>Public Domain</strong></a></strong></dt>
+
+<dd>
+<p>Where the work or any of its elements is in the public domain under
+applicable law, that status is in no way affected by the license.</p>
+</dd>
+<dt><strong><a name="other_rights" class="item"><strong>Other Rights</strong></a></strong></dt>
+
+<dd>
+<p>In no way are any of the following rights affected by the license:</p>
+<ul>
+<li>
+<p>Your fair dealing or fair use rights, or other applicable
+copyright exceptions and limitations;</p>
+</li>
+<li>
+<p>The author's moral rights;</p>
+</li>
+<li>
+<p>Rights other persons may have either in the work itself or in
+how the work is used, such as publicity or privacy rights.</p>
+</li>
+</ul>
+</dd>
+</dl>
+<dl>
+<dt><strong><a name="notice" class="item"><strong>Notice</strong></a></strong></dt>
+
+<dd>
+<p>For any reuse or distribution, you must make clear to others the
+license terms of this work.</p>
+</dd>
+</dl>
+<p>A copy of the full license is included in the file as cc-by-sa.txt.</p>
+<p>
+</p>
+<hr />
+<h1><a name="dependencies">DEPENDENCIES</a></h1>
+<p>GNU <strong>parallel</strong> uses Perl, and the Perl modules Getopt::Long,
+IPC::Open3, Symbol, IO::File, POSIX, and File::Temp. For remote usage
+it also uses rsync with ssh.</p>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><strong>ssh</strong>(1), <strong>rsync</strong>(1), <strong>find</strong>(1), <strong>xargs</strong>(1), <strong>dirname</strong>(1),
+<strong>make</strong>(1), <strong>pexec</strong>(1), <strong>ppss</strong>(1), <strong>xjobs</strong>(1), <strong>prll</strong>(1),
+<strong>dxargs</strong>(1), <strong>mdm</strong>(1)</p>
+
+</body>
+
+</html>

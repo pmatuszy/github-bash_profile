@@ -1,0 +1,1 @@
+stty -parity hupcl intr '^C' erase '^H' kill '^U' brkint -inpck icrnl onlcr tab3 -iexten echo -echoe echok -echoctl -echoke
