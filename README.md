@@ -1,2 +1,6 @@
 # profile
-profiles for oracle user 
+profiles for Linux user. 
+
+It has many useful aliases to be more productive.
+
+
