@@ -47,6 +47,7 @@ export profile_location_dir=/home/oracle/pgm
 JPMORGAN=0
 MATUSZYK=0
 KGP=0
+UBS=0
 cat /etc/hosts|grep -q jpmchase
 if (( $? == 0 )); then JPMORGAN=1 ; fi
 
@@ -83,6 +84,11 @@ if [ $JPMORGAN == 1 ]
     fi
 fi
 
+if [ $UBS == 1 ]
+ then
+    export PBSETUTMP=no
+    export PBREMEX=yes
+fi
 #####################################
 # settig profile_location_dir END   #
 #####################################
