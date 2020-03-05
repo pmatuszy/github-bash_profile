@@ -1,3 +1,4 @@
+# v. 2.11- 2020.03.05 - added UBS specific environment variables
 # v. 2.10- 2019.11.21 - changed od paths from pg to pgm, wrong PATH - fixed now
 # v. 2.09- 2019.11.19 - changed stty erase to '^?'
 # v. 2.08- 2019.11.15 - added ORACLE_PATH as SQLPATH is from 12cR2 no longer in use
