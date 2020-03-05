@@ -1,3 +1,4 @@
+# v. 2.95- 2020.03.05 - added UBS specific environment variables
 # v. 2.94- 2019.11.29 - changing the terminal size to 181x71 on Linux systems
 # v. 2.93- 2019.11.28 - in asm and dba added feature of changing the terminal size to 175x71 on Linux systems
 # v. 2.92- 2019.11.20 - bugfix in asmcmd function and unsetting ORACLE_PATH in asmcmd function
@@ -101,6 +102,7 @@ export profile_location_dir=/home/oracle/pgm
 JPMORGAN=0
 MATUSZYK=0
 KGP=0
+UBS=0
 cat /etc/hosts|grep -q jpmchase
 if (( $? == 0 )); then JPMORGAN=1 ; fi
 
@@ -135,6 +137,11 @@ if [ $JPMORGAN == 1 ]
     else
       export profile_location_dir=$HOME
     fi
+fi
+if [ $UBS == 1 ]
+ then
+    export PBSETUTMP=no
+    export PBREMEX=yes
 fi
 #####################################
 # settig profile_location_dir END   #
