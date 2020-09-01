@@ -1,3 +1,4 @@
+# v. 2.96- 2020.09.01 - added LANG variable (so on linux mc looks good)
 # v. 2.95- 2020.03.05 - added UBS specific environment variables
 # v. 2.94- 2019.11.29 - changing the terminal size to 181x71 on Linux systems
 # v. 2.93- 2019.11.28 - in asm and dba added feature of changing the terminal size to 175x71 on Linux systems
@@ -421,3 +422,4 @@ bash_prompt_command() {
     history -a                          # Whenever displaying the prompt, write the previous line to disk
 }
 export PROMPT_COMMAND=bash_prompt_command
+export LANG=en_US
