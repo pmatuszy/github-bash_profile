@@ -10,7 +10,7 @@ export profile_location_dir=$HOME
 echo "profile_location_dir = $profile_location_dir"
 echo "is that ok? [y/N]"
 
-read a
+read -n 1 a
 
 if [ "$a" != "y" ];then
   echo exiting then...
