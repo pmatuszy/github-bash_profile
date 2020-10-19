@@ -9,3 +9,8 @@ tar cvf profile.tar bash_profile bashrc install.sh crs_stat-t wynik.txt pickora 
 ls -l
 bzip2 -9 profile.tar
 uuencode profile.tar.bz2 profile.tar.bz2 | unix2dos > profile.tar.bz2.uue
+
+echo now:
+echo "git add *"
+echo "git commit -m 'new push'"
+echo "git push"
