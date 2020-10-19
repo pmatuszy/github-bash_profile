@@ -4,7 +4,7 @@ rm profile.tar profile.tar.bz2
 chmod 755 bash_profile bashrc crs_stat-t
 chmod 644 wynik.txt
 
-tar cvf profile.tar bash_profile bashrc test.sh crs_stat-t wynik.txt pickora .pgm-boundle-version dfc login.sql i.sql
+tar cvf profile.tar bash_profile bashrc install.sh crs_stat-t wynik.txt pickora .pgm-boundle-version dfc login.sql i.sql
 
 ls -l
 bzip2 -9 profile.tar
