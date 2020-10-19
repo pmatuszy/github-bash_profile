@@ -12,5 +12,5 @@ uuencode profile.tar.bz2 profile.tar.bz2 | unix2dos > profile.tar.bz2.uue
 
 echo now:
 echo "git add * .pgm-boundle-version"
-echo git commit -m \""new push @ `date '+%Y.%m.%d %H:%M:%S'`"\"
+echo git commit -m \""new push from _doit.sh (`hostname`) @ `date '+%Y.%m.%d %H:%M:%S'`"\"
 echo "git push"
