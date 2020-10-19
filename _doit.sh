@@ -14,3 +14,11 @@ echo now:
 echo "git add * .pgm-boundle-version"
 echo git commit -m \""new push from _doit.sh (`hostname`) @ `date '+%Y.%m.%d %H:%M:%S'`"\"
 echo "git push"
+
+echo "DEBUG: do you want to do git push? [y/N]"
+read -t 5 -n 1 p     # read one character (-n) with timeout of 5 seconds
+if [ "${p}" == 'y' -o  "${p}" == 'y' ]; then
+  git add *
+  git commit -m \""new push from _doit.sh (`hostname`) @ `date '+%Y.%m.%d %H:%M:%S'`"\"
+  git push
+fi 
