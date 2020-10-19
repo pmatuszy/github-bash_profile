@@ -5,7 +5,7 @@ export profile_location_dir=/home/grid/pgm
 export profile_location_dir=/home/oracle/pgm
 
 export profile_location_dir=$HOME/pgm
-
+export profile_location_dir=$HOME
 
 echo "profile_location_dir = $profile_location_dir"
 echo "is that ok? [y/N]"
