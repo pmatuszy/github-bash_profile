@@ -20,6 +20,7 @@ fi
 echo 
 echo installing scripts...
 echo
+
 komenda=""
 
 mkdir bin lib 2>/dev/null
