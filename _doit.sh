@@ -11,6 +11,6 @@ bzip2 -9 profile.tar
 uuencode profile.tar.bz2 profile.tar.bz2 | unix2dos > profile.tar.bz2.uue
 
 echo now:
-echo "git add *"
+echo "git add * .pgm-boundle-version"
 echo git commit -m \""new push @ `date '+%Y.%m.%d %H:%M:%S'`"\"
 echo "git push"

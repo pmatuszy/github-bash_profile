@@ -1,3 +1,5 @@
+# v. 1.23- 2020.10.19 - test.sh renamed to install.sh, added _doit.sh
+# v. 1.22- 2020.09.01 - new version of bashrc
 # v. 1.22- 2019.11.22 - new version of login.sql and bash_profile
 # v. 1.21- 2019.11.21 - new version of login.sql and bashrc 
 # v. 1.15- 2019.11.14 - new version of test.sh and bashrc 
