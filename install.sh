@@ -47,7 +47,7 @@ if [[ "$USER" == "oracle" || "$USER" == "grid" ]]; then
   touch adrci_history expdp_history impdp_history sqlplus_history asmcmd_history dgmgrl_history .moja_historia_oracle
   chmod 666 adrci_history expdp_history impdp_history sqlplus_history asmcmd_history dgmgrl_history .moja_historia_oracle 2>                                                                                                                                                   /dev/null
 else
-  rm login.sql i.sql crs_stat-t pickora wynik.txt
+  rm login.sql i.sql crs_stat-t pickora wynik.txt 2>/dev/null
 fi
 
 echo "deflogin off" > $HOME/.screenrc
@@ -61,6 +61,8 @@ mv a bash_profile
 
 cat bashrc |sed "s@^export profile_location_dir=.*@export profile_location_dir=$profile_location_dir@g" > a
 mv a bashrc
+
+cp .pgm-boundle-version $profile_location_dir
 
 chmod 711 $HOME
 
