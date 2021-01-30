@@ -12,7 +12,7 @@ echo
 if [ "${p}" == 'y' -o  "${p}" == 'y' ]; then
   cd $HOME
   rm -rf $HOME/${github_project_name}/*
-  rm -rf $HOME/${github_project_name}/.git
+  rm -rf $HOME/${github_project_name}/.git $HOME/${github_project_name}/.[a-zA-Z]*
   git clone git+ssh://git@github.com/pmatuszy/${github_project_name}.git
   cd $HOME/${github_project_name}
   ./install.sh
