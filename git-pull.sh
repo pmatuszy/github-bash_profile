@@ -1,4 +1,8 @@
+# 2021.01.30 - v. 0.2 - making this script more generic (by adding github_project_name variable)
 # 2020.11.27 - v. 0.1 - initial release
+
+github_project_name=`pwd`
+github_project_name=`basename $github_project_name`
 
 echo
 echo "Do you want to do kind of git pull and configure local scripts? [y/N]"
@@ -7,14 +11,14 @@ echo
 echo
 if [ "${p}" == 'y' -o  "${p}" == 'y' ]; then
   cd $HOME
-  rm -rf $HOME/github-bin/*
-  rm -rf $HOME/github-bin/.git
-  git clone git+ssh://git@github.com/pmatuszy/github-bin.git
-  cp -v github-bin/* $HOME/bin
-  cp -v github-bin/`hostname`/* $HOME/bin
-  cd github-bin
+  rm -rf $HOME/${github_project_name}/*
+  rm -rf $HOME/${github_project_name}/.git
+  git clone git+ssh://git@github.com/pmatuszy/${github_project_name}.git
+  cd $HOME/${github_project_name}
+  ./install.sh
   git status
 else
   echo "no means no - I am exiting..."
   exit 1
 fi
+
