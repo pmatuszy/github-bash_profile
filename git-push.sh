@@ -2,7 +2,6 @@
 # 2020.11.26 - v. 0.2 - added second section with 'git pull'
 # 2020.10.20 - v. 0.1 - initial release
 
-
 github_project_name=github-bash_profile
 
 echo "Do you want to do git push? [y/N]"
