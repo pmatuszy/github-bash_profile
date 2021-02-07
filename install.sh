@@ -63,6 +63,7 @@ cat bashrc |sed "s@^export profile_location_dir=.*@export profile_location_dir=$
 mv a bashrc
 
 cp .pgm-boundle-version $profile_location_dir
+cp .vimrc $profile_location_dir
 
 chmod 711 $HOME
 
