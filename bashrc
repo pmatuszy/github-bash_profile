@@ -99,7 +99,7 @@
 #####################################
 # settig profile_location_dir START #
 #####################################
-export profile_location_dir=/home/podsync
+export profile_location_dir=/root
 JPMORGAN=0
 MATUSZYK=0
 KGP=0

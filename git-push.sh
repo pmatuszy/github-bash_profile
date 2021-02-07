@@ -1,3 +1,5 @@
+# 2021.02.07 - v. 0.6 - git add --all * .[a-zA-Z]* , git remote set-url origin git+ssh: to not have
+#                       password prompts during pushes
 # 2021.01.30 - v. 0.4 - making this script more generic (by adding github_project_name variable)
 # 2020.11.27 - v. 0.3 - changed rm to remove files from the directory not the whole directory
 # 2020.11.26 - v. 0.2 - added second section with 'git pull'
