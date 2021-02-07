@@ -6,6 +6,8 @@
 github_project_name=`pwd`
 github_project_name=`basename $github_project_name`
 
+git remote set-url origin git+ssh://git@github.com/pmatuszy/${github_project_name}.git
+
 echo "Do you want to do git push? [y/N]"
 read -t 5 -n 1 p     # read one character (-n) with timeout of 5 seconds
 echo
