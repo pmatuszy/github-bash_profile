@@ -1,0 +1,53 @@
+deflogin off
+# THIS IS THE PRETTY BIT
+#change the hardstatus settings to give an window list at the bottom of the
+##screen, with the time and date and with the current window highlighted
+hardstatus             alwayslastline
+#hardstatus string '%{= mK}%-Lw%{= KW}%50>%n%f* %t%{= mK}%+Lw%< %{= kG}%-=%D %d %M %Y %c:%s%{-}'
+hardstatus string '%{= kG}[ %{G}%H %{g}][%= %{= kw}%?%-Lw%?%{r}(%{W}%n*%f%t%?(%u)%?%{r})%{w}%?%+Lw%?%?%= %{g}][%{B} %d/%m %{W}%c %{g} ]'
+
+screen -t top 0 top
+screen -t "vnstat -l" 1 vnstat -l
+# screen -t "arc_summary -s arc" 2 arc_summary -s arc
+screen -t iostat 3 iostat --no-color 1
+screen -t "bmon -p eth0" 4 bmon -p eth0
+
+bindkey -k F2 next
+bindkey -k F1 prev
+
+bindkey ^[0 select `
+bindkey ^[1 select 1
+bindkey ^[2 select 2
+bindkey ^[3 select 3
+bindkey ^[4 select 4
+bindkey ^[5 select 5
+bindkey ^[6 select 6
+bindkey ^[7 select 7
+bindkey ^[8 select 8
+bindkey ^[9 select 9
+
+backtick 1 5 5 uptime
+
+# Split screen controls
+bind s split         # disable C-a s (freeze)
+bind o focus
+bind x remove
+bind m monitor
+
+bind k focus up
+bind j focus down
+bind h focus left
+bind l focus right
+
+defutf8 on #run everything in unicode, to allow display of international characters w/o problems
+hardstatus alwayslastline "%-Lw%{= BW}%50>%n%f* %t%{-}%+Lw%< %=[%c:%s, %D, %d/%m/%y]"
+bell                  "bell     in %n (%t) [%w:%s]~"
+
+shell bash
+term xterm-color  #I modified this in the /etc/bashrc file to keep syntax highlighting intact in emacs
+
+bce on
+
+termcapinfo rxvt-unicode ti@:te@     #enable SHIFT-PGUP / SHIFT-PGDOWN scroll
+bindkey -k k8 kill
+
