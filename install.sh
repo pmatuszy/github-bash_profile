@@ -50,7 +50,7 @@ else
   rm login.sql i.sql crs_stat-t pickora wynik.txt 2>/dev/null
 fi
 
-echo "deflogin off" > $HOME/.screenrc
+#echo "deflogin off" > $HOME/.screenrc
 
 rm $profile_location_dir/.bash_profile $profile_location_dir/.bashrc 2>/dev/null
 ln -s $profile_location_dir/bash_profile $profile_location_dir/.bash_profile
@@ -64,6 +64,7 @@ mv a bashrc
 
 cp .pgm-boundle-version $profile_location_dir
 cp .vimrc $profile_location_dir
+cp .screenrc $profile_location_dir
 
 chmod 711 $HOME
 
