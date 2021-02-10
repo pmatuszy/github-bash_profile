@@ -27,6 +27,9 @@ mkdir ${profile_location_dir}/bin ${profile_location_dir}/lib 2>/dev/null
 
 chmod 644 ${profile_location_dir}/.toprc 2>/dev/null
 
+cp bashrc ${profile_location_dir}
+cp bash_profile ${profile_location_dir}
+
 mv dfc ${profile_location_dir}/bin 2>/dev/null
 
 if [[ "$USER" == "oracle" || "$USER" == "grid" ]]; then
