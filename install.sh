@@ -7,7 +7,7 @@ export profile_location_dir=/home/oracle/pgm
 export profile_location_dir=$HOME/pgm
 export profile_location_dir=$HOME
 
-echo "profile_location_dir = $profile_location_dir"
+echo "profile_location_dir = ${profile_location_dir}"
 echo "is that ok? [y/N]"
 
 read -n 1 a
@@ -23,38 +23,49 @@ echo
 
 komenda=""
 
-mkdir bin lib 2>/dev/null
+mkdir ${profile_location_dir}/bin ${profile_location_dir}/lib 2>/dev/null
 
-chmod 644 .toprc 2>/dev/null
+chmod 644 ${profile_location_dir}/.toprc 2>/dev/null
 
-mv dfc bin 2>/dev/null
+mv dfc ${profile_location_dir}/bin 2>/dev/null
 
 if [[ "$USER" == "oracle" || "$USER" == "grid" ]]; then
 
-  mv crs_stat-t dfc bin 2>/dev/null
-  mv pickora bin 2>/dev/null
+  mv crs_stat-t dfc b${profile_location_dir}/in 2>/dev/null
+  mv pickora b${profile_location_dir}/in 2>/dev/null
 
-  mkdir -p sqlplus/admin 2>/dev/null
-  mv login.sql i.sql sqlplus/admin 2>/dev/null
+  mkdir -p s${profile_location_dir}/qlplus/admin 2>/dev/null
+  mv login.sql i.sql s${profile_location_dir}/qlplus/admin 2>/dev/null
+
+  pushd .
+  cd ${profile_location_dir}
   chmod 644 sqlplus/admin/login.sql sqlplus/admin/i.sql 2>/dev/null
 
   chown ${LOGNAME} bin/crs_stat-t bashrc bash_profile bin lib
   chmod 755 bin/crs_stat-t bin/pickora bin lib bashrc bash_profile bin/dfc
+  popd
 
-  mv wynik.txt bin 2>/dev/null
+  mv wynik.txt ${profile_location_dir}/bin 2>/dev/null
+  
+  pushd .
+  cd ${profile_location_dir}
+ 
   chmod 644 bin/wynik.txt .pgm-boundle-version 2>/dev/null
 
   touch adrci_history expdp_history impdp_history sqlplus_history asmcmd_history dgmgrl_history .moja_historia_oracle
-  chmod 666 adrci_history expdp_history impdp_history sqlplus_history asmcmd_history dgmgrl_history .moja_historia_oracle 2>                                                                                                                                                   /dev/null
+  chmod 666 adrci_history expdp_history impdp_history sqlplus_history 2> /dev/null
+  chmod 666 asmcmd_history dgmgrl_history .moja_historia_oracle 2>/dev/null
+  popd 
 else
   rm login.sql i.sql crs_stat-t pickora wynik.txt 2>/dev/null
 fi
 
-#echo "deflogin off" > $HOME/.screenrc
-
 rm $profile_location_dir/.bash_profile $profile_location_dir/.bashrc 2>/dev/null
 ln -s $profile_location_dir/bash_profile $profile_location_dir/.bash_profile
 ln -s $profile_location_dir/bashrc $profile_location_dir/.bashrc
+
+pushd .
+cd ${profile_location_dir}
 
 cat bash_profile |sed "s@^export profile_location_dir=.*@export profile_location_dir=$profile_location_dir@" > a
 mv a bash_profile
@@ -62,9 +73,11 @@ mv a bash_profile
 cat bashrc |sed "s@^export profile_location_dir=.*@export profile_location_dir=$profile_location_dir@g" > a
 mv a bashrc
 
-cp .pgm-boundle-version $profile_location_dir
-cp .vimrc $profile_location_dir
-cp .screenrc $profile_location_dir
+popd 
+
+cp .pgm-boundle-version ${profile_location_dir}
+cp .vimrc ${profile_location_dir}
+cp .screenrc ${profile_location_dir}
 
 chmod 711 $HOME
 
