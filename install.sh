@@ -1,3 +1,7 @@
+# 2021.02.10 - v. 0.2 - added some structural changes - too many changes to describe them here :-)
+# 20xx.xx.xx - v. 0.1 - initial release
+
+
 echo "Platform: `uname -s`"
 
 export profile_location_dir=/root/pgm
@@ -85,4 +89,4 @@ cp .screenrc ${profile_location_dir}
 chmod 711 $HOME
 
 rm -f a profile.tar test.sh
-rmdir bin lib 2>/dev/null
+rmdir ${profile_location_dir}/bin ${profile_location_dir}/lib 2>/dev/null
