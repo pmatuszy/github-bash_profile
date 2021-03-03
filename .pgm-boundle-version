@@ -1,3 +1,4 @@
+# v. 1.24- 2021.03.03 - modifled LANG variable in bashrc
 # v. 1.23- 2020.10.19 - test.sh renamed to install.sh, added _doit.sh, small changes to install.sh
 #                       to read just one character (read -n 1)
 # v. 1.22- 2020.09.01 - new version of bashrc
