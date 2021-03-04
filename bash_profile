@@ -1,3 +1,4 @@
+# v. 2.12- 2021.03.04 - added HISTIGNORE variable
 # v. 2.11- 2020.03.05 - added UBS specific environment variables
 # v. 2.10- 2019.11.21 - changed od paths from pg to pgm, wrong PATH - fixed now
 # v. 2.09- 2019.11.19 - changed stty erase to '^?'
@@ -122,7 +123,7 @@ export SQLPATH=${SQLPATH:-${profile_location_dir}/sqlplus/admin}
 export ORACLE_PATH=${SQLPATH}       # from 12cR2 SQLPATH is no longer in use
 export HISTCONTROL=ignoreboth
 export HISTSIZE=10000
-export HISTIGNORE="*RCLONE_CONFIG_PASS*:*RCLONE_CONFIG*"
+export HISTIGNORE="*RCLONE_CONFIG_PASS*:*RCLONE_CONFIG*:*RESTIC_REPOSITORY*:*RESTIC_PASSWORD*"
 export TERM=xterm
 export EDITOR=vi
 export TMOUT=
