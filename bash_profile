@@ -122,6 +122,7 @@ export SQLPATH=${SQLPATH:-${profile_location_dir}/sqlplus/admin}
 export ORACLE_PATH=${SQLPATH}       # from 12cR2 SQLPATH is no longer in use
 export HISTCONTROL=ignoreboth
 export HISTSIZE=10000
+export HISTIGNORE="*RCLONE_CONFIG_PASS*:*RCLONE_CONFIG*"
 export TERM=xterm
 export EDITOR=vi
 export TMOUT=
