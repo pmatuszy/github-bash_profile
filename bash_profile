@@ -129,6 +129,12 @@ export TERM=xterm
 export EDITOR=vi
 export TMOUT=
 
+# let's clean up some history (just in case)
+for p in `history |grep "export RCLONE_CONFIG_PASS="|awk '{print $1}'|sort -nr`;do echo history -d $p ; done
+for p in `history |grep "export RCLONE_CONFIG="|awk '{print $1}'|sort -nr`;do echo history -d $p ; done
+for p in `history |grep "export RESTIC_REPOSITORY="|awk '{print $1}'|sort -nr`;do echo history -d $p ; done
+for p in `history |grep "export RESTIC_PASSWORD="|awk '{print $1}'|sort -nr`;do echo history -d $p ; done
+
 export RLWRAP_HOME=${profile_location_dir}
 
 if [ $JPMORGAN == 1 ]
