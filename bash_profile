@@ -134,7 +134,6 @@ export EDITOR=vi
 export TMOUT=
 
 # let's clean up some history (just in case)
-echo aaa
 for p in `history |grep "export RCLONE_CONFIG_PASS="|awk '{print $1}'|sort -nr`;do history -d $p ; done
 for p in `history |grep "export RCLONE_CONFIG="|awk '{print $1}'|sort -nr`;do history -d $p ; done
 for p in `history |grep "export RESTIC_REPOSITORY="|awk '{print $1}'|sort -nr`;do history -d $p ; done
