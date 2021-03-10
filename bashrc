@@ -1,3 +1,4 @@
+# v. 2.99- 2021.03.10 - reverted change to PROMPT_COMMAND
 # v. 2.98- 2021.03.04 - added PROMPT_COMMAND to reread history file after each command
 # v. 2.97- 2021.03.03 - modified LANG variable from "en_US" to "en_US.UTF-8"
 # v. 2.96- 2020.09.01 - added LANG variable (so on linux mc looks good)
@@ -426,6 +427,7 @@ bash_prompt_command() {
 export PROMPT_COMMAND=bash_prompt_command
 
 # After each command, append to the history file and reread it
-PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND$'\n'}history -a; history -c; history -r"
+#PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND$'\n'}history -a; history -c; history -r"
+PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND$'\n'}"
 
 export LANG=en_US.UTF-8
