@@ -1,3 +1,4 @@
+# v. 1.27- 2021.03.29 - added new lines to .vimrc about jumping to the last position when reopening a file
 # v. 1.26- 2021.03.04 - added new HISTIGNORE to bash_profile
 # v. 1.25- 2021.03.04 - added new lines to .vimrc about no swapfiles and tempfiles
 # v. 1.24- 2021.03.03 - modifled LANG variable in bashrc
