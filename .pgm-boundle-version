@@ -1,3 +1,4 @@
+# v. 1.28- 2021.03.29 - changed bashrc: change LANG by removing ".UTF-8" part - pass and mc should look good now
 # v. 1.27- 2021.03.29 - added new lines to .vimrc about jumping to the last position when reopening a file
 # v. 1.26- 2021.03.04 - added new HISTIGNORE to bash_profile
 # v. 1.25- 2021.03.04 - added new lines to .vimrc about no swapfiles and tempfiles

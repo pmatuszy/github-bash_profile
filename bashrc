@@ -1,3 +1,4 @@
+# v. 3.00- 2021.04.14 - change LANG by removing ".UTF-8" part - pass and mc should look good now
 # v. 2.99- 2021.03.10 - reverted change to PROMPT_COMMAND
 # v. 2.98- 2021.03.04 - added PROMPT_COMMAND to reread history file after each command
 # v. 2.97- 2021.03.03 - modified LANG variable from "en_US" to "en_US.UTF-8"
@@ -431,3 +432,4 @@ export PROMPT_COMMAND=bash_prompt_command
 PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND$'\n'}"
 
 export LANG=en_US.UTF-8
+export LANG=en_US     # by pass i mc sie ladnie wyswietlaly
