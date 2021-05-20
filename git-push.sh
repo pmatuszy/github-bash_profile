@@ -11,7 +11,7 @@ github_project_name=`basename $github_project_name`
 git remote set-url origin git+ssh://git@github.com/pmatuszy/${github_project_name}.git
 
 echo "Do you want to do git push? [y/N]"
-read -t 5 -n 1 p     # read one character (-n) with timeout of 5 seconds
+read -t 60 -n 1 p     # read one character (-n) with timeout of 60 seconds
 echo
 echo
 if [ "${p}" == 'y' -o  "${p}" == 'y' ]; then
@@ -25,7 +25,7 @@ fi
 echo
 echo
 echo "Do you want to do kind of git pull and configure local scripts? [y/N]"
-read -t 5 -n 1 p     # read one character (-n) with timeout of 5 seconds
+read -t 60 -n 1 p     # read one character (-n) with timeout of 60 seconds
 echo
 echo
 if [ "${p}" == 'y' -o  "${p}" == 'y' ]; then
