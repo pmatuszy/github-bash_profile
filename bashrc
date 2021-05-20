@@ -436,7 +436,7 @@ export LANG=en_US.UTF-8
 export LANG=en_US     # by pass i mc sie ladnie wyswietlaly
 
 if (( `cat /proc/cpuinfo |grep -i Raspberry |wc -l` != 0 ));then
-  echo "bashrc: platforma Raspberry" 
+#  echo "bashrc: platforma Raspberry" 
   if [ ! `mountpoint -q /encrypted` ];then
     mkdir -p /encrypted/root/XDG_DATA_HOME
     export XDG_DATA_HOME=/encrypted/root/XDG_DATA_HOME
