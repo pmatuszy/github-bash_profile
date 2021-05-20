@@ -1,3 +1,4 @@
+# v. 3.01- 2021.05.20 - added XDG_DATA_HOME check and /encrypted mount check
 # v. 3.00- 2021.04.14 - change LANG by removing ".UTF-8" part - pass and mc should look good now
 # v. 2.99- 2021.03.10 - reverted change to PROMPT_COMMAND
 # v. 2.98- 2021.03.04 - added PROMPT_COMMAND to reread history file after each command
