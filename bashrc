@@ -1,3 +1,4 @@
+# v. 3.02- 2021.08.28 - added LC_TIME by date wyswietlal 24h czas
 # v. 3.01- 2021.05.20 - added XDG_DATA_HOME check and /encrypted mount check
 # v. 3.00- 2021.04.14 - change LANG by removing ".UTF-8" part - pass and mc should look good now
 # v. 2.99- 2021.03.10 - reverted change to PROMPT_COMMAND
@@ -434,6 +435,7 @@ PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND$'\n'}"
 
 export LANG=en_US.UTF-8
 export LANG=en_US     # by pass i mc sie ladnie wyswietlaly
+export LC_TIME=en_GB  # by date pokazywal 24h czas
 
 if (( `cat /proc/cpuinfo |grep -i Raspberry |wc -l` != 0 ));then
 #  echo "bashrc: platforma Raspberry" 

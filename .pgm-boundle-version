@@ -1,3 +1,4 @@
+# v. 1.30- 2021.08.28 - changed bashrc: added LC_TIME by date wyswietlal 24h czas
 # v. 1.29- 2021.05.20 - changed bashrc: added XDG_DATA_HOME check and /encrypted mount check
 # v. 1.28- 2021.03.29 - changed bashrc: change LANG by removing ".UTF-8" part - pass and mc should look good now
 # v. 1.27- 2021.03.29 - added new lines to .vimrc about jumping to the last position when reopening a file
