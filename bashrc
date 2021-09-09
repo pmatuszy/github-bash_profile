@@ -447,3 +447,7 @@ if (( `cat /proc/cpuinfo |grep -i Raspberry |wc -l` != 0 ));then
   fi 
 fi
 
+if [[ $- == *i* ]]; then
+    bind 'set enable-bracketed-paste off'
+fi
+
