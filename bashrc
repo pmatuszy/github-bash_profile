@@ -1,4 +1,4 @@
-# v. 3.01- 2021.09.09 - added enable-bracketed-paste to disable strange behaviour of  new bash
+# v. 3.01- 2021.09.09 - added enable-bracketed-paste to disable strange behaviour of the new bash
 # v. 3.02- 2021.08.28 - added LC_TIME by date wyswietlal 24h czas
 # v. 3.01- 2021.05.20 - added XDG_DATA_HOME check and /encrypted mount check
 # v. 3.00- 2021.04.14 - change LANG by removing ".UTF-8" part - pass and mc should look good now
