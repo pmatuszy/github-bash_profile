@@ -1,4 +1,7 @@
 deflogin off
+
+defscrollback 100000
+
 # THIS IS THE PRETTY BIT
 #change the hardstatus settings to give an window list at the bottom of the
 ##screen, with the time and date and with the current window highlighted
