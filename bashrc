@@ -1,3 +1,4 @@
+# v. 3.02- 2022.07.01 - added some LC_ variables to beautify output formats 
 # v. 3.01- 2021.09.09 - added enable-bracketed-paste to disable strange behaviour of the new bash
 # v. 3.02- 2021.08.28 - added LC_TIME by date wyswietlal 24h czas
 # v. 3.01- 2021.05.20 - added XDG_DATA_HOME check and /encrypted mount check
@@ -434,9 +435,13 @@ export PROMPT_COMMAND=bash_prompt_command
 #PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND$'\n'}history -a; history -c; history -r"
 PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND$'\n'}"
 
-export LANG=en_US.UTF-8
-export LANG=en_US     # by pass i mc sie ladnie wyswietlaly
 export LC_TIME=en_GB  # by date pokazywal 24h czas
+
+export LC_MESSAGES=en_US.UTF-8
+export LC_COLLATE=en_US.UTF-8
+export LANG=en_US.utf8           # by pass i mc sie ladnie wyswietlaly
+export LANGUAGE=en_US:en
+export LC_CTYPE=en_US.UTF-8
 
 if (( `cat /proc/cpuinfo |grep -i Raspberry |wc -l` != 0 ));then
 #  echo "bashrc: platforma Raspberry" 
