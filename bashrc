@@ -1,3 +1,4 @@
+# v. 3.03- 2022.11.14 - added help-date and help-dd aliases
 # v. 3.02- 2022.07.01 - added some LC_ variables to beautify output formats 
 # v. 3.01- 2021.09.09 - added enable-bracketed-paste to disable strange behaviour of the new bash
 # v. 3.02- 2021.08.28 - added LC_TIME by date wyswietlal 24h czas
@@ -323,6 +324,8 @@ fi
 alias global="cd /orcl/app/oracle/admin"
 alias ll="ls -la "
 alias  l="ls -la "
+alias help-date="echo date \'+%Y.%m.%d %H:%M:%S\'"
+alias help-dd="echo dd bs=50M if= of= status=progress conv=fdatasync  oflag=direct"
 
 boldon="`tty -s && /usr/bin/tput smso`"
 boldoff="`tty -s && /usr/bin/tput rmso`"
