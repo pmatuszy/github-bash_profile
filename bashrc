@@ -1,3 +1,4 @@
+# v. 3.04- 2022.12.07 - added help-sshfs
 # v. 3.03- 2022.11.14 - added help-date and help-dd aliases
 # v. 3.02- 2022.07.01 - added some LC_ variables to beautify output formats 
 # v. 3.01- 2021.09.09 - added enable-bracketed-paste to disable strange behaviour of the new bash
@@ -326,6 +327,7 @@ alias ll="ls -la "
 alias  l="ls -la "
 alias help-date="echo date \'+%Y.%m.%d %H:%M:%S\'"
 alias help-dd="echo dd bs=50M if= of= status=progress conv=fdatasync  oflag=direct"
+alias help-sshfs="echo sshfs -o Compression=no -o ServerAliveCountMax=2 -o ServerAliveInterval=15 root@.eth.r.matuszyk.com:/directory /mnt/"
 
 boldon="`tty -s && /usr/bin/tput smso`"
 boldoff="`tty -s && /usr/bin/tput rmso`"
