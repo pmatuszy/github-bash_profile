@@ -1,3 +1,4 @@
+# v. 3.05- 2022.12.16 - bugfix: removed hardcoded root from XDG_DATA_HOME (now it is $USER)
 # v. 3.04- 2022.12.07 - added help-sshfs
 # v. 3.03- 2022.11.14 - added help-date and help-dd aliases
 # v. 3.02- 2022.07.01 - added some LC_ variables to beautify output formats 
@@ -451,8 +452,8 @@ export LC_CTYPE=en_US.UTF-8
 if (( `cat /proc/cpuinfo |grep -i Raspberry |wc -l` != 0 ));then
 #  echo "bashrc: platforma Raspberry" 
   if [ ! `mountpoint -q /encrypted` ];then
-    mkdir -p /encrypted/root/XDG_DATA_HOME
-    export XDG_DATA_HOME=/encrypted/root/XDG_DATA_HOME
+    mkdir -p /encrypted/$USER/XDG_DATA_HOME
+    export XDG_DATA_HOME=/encrypted/$USER/XDG_DATA_HOME
   else
     echo "bashrc: /encrypted nie jest zamontowany - BLAD"
   fi 

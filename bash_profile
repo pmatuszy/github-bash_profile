@@ -127,7 +127,7 @@ export HISTTIMEFORMAT="%F %T "
 # dont limit the size of the history file.
 # export HISTSIZE=10000
 unset HISTFILESIZE
-export HISTFILE=${profile_location_dir}/.moja_historia_${LOGNAME}
+export HISTFILE=${profile_location_dir}/.moja_historia_${USER}
 
 export TERM=xterm
 export EDITOR=vi

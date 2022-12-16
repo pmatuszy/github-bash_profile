@@ -59,9 +59,9 @@ if [[ "$USER" == "oracle" || "$USER" == "grid" ]]; then
  
   chmod 644 bin/wynik.txt .pgm-boundle-version 2>/dev/null
 
-  touch adrci_history expdp_history impdp_history sqlplus_history asmcmd_history dgmgrl_history .moja_historia_oracle
+  touch adrci_history expdp_history impdp_history sqlplus_history asmcmd_history dgmgrl_history .moja_historia_${USER}
   chmod 666 adrci_history expdp_history impdp_history sqlplus_history 2> /dev/null
-  chmod 666 asmcmd_history dgmgrl_history .moja_historia_oracle 2>/dev/null
+  chmod 666 asmcmd_history dgmgrl_history .moja_historia_${USER} 2>/dev/null
   popd 
 else
   rm login.sql i.sql crs_stat-t pickora wynik.txt 2>/dev/null
