@@ -342,7 +342,7 @@ alias gitbdb="${profile_location_dir}/github-bin/git-pull.sh batch"
 alias gitbu="${profile_location_dir}/github-bin/git-push.sh"
 alias gitbub="${profile_location_dir}/github-bin/git-push.sh batch"
 
-alias aptitude-all="boxes 'aptitude -q update';aptitude -q update;boxes 'aptitude -q upgrade';aptitude -q upgrade;boxes 'aptitude -q autoclean';aptitude -q autoclean"
+alias aptitude-all="boxes <<<'aptitude -q update';aptitude -q update;boxes <<<'aptitude -q upgrade';aptitude -q upgrade;boxes <<<'aptitude -q autoclean';aptitude -q autoclean"
 
 
 boldon="`tty -s && /usr/bin/tput smso`"
