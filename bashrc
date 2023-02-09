@@ -330,6 +330,18 @@ alias help-date="echo date \'+%Y.%m.%d %H:%M:%S\'"
 alias help-dd="echo dd bs=50M if= of= status=progress conv=fdatasync  oflag=direct"
 alias help-sshfs="echo sshfs -o Compression=no -o ServerAliveCountMax=2 -o ServerAliveInterval=15 root@.eth.r.matuszyk.com:/directory /mnt/"
 
+# github aliases
+alias pd="${profile_location_dir}/github-bash_profile/git-pull.sh"
+alias pdb="${profile_location_dir}/github-bash_profile/git-pull.sh batch"
+alias pu="${profile_location_dir}/github-bash_profile/git-push.sh"
+alias pub="${profile_location_dir}/github-bash_profile/git-push.sh batch"
+
+alias bd="${profile_location_dir}/github-bin/git-pull.sh"
+alias bdb="${profile_location_dir}/github-bin/git-pull.sh batch"
+alias bu="${profile_location_dir}/github-bin/git-push.sh"
+alias bub="${profile_location_dir}/github-bin/git-push.sh batch"
+
+
 boldon="`tty -s && /usr/bin/tput smso`"
 boldoff="`tty -s && /usr/bin/tput rmso`"
 shopt -s histappend                 # Make Bash append rather than overwrite the history on disk
