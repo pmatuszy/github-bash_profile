@@ -65,7 +65,6 @@ fi
 
 if (( $batch_mode == 0 ));then
   ./git-pull.sh
-  ./install.sh
 else
   ./git-pull.sh batch
 fi
