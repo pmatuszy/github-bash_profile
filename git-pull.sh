@@ -6,8 +6,8 @@
 
 . /root/bin/_script_header.sh
 
-export GIT_REPO_DIRECTORY=/root/github-bash
-export github_project_name=github-bash
+export GIT_REPO_DIRECTORY=/root/github-bash_profile
+export github_project_name=github-bash_profile
 
 check_if_installed keychain
 keychain --nocolor id_ed25519 id_SSH_ed25519_20230207_OpenSSH
