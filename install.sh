@@ -1,6 +1,7 @@
+#!/bin/bash
+
 # 2021.02.10 - v. 0.2 - added some structural changes - too many changes to describe them here :-)
 # 20xx.xx.xx - v. 0.1 - initial release
-
 
 echo "Platform: `uname -s`"
 
