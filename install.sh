@@ -3,6 +3,13 @@
 # 2021.02.10 - v. 0.2 - added some structural changes - too many changes to describe them here :-)
 # 20xx.xx.xx - v. 0.1 - initial release
 
+batch_mode=0
+
+if (( $# != 0 )) && [ "${1-nonbatch}" == "batch" ]; then
+  echo ; echo "(PGM) enabling batch mode (no questions asked)"
+  batch_mode=1
+fi
+
 echo "Platform: `uname -s`"
 
 export profile_location_dir=/root/pgm
@@ -15,9 +22,14 @@ export profile_location_dir=$HOME
 echo "profile_location_dir = ${profile_location_dir}"
 echo "is that ok? [y/N]"
 
-read -n 1 a
+if (( $batch_mode == 0 ));then
+  read -t 300 -n 1 p     # read one character (-n) with timeout of 300 seconds
+else
+  echo "y (autoanswer in a batch mode)"
+  p=y # batch mode ==> we set the answer to 'y'
+fi
 
-if [ "$a" != "y" ];then
+if [ "$p" != "y" ];then
   echo exiting then...
   exit 1
 fi
