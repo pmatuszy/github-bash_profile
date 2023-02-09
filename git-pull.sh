@@ -51,8 +51,11 @@ if [ "${p}" == 'y' -o  "${p}" == 'y' ]; then
   fi
 
   cd "$HOME/${github_project_name}"
-  ./install.sh
-  git status
+  if (( $batch_mode == 0 ));then
+    ./install.sh 
+  else
+    ./install.sh batch
+  fi
 else
   echo "no means no - I am exiting..."
   exit 1
