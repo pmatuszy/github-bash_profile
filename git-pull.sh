@@ -50,7 +50,7 @@ if [ "${p}" == 'y' -o  "${p}" == 'y' ]; then
     exit 3
   fi
 
-  cd $HOME/${github_project_name}
+  cd "$HOME/${github_project_name}"
   ./install.sh
   git status
 else
