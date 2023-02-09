@@ -68,27 +68,6 @@ if (( $batch_mode == 0 ));then
   ./install.sh
 else
   ./git-pull.sh batch
-  ./install.sh  batch
 fi
 
 . /root/bin/_script_footer.sh
-
-exit
-exit
-exit
-
-
-
-echo
-echo
-echo "Do you want to do kind of git pull and configure local scripts? [y/N]"
-read -t 60 -n 1 p     # read one character (-n) with timeout of 60 seconds
-echo
-echo
-if [ "${p}" == 'y' -o  "${p}" == 'y' ]; then
-  cd $HOME/${github_project_name}
-  ./install.sh
-else
-  echo "no means no - I am exiting..."
-  exit 1
-fi
