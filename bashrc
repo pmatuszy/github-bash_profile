@@ -1,3 +1,4 @@
+# v. 3.06- 2023.02.09 - added github aliases
 # v. 3.05- 2022.12.16 - bugfix: removed hardcoded root from XDG_DATA_HOME (now it is $USER)
 # v. 3.04- 2022.12.07 - added help-sshfs
 # v. 3.03- 2022.11.14 - added help-date and help-dd aliases

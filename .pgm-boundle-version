@@ -1,3 +1,4 @@
+# v. 1.33- 2023.02.09 - changed bashrc: added github aliases
 # v. 1.32- 2022.12.16 - changed bashrc: bugfix in XDG_DATA_HOME 
 # v. 1.32- 2022.07.01 - changed bashrc: added some LC_ variables to beautify output formats
 # v. 1.31- 2021.09.09 - changed bashrc: added enable-bracketed-paste to disable strange behaviour of  new bash
