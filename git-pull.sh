@@ -11,7 +11,6 @@ export github_project_name=github-bash_profile
 
 export GIT_SSH_COMMAND='ssh -i $HOME/.ssh/id_SSH_ed25519_20230207_OpenSSH'
 
-<<<<<<< HEAD
 check_if_installed keychain
 keychain --nocolor id_ed25519 id_SSH_ed25519_20230207_OpenSSH
 =======
