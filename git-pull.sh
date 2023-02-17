@@ -11,8 +11,16 @@ export github_project_name=github-bash_profile
 
 export GIT_SSH_COMMAND='ssh -i $HOME/.ssh/id_SSH_ed25519_20230207_OpenSSH'
 
+<<<<<<< HEAD
 check_if_installed keychain
 keychain --nocolor id_ed25519 id_SSH_ed25519_20230207_OpenSSH
+=======
+eval keychain -q --nogui --nocolor --eval id_rsa id_ed25519 id_SSH_ed25519_20230207_OpenSSH 2>&1
+
+if [ -f $HOME/.keychain/$HOSTNAME-sh ];then
+  . $HOME/.keychain/$HOSTNAME-sh
+fi
+>>>>>>> 1b050db16c723532c91de31fe931772e7de788e7
 
 batch_mode=0
 
