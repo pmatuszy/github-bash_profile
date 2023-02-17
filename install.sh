@@ -103,3 +103,5 @@ chmod 711 $HOME
 
 rm -f a profile.tar test.sh
 rmdir ${profile_location_dir}/bin ${profile_location_dir}/lib 2>/dev/null
+
+exit 0
