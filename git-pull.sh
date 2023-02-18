@@ -6,6 +6,10 @@
 
 . /root/bin/_script_header.sh
 
+if (( ! script_is_run_interactively ));then    # jesli nie interaktywnie, to chcemy wyswietlic info, by poszlo do logow
+  echo "${SCRIPT_VERSION}";echo
+fi
+
 export GIT_REPO_DIRECTORY=/root/github-bash_profile
 export github_project_name=github-bash_profile
 
