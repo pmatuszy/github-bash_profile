@@ -46,7 +46,7 @@ echo
 echo
 if [ "${p}" == 'y' -o  "${p}" == 'y' ]; then
   git add * .[a-zA-Z]*
-  git commit -m \""new push from `hostname` @ `date '+%Y.%m.%d %H:%M:%S'`"\"
+  git commit -m \""new push from `hostname` @ `date '+%Y.%m.%d %H:%M:%S'`"\" | boxes -s 90x6 -a l -d ada-box
   git push
 else
   echo "no means no - I am exiting..."
