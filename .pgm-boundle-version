@@ -1,14 +1,3 @@
-# v. 1.33- 2023.02.09 - changed bashrc: added github aliases
-# v. 1.32- 2022.12.16 - changed bashrc: bugfix in XDG_DATA_HOME 
-# v. 1.32- 2022.07.01 - changed bashrc: added some LC_ variables to beautify output formats
-# v. 1.31- 2021.09.09 - changed bashrc: added enable-bracketed-paste to disable strange behaviour of  new bash
-# v. 1.30- 2021.08.28 - changed bashrc: added LC_TIME by date wyswietlal 24h czas
-# v. 1.29- 2021.05.20 - changed bashrc: added XDG_DATA_HOME check and /encrypted mount check
-# v. 1.28- 2021.03.29 - changed bashrc: change LANG by removing ".UTF-8" part - pass and mc should look good now
-# v. 1.27- 2021.03.29 - added new lines to .vimrc about jumping to the last position when reopening a file
-# v. 1.26- 2021.03.04 - added new HISTIGNORE to bash_profile
-# v. 1.25- 2021.03.04 - added new lines to .vimrc about no swapfiles and tempfiles
-# v. 1.24- 2021.03.03 - modifled LANG variable in bashrc
 # v. 1.23- 2020.10.19 - test.sh renamed to install.sh, added _doit.sh, small changes to install.sh
 #                       to read just one character (read -n 1)
 # v. 1.22- 2020.09.01 - new version of bashrc

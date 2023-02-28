@@ -1,4 +1,3 @@
-# v. 2.12- 2021.03.04 - added HISTIGNORE and HISTTIMEFORMAT variable
 # v. 2.11- 2020.03.05 - added UBS specific environment variables
 # v. 2.10- 2019.11.21 - changed od paths from pg to pgm, wrong PATH - fixed now
 # v. 2.09- 2019.11.19 - changed stty erase to '^?'
@@ -45,7 +44,7 @@
 #####################################
 # settig profile_location_dir START #
 #####################################
-export profile_location_dir=/root
+export profile_location_dir=/home/oracle/pgm
 JPMORGAN=0
 MATUSZYK=0
 KGP=0
@@ -122,22 +121,10 @@ export MANPATH=$MANPATH:/opt/VRTS/man:/usr/man:/usr/local/man:/usr/demo/link_aud
 export SQLPATH=${SQLPATH:-${profile_location_dir}/sqlplus/admin}
 export ORACLE_PATH=${SQLPATH}       # from 12cR2 SQLPATH is no longer in use
 export HISTCONTROL=ignoreboth
-export HISTIGNORE="*RCLONE_CONFIG_PASS*:*RCLONE_CONFIG*:*RESTIC_REPOSITORY*:*RESTIC_PASSWORD*"
-export HISTTIMEFORMAT="%F %T "
-# dont limit the size of the history file.
-# export HISTSIZE=10000
-unset HISTFILESIZE
-export HISTFILE=${profile_location_dir}/.moja_historia_${USER}
-
+export HISTSIZE=10000
 export TERM=xterm
 export EDITOR=vi
 export TMOUT=
-
-# let's clean up some history (just in case)
-for p in `history |grep "export RCLONE_CONFIG_PASS="|awk '{print $1}'|sort -nr`;do history -d $p ; done
-for p in `history |grep "export RCLONE_CONFIG="|awk '{print $1}'|sort -nr`;do history -d $p ; done
-for p in `history |grep "export RESTIC_REPOSITORY="|awk '{print $1}'|sort -nr`;do history -d $p ; done
-for p in `history |grep "export RESTIC_PASSWORD="|awk '{print $1}'|sort -nr`;do history -d $p ; done
 
 export RLWRAP_HOME=${profile_location_dir}
 
@@ -146,6 +133,9 @@ if [ $JPMORGAN == 1 ]
     export http_proxy=http://emeaproxy.jpmchase.net:8080
 fi
 
+# dont limit the size of the history file.
+unset HISTFILESIZE
+export HISTFILE=${profile_location_dir}/.moja_historia_${LOGNAME}
 ################################################################################################
 
 stty erase '^?'

@@ -1,15 +1,3 @@
-# v. 3.06- 2023.02.09 - added github aliases,aptitude-all
-# v. 3.05- 2022.12.16 - bugfix: removed hardcoded root from XDG_DATA_HOME (now it is $USER)
-# v. 3.04- 2022.12.07 - added help-sshfs
-# v. 3.03- 2022.11.14 - added help-date and help-dd aliases
-# v. 3.02- 2022.07.01 - added some LC_ variables to beautify output formats 
-# v. 3.01- 2021.09.09 - added enable-bracketed-paste to disable strange behaviour of the new bash
-# v. 3.02- 2021.08.28 - added LC_TIME by date wyswietlal 24h czas
-# v. 3.01- 2021.05.20 - added XDG_DATA_HOME check and /encrypted mount check
-# v. 3.00- 2021.04.14 - change LANG by removing ".UTF-8" part - pass and mc should look good now
-# v. 2.99- 2021.03.10 - reverted change to PROMPT_COMMAND
-# v. 2.98- 2021.03.04 - added PROMPT_COMMAND to reread history file after each command
-# v. 2.97- 2021.03.03 - modified LANG variable from "en_US" to "en_US.UTF-8"
 # v. 2.96- 2020.09.01 - added LANG variable (so on linux mc looks good)
 # v. 2.95- 2020.03.05 - added UBS specific environment variables
 # v. 2.94- 2019.11.29 - changing the terminal size to 181x71 on Linux systems
@@ -111,7 +99,7 @@
 #####################################
 # settig profile_location_dir START #
 #####################################
-export profile_location_dir=/root
+export profile_location_dir=/home/oracle/pgm
 JPMORGAN=0
 MATUSZYK=0
 KGP=0
@@ -327,23 +315,6 @@ fi
 alias global="cd /orcl/app/oracle/admin"
 alias ll="ls -la "
 alias  l="ls -la "
-alias help-date="echo date \'+%Y.%m.%d %H:%M:%S\'"
-alias help-dd="echo dd bs=50M if= of= status=progress conv=fdatasync  oflag=direct"
-alias help-sshfs="echo sshfs -o Compression=no -o ServerAliveCountMax=2 -o ServerAliveInterval=15 root@.eth.r.matuszyk.com:/directory /mnt/"
-
-# github aliases
-alias gitpd="${profile_location_dir}/github-bash_profile/git-pull.sh"
-alias gitpdb="${profile_location_dir}/github-bash_profile/git-pull.sh batch"
-alias gitpu="${profile_location_dir}/github-bash_profile/git-push.sh"
-alias gitpub="${profile_location_dir}/github-bash_profile/git-push.sh batch"
-
-alias gitbd="${profile_location_dir}/github-bin/git-pull.sh"
-alias gitbdb="${profile_location_dir}/github-bin/git-pull.sh batch"
-alias gitbu="${profile_location_dir}/github-bin/git-push.sh"
-alias gitbub="${profile_location_dir}/github-bin/git-push.sh batch"
-
-alias aptitude-all="boxes <<<'aptitude -q update';aptitude -q update;boxes <<<'aptitude -q upgrade';aptitude -q upgrade;boxes <<<'aptitude -q autoclean';aptitude -q autoclean"
-
 
 boldon="`tty -s && /usr/bin/tput smso`"
 boldoff="`tty -s && /usr/bin/tput rmso`"
@@ -451,30 +422,4 @@ bash_prompt_command() {
     history -a                          # Whenever displaying the prompt, write the previous line to disk
 }
 export PROMPT_COMMAND=bash_prompt_command
-
-# After each command, append to the history file and reread it
-#PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND$'\n'}history -a; history -c; history -r"
-PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND$'\n'}"
-
-export LC_TIME=en_GB  # by date pokazywal 24h czas
-
-export LC_MESSAGES=en_US.UTF-8
-export LC_COLLATE=en_US.UTF-8
-export LANG=en_US.utf8           # by pass i mc sie ladnie wyswietlaly
-export LANGUAGE=en_US:en
-export LC_CTYPE=en_US.UTF-8
-
-if (( `cat /proc/cpuinfo |grep -i Raspberry |wc -l` != 0 ));then
-#  echo "bashrc: platforma Raspberry" 
-  if [ ! `mountpoint -q /encrypted` ];then
-    mkdir -p /encrypted/$USER/XDG_DATA_HOME
-    export XDG_DATA_HOME=/encrypted/$USER/XDG_DATA_HOME
-  else
-    echo "bashrc: /encrypted nie jest zamontowany - BLAD"
-  fi 
-fi
-
-if [[ $- == *i* ]]; then
-    bind 'set enable-bracketed-paste off'
-fi
-
+export LANG=en_US

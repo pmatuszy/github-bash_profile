@@ -13,7 +13,7 @@ screen -t top 0 top
 screen -t "vnstat -l" 1 vnstat -l
 # screen -t "arc_summary -s arc" 2 arc_summary -s arc
 screen -t iostat 3 iostat --no-color 1
-screen -t "bmon -p eth0" 4 bmon -p eth0
+#screen -t "bmon -p eth0" 4 bmon -p eth0
 
 bindkey -k F2 next
 bindkey -k F1 prev
