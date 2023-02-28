@@ -65,4 +65,10 @@ mv a bashrc
 chmod 711 $HOME
 
 rm -f a profile.tar test.sh
+<<<<<<< HEAD
 rmdir bin lib 2>/dev/null
+=======
+rmdir ${profile_location_dir}/bin ${profile_location_dir}/lib 2>/dev/null
+
+exit 0
+>>>>>>> 309c20e4963b3d55437d8c17c85240d8520ffd0a

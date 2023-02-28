@@ -10,11 +10,22 @@
 
 . /root/bin/_script_header.sh
 
-export GIT_REPO_DIRECTORY=/root/github-bash_profile
+if (( ! script_is_run_interactively ));then    # jesli nie interaktywnie, to chcemy wyswietlic info, by poszlo do logow
+  echo "${SCRIPT_VERSION}";echo
+fi
+
 export github_project_name=github-bash_profile
+export GIT_REPO_DIRECTORY=/root/github-bash_profile
+export GIT_SSH_COMMAND='ssh -i $HOME/.ssh/id_SSH_ed25519_20230207_OpenSSH'
 
 check_if_installed keychain
-keychain --nocolor id_ed25519 id_SSH_ed25519_20230207_OpenSSH
+eval keychain -q --nogui --nocolor --eval id_rsa id_ed25519 id_SSH_ed25519_20230207_OpenSSH >/dev/null 2>&1
+
+if [ -f $HOME/.keychain/$HOSTNAME-sh ];then
+  . $HOME/.keychain/$HOSTNAME-sh
+fi
+
+keychain --nogui --nocolor id_rsa id_ed25519 id_SSH_ed25519_20230207_OpenSSH
 
 batch_mode=0
 
@@ -39,7 +50,7 @@ echo
 echo
 if [ "${p}" == 'y' -o  "${p}" == 'y' ]; then
   git add * .[a-zA-Z]*
-  git commit -m \""new push from `hostname` @ `date '+%Y.%m.%d %H:%M:%S'`"\"
+  git commit -m \""new push from `hostname` @ `date '+%Y.%m.%d %H:%M:%S'`"\" | boxes -s 90x6 -a l -d ada-box
   git push
 else
   echo "no means no - I am exiting..."
