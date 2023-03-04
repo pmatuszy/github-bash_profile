@@ -1,3 +1,4 @@
+# v. 3.07- 2023.03.03 - changed aptitude-all by adding checking # of pkgs to be updated
 # v. 3.06- 2023.02.09 - added github aliases,aptitude-all
 # v. 3.05- 2022.12.16 - bugfix: removed hardcoded root from XDG_DATA_HOME (now it is $USER)
 # v. 3.04- 2022.12.07 - added help-sshfs
