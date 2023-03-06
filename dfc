@@ -1,0 +1,11 @@
+export LANG_temp="${LANG}"
+export LANG=en_US.utf8
+
+echo && \
+df -Plk | grep Filesystem | awk '{printf "%-20s %15s %15s %15s %10s\n",$6,$2,$3,$4,$5}' &&
+echo "==================   ===============    ============   =============   ========" &&
+df -Plk|egrep '^/dev/|^.:' | \
+awk '{printf "%-20s %'\''15.0f %'\''15.0f %'\''15.0f      %4.0f%\n",$6,$2,$3,$4,$5}' | \
+sort -r -k5 && echo 
+
+export LANG="${LANG_temp}"
