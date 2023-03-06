@@ -1,0 +1,260 @@
+#*******************************************************************************
+#
+#  @(#)
+#
+#  Filename:    pickora
+#  ---------
+#
+#  Description: This script is used setup a user's environment for access to
+#  ------------ an ORACLE database. It is loosely based on oraenv.
+#
+#  Usage: . pickora [ORACLE_SID]
+#  ------
+#
+#  Notes: This script should be sourced, as such it does not exit when errors are
+#  ------ encounted, we don't want to leave the shell.  It will prompt for the
+#         value of the new ORACLE_SID if the SID is not supplied as a parameter.
+#
+#  Modification History:
+#  ---------------------
+#  Date      Ver   By   Description
+#  --------  ---   ---  -----------
+#  21/01/08  1.0   SPM  Initial version.
+#  19/08/08  1.1   LDP  Add in some extra aliases.
+#  03/04/12  1.2   PGM  sorting issues on HP-UX sorted out
+#  23/05/12  1.3   PGM  awk exec modified (didn't work on HP-UX with ASM instances)
+#  15/03/12  1.4   PGM  if there are two instances with the same name but in
+#                       different home it is now possible to choose which one
+#  22/05/13  1.5   PGM  if there was oracle sid commented out in oratab it was interpreted incorrectly (line 116)
+#  15/11/19  1.6   PGM  if [ -f /var/opt/oracle/oratab ] then ORATAB is set there, added OPatch to $PATH
+#  15/11/19  1.6   PGM  if [ -f /var/opt/oracle/oratab ] then ORATAB is set there, added OPatch to $PATH
+#  19/11/19  1.7   PGM  if wrong number is provided we unset oracle env variables
+#  26/11/19  1.8   PGM  commended out a lot of aliases which used ORA_ env variables
+#  28/11/19  1.8   PGM  looping if wrong number was entered
+#*******************************************************************************
+
+##
+### Variables
+##
+ORATAB=/etc/oratab
+
+if [ -f /var/opt/oracle/oratab ]; then
+  ORATAB=/var/opt/oracle/oratab
+fi
+RET_VAL=0
+
+
+##
+### Functions
+##
+
+##
+### Begin
+##
+
+if [ -f $ORATAB ]; then
+
+  # Get the Current Values for ORACLE HOME/SID, to be used when
+  # resetting PATH/LD_LIBRARY_PATH
+  if [ ${ORACLE_HOME:-0} = 0 ]; then
+      OLDHOME=$PATH
+  else
+      OLDHOME=$ORACLE_HOME
+  fi
+
+  case "$ORACLE_SID" in
+      "")       ORASID=$LOGNAME ;;
+      *)        ORASID=$ORACLE_SID ;;
+  esac
+
+  # Determine how to suppress newline with echo command.
+  N=
+  C=
+  if echo "\c" | grep c >/dev/null 2>&1; then
+      N='-n'
+  else
+      C='\c'
+  fi
+
+  # Get the command line parameter or prompt
+  if [ "$1" = "" ]; then
+    # No parameter supplied so read prompt for input
+    NEWSID="9999"
+    max_number_in_menu=`egrep -n '^[^#]+:' $ORATAB | wc -l`
+    number_chosen="9998"
+    until [ ${number_chosen} -le ${max_number_in_menu} ]; do
+      echo
+      echo "Instances listed in the ORATAB (currently set to $ORATAB)"
+      echo
+      # Show the SIDS from ORATAB with a number for each to choose, format:
+      # [1]     MYDBDA        /u01/oracle/product/MYDB/10.2.0/
+
+      egrep -n '^[^#]+:' $ORATAB |sort -t: -k2,2| awk -F: '{print "["NR"]" "\t" $2 "\t" $3}'
+      echo
+      echo [q/Q/e/E/k/K/[ENTER]] - exit without changing the currently set variables
+      echo
+
+      # Get the user input
+      echo $N "ORACLE_SID = [$ORASID] ? $C"
+      read NEWSID
+      if [[ "$NEWSID" = "q" || "$NEWSID" = "Q" || "$NEWSID" = "e" || "$NEWSID" = "E" || "$NEWSID" = "k" || "$NEWSID" = "K" || "$NEWSID" = "" ]]; then
+        return 2
+      fi
+
+      # from that moment on we would like to have only positive integers
+      if (( "$NEWSID" > $max_number_in_menu || $NEWSID < 1 )) ; then
+         export error_string="ERRARE HUMANUM EST dude. Choose the CORRECT number, you get another chance"
+         export error_string_temp="$error_string"
+         echo
+         echo '############################################################################'
+         for i in {1..77}
+            do
+            sleep 0.01
+            # echo `echo "$error_string_temp"`
+            echo -n "${error_string_temp::1}"
+            error_string_temp=${error_string_temp:1}
+         done
+         for p in {1..2}; do echo -n . ; sleep 1 ; done
+         echo
+         echo '############################################################################'
+         echo
+         # continue
+      else
+         break
+      fi
+      done
+
+    # Read the ORATAB and to get the SID based on the number supplied (NR == $NEWSID)
+    ORASID=`egrep -n '^[^#]+:' $ORATAB|sort -t: -k2,2 |awk -F: "NR == \"$NEWSID\" {print \\$2}"`
+
+    if [ "$ORASID" = "" ]; then
+      echo "Invalid Input '${NEWSID}'. Specify a number in the list."
+      export ORACLE_SID=
+      export ORACLE_HOME=
+      export ORACLE_BASE=
+      export TNS_ADMIN=
+      RET_VAL=1
+      return 1
+    fi
+
+  else
+    # We've been passed the SID so just process without prompting and reset it
+    ORASID="$1"
+    shift "$#"
+  fi
+
+
+  # Parse the ORATAB and set the main variables
+     # "*" is a special case - it means no SID to be defined.
+     # Escape "*" in order match on it in the ORATAB using awk
+     if [ "${ORASID}" = "*" ]; then
+       ORASID='\*'
+     fi
+
+    # Get the Home defined in the ORATAB for the SID
+    # PGM - modified in 1.4 version of the script: commmented out and setting ORAHOME a new way
+    # ORAHOME=`awk -F: "/${ORASID/+/}:/ {print \\$2; exit}" $ORATAB`
+    ORAHOME=`cat $ORATAB | egrep -v '^ *#'| egrep -n '[^#]+:'|sort -t: -k2,2 |awk -F: "NR == \"$NEWSID\" {print \\$3}"`
+
+    # If it is RAC, we may have been passed a DB_NAME instead of a SID
+    # See if we have a SID - DB_NAME=MYDB01 => SID=MYDB01A
+    if  [ -z "$ORAHOME" ]; then
+      # ORAHOME=`awk -F: "/${ORASID/+/}:/ {print \\$2; exit}" $ORATAB`
+      # ORAHOME=`cat $ORATAB | egrep -v '^ *#'|awk -F: "/${ORASID/+/}:/ {print \\$2; exit}" $ORATAB`
+      ORAHOME=`cat $ORATAB | egrep -v '^ *#'|awk -F: "/${ORASID/+/}:/ {print \\$2; exit}"`
+      if [ -n "$ORAHOME" ]; then
+        ORASID=`cat $ORATAB | egrep -v '^ *#'| awk -F: "/${ORASID/+/}:/ {print \\$1; exit}"`
+      fi
+    fi
+
+    case "$ORAHOME" in
+         "") echo "Cannot locate ORACLE_HOME for SID '${ORASID}'"
+             RET_VAL=1 ;;
+          *)
+             # Null the SID for "*"
+             if [ "${ORASID}" = '\*' ]; then
+               ORACLE_SID=; export ORACLE_SID
+             else
+               ORACLE_SID=$ORASID; export ORACLE_SID
+             fi
+             ORACLE_HOME=$ORAHOME; export ORACLE_HOME
+             echo "pickora - Setting Environment to ${ORACLE_SID}:${ORACLE_HOME}"
+             # If this is a RAC DB it will have a letter at the end
+             # Strip it off to get the DB_NAME
+             DB_NAME=`echo $ORACLE_SID | sed 's/[a-z|A-Z]$//'`; export DB_NAME
+    esac
+
+export ORACLE_SID
+  #
+  # Put new ORACLE_HOME in path and remove old one
+  #
+  case "$PATH" in
+      *$OLDHOME/bin*)   PATH=`echo $PATH | sed "s;$OLDHOME/bin;$ORACLE_HOME/bin;g"` ;;
+      *$ORACLE_HOME/bin*)       ;;
+      *:)                       PATH=${PATH}$ORACLE_HOME/bin: ;;
+      "")                       PATH=$ORACLE_HOME/bin ;;
+      *)                        PATH=$ORACLE_HOME/bin:$PATH ;;
+  esac
+  PATH=${ORACLE_HOME}/OPatch:${PATH}
+
+  export PATH
+
+  #
+  # Put new ORACLE_HOME in LD_LIBRARY_PATH and remove old one
+  #
+  case "$LD_LIBRARY_PATH" in
+      *$OLDHOME/lib*)     LD_LIBRARY_PATH=`echo $LD_LIBRARY_PATH | \
+                              sed "s;$OLDHOME/lib;$ORACLE_HOME/lib;g"` ;;
+      *$ORACLE_HOME/lib*) ;;
+      *:)                 LD_LIBRARY_PATH=${LD_LIBRARY_PATH}$ORACLE_HOME/lib: ;;
+      "")                 LD_LIBRARY_PATH=$ORACLE_HOME/lib ;;
+      *)                  LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$ORACLE_HOME/lib ;;
+  esac
+
+  export LD_LIBRARY_PATH
+
+
+  #
+  # Custom code/settings here
+  #
+
+  ## Oracle Variables
+  # These two should be set in .profile.ora
+  # ORACLE_BASE=/u01/app/oracle; export ORACLE_BASE
+  # ORA_GLOBAL=${ORACLE_BASE}/global; export ORA_GLOBAL
+
+  # ORA_ADMIN=${ORACLE_BASE}/admin/${DB_NAME}; export ORA_ADMIN
+  # ORA_ARCH=/u98/oraarch/${DB_NAME}; export ORA_ARCH
+  # ORA_DUMP=/u99/oradump/${DB_NAME}; export ORA_DUMP
+  # ORA_FRA=/u97/orafra/${DB_NAME}; export ORA_FRA
+
+  # For SQL*Plus
+  EDITOR=vi; export EDITOR
+
+  PS1="$LOGNAME@`uname -n`:${ORACLE_SID} $ "''; export PS1
+
+  # Aliases
+  # alias admin='cd ${ORA_ADMIN}'
+  # alias arch='cd ${ORA_ARCH}'
+  # alias bdump='cd ${ORA_ADMIN}/bdump'
+  # alias cdump='cd ${ORA_ADMIN}/cdump'
+  alias dfs='df -h | grep ${DB_NAME} | sort -k 6'
+  # alias dlogs='cd ${ORA_ADMIN}/log'
+  # alias dumps='cd ${ORA_DUMP}'
+  # alias fra='cd ${ORA_FRA}'
+  # alias global='cd ${ORA_GLOBAL}'
+  # alias glogs='cd ${ORA_GLOBAL}/log'
+  alias l='ls -ltr'
+  alias lsnrh='ps -ef | grep [l]snr | grep "$ORACLE_HOME"'
+  # alias otools='cd ${ORA_GLOBAL}/oratools'
+  # alias pfile='cd ${ORA_ADMIN}/pfile'
+  # alias scripts='cd ${ORA_GLOBAL}/oratools/bin'
+  # alias udump='cd ${ORA_ADMIN}/udump'
+
+else
+  echo "Cannot read ORATAB - $ORATAB"
+  RET_VAL=1
+fi
+return $RET_VAL
+
+2019-11-28, 1:27:36 PM

@@ -76,8 +76,6 @@ if [[ "$USER" == "oracle" || "$USER" == "grid" ]]; then
   chmod 666 adrci_history expdp_history impdp_history sqlplus_history 2> /dev/null
   chmod 666 asmcmd_history dgmgrl_history .moja_historia_${USER} 2>/dev/null
   popd 
-else
-  rm login.sql i.sql crs_stat-t pickora wynik.txt 2>/dev/null
 fi
 
 rm $profile_location_dir/.bash_profile $profile_location_dir/.bashrc 2>/dev/null

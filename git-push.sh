@@ -36,6 +36,8 @@ fi
 
 cd "${GIT_REPO_DIRECTORY}" || exit 2
 
+./_doit.sh
+
 git remote set-url origin git+ssh://git@github.com/pmatuszy/${github_project_name}.git
 
 echo "Do you want to do git push? [y/N]"
