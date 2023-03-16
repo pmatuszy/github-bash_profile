@@ -1,3 +1,4 @@
+# v. 2.12- 2021.03.04 - added HISTIGNORE and HISTTIMEFORMAT variable
 # v. 2.11- 2020.03.05 - added UBS specific environment variables
 # v. 2.10- 2019.11.21 - changed od paths from pg to pgm, wrong PATH - fixed now
 # v. 2.09- 2019.11.19 - changed stty erase to '^?'
