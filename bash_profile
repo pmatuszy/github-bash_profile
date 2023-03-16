@@ -121,7 +121,19 @@ export MANPATH=$MANPATH:/opt/VRTS/man:/usr/man:/usr/local/man:/usr/demo/link_aud
 export SQLPATH=${SQLPATH:-${profile_location_dir}/sqlplus/admin}
 export ORACLE_PATH=${SQLPATH}       # from 12cR2 SQLPATH is no longer in use
 export HISTCONTROL=ignoreboth
-export HISTSIZE=10000
+export HISTIGNORE="*RCLONE_CONFIG_PASS*:*RCLONE_CONFIG*:*RESTIC_REPOSITORY*:*RESTIC_PASSWORD*"
+export HISTTIMEFORMAT="%F %T "
+# dont limit the size of the history file.
+# export HISTSIZE=10000
+unset HISTFILESIZE
+export HISTFILE=${profile_location_dir}/.moja_historia_${USER}
+
+# let's clean up some history (just in case)
+for p in `history |grep "export RCLONE_CONFIG_PASS="|awk '{print $1}'|sort -nr`;do history -d $p ; done
+for p in `history |grep "export RCLONE_CONFIG="|awk '{print $1}'|sort -nr`;do history -d $p ; done
+for p in `history |grep "export RESTIC_REPOSITORY="|awk '{print $1}'|sort -nr`;do history -d $p ; done
+for p in `history |grep "export RESTIC_PASSWORD="|awk '{print $1}'|sort -nr`;do history -d $p ; done
+
 export TERM=xterm
 export EDITOR=vi
 export TMOUT=
@@ -133,9 +145,6 @@ if [ $JPMORGAN == 1 ]
     export http_proxy=http://emeaproxy.jpmchase.net:8080
 fi
 
-# dont limit the size of the history file.
-unset HISTFILESIZE
-export HISTFILE=${profile_location_dir}/.moja_historia_${LOGNAME}
 ################################################################################################
 
 stty erase '^?'

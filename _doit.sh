@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# 2023.03.16 - v. 0.3 - rm 2> redirection added, dfc moved frmon bin/ to .
 # 2023.03.03 - v. 0.2 - added _script* calls and checks for the installed packages
 # 20xx.xx.xx - v. 0.1 - initial release (date unknown)
 
@@ -9,7 +10,7 @@
 check_if_installed unix2dos dos2unix
 check_if_installed uuencode sharutils
 
-rm profile.tar profile.tar.bz2
+rm profile.tar profile.tar.bz2 2>/dev/null
 chmod 755 bash_profile bashrc crs_stat-t
 chmod 644 wynik.txt
 
