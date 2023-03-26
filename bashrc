@@ -121,12 +121,11 @@ UBS=0
 SOCGEN=0
 cat /etc/hosts|grep -qi jpmchase
 if (( $? == 0 )); then JPMORGAN=1 ; fi
-cat /etc/hosts|grep -qi matuszyk
-if (( $? == 0 )); then MATUSZYK=1 ; fi
+if [ -f /root/bin/smart-indicators.sh ]; then MATUSZYK=1 ; fi
 cat /etc/hosts|grep -qi 'gov.pl'
 if (( $? == 0 )); then KGP=1 ; fi
 
-cat /etc/chrony.conf | grep -qi 'socgen'
+cat /etc/chrony.conf 2>/dev/null | grep -qi 'socgen'
 if (( $? == 0 )); then SOCGEN=1 ; fi
 
 if [ $SOCGEN == 1 ]; then
