@@ -3,6 +3,7 @@ syntax off
 set nobackup       "no backup files
 set nowritebackup  "only in case you don't want a backup file while editing
 set noswapfile     "no swap files
+set expandtab
 
 " to jest z /etc/vim/vimrc wziete
 " Uncomment the following to have Vim jump to the last position when
