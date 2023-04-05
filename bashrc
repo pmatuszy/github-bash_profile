@@ -1,3 +1,4 @@
+# v. 3.08- 2023.03.23 - added SOCGEN customizations
 # v. 3.07- 2023.03.03 - changed aptitude-all by adding checking # of pkgs to be updated
 # v. 3.06- 2023.02.09 - added github aliases,aptitude-all
 # v. 3.05- 2022.12.16 - bugfix: removed hardcoded root from XDG_DATA_HOME (now it is $USER)
@@ -112,50 +113,49 @@
 #####################################
 # settig profile_location_dir START #
 #####################################
-export profile_location_dir=/root
+export profile_location_dir=/tools/oracle/pgm
 JPMORGAN=0
 MATUSZYK=0
 KGP=0
 UBS=0
-cat /etc/hosts|grep -q jpmchase
+SOCGEN=0
+cat /etc/hosts|grep -qi jpmchase
 if (( $? == 0 )); then JPMORGAN=1 ; fi
-
-cat /etc/hosts|grep -q matuszyk
-if (( $? == 0 )); then MATUSZYK=1 ; fi
-
-cat /etc/hosts|grep -q 'gov.pl'
+if [ -f /root/bin/smart-indicators.sh ]; then MATUSZYK=1 ; fi
+cat /etc/hosts|grep -qi 'gov.pl'
 if (( $? == 0 )); then KGP=1 ; fi
 
-if [ $KGP == 1 ]
- then
-    if [ "$USER" == "root" ]; then
-      export profile_location_dir=/root/pgm
-    else
-      export profile_location_dir=$HOME/pgm
-    fi
+cat /etc/chrony.conf 2>/dev/null | grep -qi 'socgen'
+if (( $? == 0 )); then SOCGEN=1 ; fi
+
+if [ $SOCGEN == 1 ]; then
+   export MRL_PUTTY_PS1=     # unset MRL_PUTTY_PS1 as it corrupts terminal colors...
 fi
 
-if [ $MATUSZYK == 1 ]
- then
-    if [ "$USER" == "root" ]; then
-      export profile_location_dir=/root
-    else
-      export profile_location_dir=$HOME
-    fi
+if [ $KGP == 1 ];then
+  if [ "$USER" == "root" ]; then
+    export profile_location_dir=/root/pgm
+  else
+    export profile_location_dir=$HOME/pgm
+  fi
 fi
-
-if [ $JPMORGAN == 1 ]
- then
-    if [ "$USER" == "oracle" ]; then
-      export profile_location_dir=/export/home/r062068
-    else
-      export profile_location_dir=$HOME
-    fi
+if [ $MATUSZYK == 1 ]; then
+  if [ "$USER" == "root" ]; then
+    export profile_location_dir=/root
+  else
+    export profile_location_dir=$HOME
+  fi
 fi
-if [ $UBS == 1 ]
- then
-    export PBSETUTMP=no
-    export PBREMEX=yes
+if [ $JPMORGAN == 1 ]; then
+  if [ "$USER" == "oracle" ]; then
+    export profile_location_dir=/export/home/r062068
+  else
+    export profile_location_dir=$HOME
+  fi
+fi
+if [ $UBS == 1 ]; then
+  export PBSETUTMP=no
+  export PBREMEX=yes
 fi
 #####################################
 # settig profile_location_dir END   #
@@ -332,16 +332,17 @@ alias help-date="echo date \'+%Y.%m.%d %H:%M:%S\'"
 alias help-dd="echo dd bs=50M if= of= status=progress conv=fdatasync  oflag=direct"
 alias help-sshfs="echo sshfs -o Compression=no -o ServerAliveCountMax=2 -o ServerAliveInterval=15 root@.eth.r.matuszyk.com:/directory /mnt/"
 
-# github aliases
-alias gitpd="${profile_location_dir}/github-bash_profile/git-pull.sh"
-alias gitpdb="${profile_location_dir}/github-bash_profile/git-pull.sh batch"
-alias gitpu="${profile_location_dir}/github-bash_profile/git-push.sh"
-alias gitpub="${profile_location_dir}/github-bash_profile/git-push.sh batch"
-
-alias gitbd="${profile_location_dir}/github-bin/git-pull.sh"
-alias gitbdb="${profile_location_dir}/github-bin/git-pull.sh batch"
-alias gitbu="${profile_location_dir}/github-bin/git-push.sh"
-alias gitbub="${profile_location_dir}/github-bin/git-push.sh batch"
+if [ $MATUSZYK == 1 ]; then
+  # github aliases
+  alias gitpd="${profile_location_dir}/github-bash_profile/git-pull.sh"
+  alias gitpdb="${profile_location_dir}/github-bash_profile/git-pull.sh batch"
+  alias gitpu="${profile_location_dir}/github-bash_profile/git-push.sh"
+  alias gitpub="${profile_location_dir}/github-bash_profile/git-push.sh batch"
+  alias gitbd="${profile_location_dir}/github-bin/git-pull.sh"
+  alias gitbdb="${profile_location_dir}/github-bin/git-pull.sh batch"
+  alias gitbu="${profile_location_dir}/github-bin/git-push.sh"
+  alias gitbub="${profile_location_dir}/github-bin/git-push.sh batch"
+fi
 
 alias aptitude-all="boxes <<<'aptitude -q update';aptitude -q update;boxes <<<'aptitude -q upgrade';aptitude -q upgrade;boxes <<<'aptitude -q autoclean';aptitude -q autoclean ; if [ -x $HOME/bin/sprawdz-ile-apt-list--upgradable.sh ]; then $HOME/bin/sprawdz-ile-apt-list--upgradable.sh ; fi"
 
