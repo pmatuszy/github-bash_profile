@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# 2023.03.16 - v. 0.4 - before pull do rm profile.tar.bz2.uue profile.tar.bz2 as those files cannot be merged...
 # 2023.02.09 - v. 0.3 - better git handling, major script revampp
 # 2021.01.30 - v. 0.2 - making this script more generic (by adding github_project_name variable)
 # 2020.11.27 - v. 0.1 - initial release
@@ -53,6 +54,8 @@ if [ "${p}" == 'y' -o  "${p}" == 'y' ]; then
   fi
 
   cd "${GIT_REPO_DIRECTORY}" || exit 2
+
+  rm profile.tar.bz2.uue profile.tar.bz2 2>/dev/null
 
   echo git pull git+ssh://git@github.com/pmatuszy/"${github_project_name}".git | boxes -s 70x5 -a c
   git pull git+ssh://git@github.com/pmatuszy/"${github_project_name}".git
