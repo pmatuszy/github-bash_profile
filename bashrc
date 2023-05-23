@@ -335,7 +335,7 @@ alias vim="vi "
 alias help-date="echo date \'+%Y.%m.%d %H:%M:%S\'"
 alias help-dd="echo dd bs=50M if= of= status=progress conv=fdatasync  oflag=direct"
 alias help-sshfs="echo sshfs -o Compression=no -o ServerAliveCountMax=2 -o ServerAliveInterval=15 root@.eth.r.matuszyk.com:/directory /mnt/"
-alias help-rsync="echo rsync -a -v --inplace --no-compress --stats --progress --info=progress1 --partial --remove-source-files -e 'ssh -p 4444' SOURCE DEST "
+alias help-rsync="echo rsync -a -v --inplace --no-compress --stats --progress --info=progress1 --partial --remove-source-files -e 'ssh -T -p 4444 -o Compression=no -x ' SOURCE DEST "
 
 if [ $MATUSZYK == 1 ]; then
   # github aliases
