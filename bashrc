@@ -1,3 +1,4 @@
+# v. 3.09- 2023.05.23 - added alias help-rsync, vi and vim aliases, changed screen
 # v. 3.08- 2023.03.23 - added SOCGEN customizations
 # v. 3.07- 2023.03.03 - changed aptitude-all by adding checking # of pkgs to be updated
 # v. 3.06- 2023.02.09 - added github aliases,aptitude-all
@@ -301,7 +302,7 @@ fi    # end of condition: [ "$USER" != "root" ]
 function hg() { if [ $# -gt 0 ]; then (history | grep -i $* ) ; else history ;fi }
 alias env="env | sort"
 alias prstat='prstat 1'
-alias screen='screen -ln -h 99999 -T xterm'
+alias screen="screen -ln -h 99999 -T xterm -c $profile_location_dir/.screenrc "
 alias ver='clear;echo '\''### .pgm-boundle-version ###'\'';cat ${profile_location_dir}/.pgm-boundle-version|head -7;echo;echo; echo '\''### BASHRC ###'\'';cat ${profile_location_dir}/bashrc|head -7|grep '\''^#'\'';echo;echo '\''### BASH_PROFILE ###'\'';cat ${profile_location_dir}/bash_profile|head -7|grep '\''^#'\'''
 alias unwrap='HISTFILE=/dev/null;if [ "$profile_location_dir" == "" ];then echo "profile_location_dir is not set, exiting..." ;else cd $profile_location_dir;vi a;uudecode a && bzip2 -d profile.tar.bz2 && tar xvf profile.tar && (ls -l bash*; ./test.sh ; ls -l bash*);fi'
 
@@ -328,9 +329,13 @@ fi
 alias global="cd /orcl/app/oracle/admin"
 alias ll="ls -la "
 alias  l="ls -la "
+alias vi="vi -u $profile_location_dir/.vimrc "
+alias vim="vi "
+
 alias help-date="echo date \'+%Y.%m.%d %H:%M:%S\'"
 alias help-dd="echo dd bs=50M if= of= status=progress conv=fdatasync  oflag=direct"
 alias help-sshfs="echo sshfs -o Compression=no -o ServerAliveCountMax=2 -o ServerAliveInterval=15 root@.eth.r.matuszyk.com:/directory /mnt/"
+alias help-rsync="echo rsync -a -v --inplace --no-compress --stats --progress --info=progress1 --partial --remove-source-files -e 'ssh -p 4444' SOURCE DEST "
 
 if [ $MATUSZYK == 1 ]; then
   # github aliases
