@@ -1,3 +1,4 @@
+# v. 3.10- 2023.05.24 - bugfix: SOCGEN customizations
 # v. 3.09- 2023.05.23 - added alias help-rsync, vi and vim aliases, changed screen
 # v. 3.08- 2023.03.23 - added SOCGEN customizations
 # v. 3.07- 2023.03.03 - changed aptitude-all by adding checking # of pkgs to be updated
@@ -126,11 +127,14 @@ if [ -f /root/bin/smart-indicators.sh ]; then MATUSZYK=1 ; fi
 cat /etc/hosts|grep -qi 'gov.pl'
 if (( $? == 0 )); then KGP=1 ; fi
 
-cat /etc/chrony.conf 2>/dev/null | grep -qi 'socgen'
+cat /etc/chrony.conf /etc/resolv.conf 2>/dev/null |grep socgen | wc -l
 if (( $? == 0 )); then SOCGEN=1 ; fi
 
 if [ $SOCGEN == 1 ]; then
-   export MRL_PUTTY_PS1=     # unset MRL_PUTTY_PS1 as it corrupts terminal colors...
+  export MRL_PUTTY_PS1=     # unset MRL_PUTTY_PS1 as it corrupts terminal colors...
+  # below is  making TMOUT which is set read-only to read-write 
+  gdb -ex 'call (int) unbind_variable("TMOUT")' --pid=$$ --batch 2>&1 > /dev/null
+  export TMOUT=0            # to disable auto-logout set the TMOUT to zero or unset it 
 fi
 
 if [ $KGP == 1 ];then
