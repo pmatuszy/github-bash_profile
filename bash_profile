@@ -1,3 +1,4 @@
+# v. 2.13- 2023.05.24 - added HISTIGNORE and HISTTIMEFORMAT variable
 # v. 2.12- 2021.03.04 - added HISTIGNORE and HISTTIMEFORMAT variable
 # v. 2.11- 2020.03.05 - added UBS specific environment variables
 # v. 2.10- 2019.11.21 - changed od paths from pg to pgm, wrong PATH - fixed now
@@ -59,22 +60,20 @@ if (( $? == 0 )); then MATUSZYK=1 ; fi
 cat /etc/hosts|grep -q 'gov.pl'
 if (( $? == 0 )); then KGP=1 ; fi
 
-if [ $KGP == 1 ]
- then
-    if [ "$USER" == "root" ]; then
-      export profile_location_dir=/root/pgm
-    else
-      export profile_location_dir=$HOME/pgm
-    fi
+if [ $KGP == 1 ]; then
+  if [ "$USER" == "root" ]; then
+    export profile_location_dir=/root/pgm
+  else
+    export profile_location_dir=$HOME/pgm
+  fi
 fi
 
-if [ $MATUSZYK == 1 ]
- then
-    if [ "$USER" == "root" ]; then
-      export profile_location_dir=/root
-    else
-      export profile_location_dir=$HOME
-    fi
+if [ $MATUSZYK == 1 ]; then
+  if [ "$USER" == "root" ]; then
+    export profile_location_dir=/root
+  else
+    export profile_location_dir=$HOME
+  fi
 fi
 
 if [ $JPMORGAN == 1 ]; then
@@ -87,10 +86,9 @@ if [ $JPMORGAN == 1 ]; then
   fi
 fi
 
-if [ $UBS == 1 ]
- then
-    export PBSETUTMP=no
-    export PBREMEX=yes
+if [ $UBS == 1 ]; then
+  export PBSETUTMP=no
+  export PBREMEX=yes
 fi
 #####################################
 # settig profile_location_dir END   #
@@ -98,8 +96,7 @@ fi
 
 # ustawianie ORA_CRS_HOME - poczatek
 #export ORA_CRS_HOME=/orcl/grid/oracle/product/11.2.0.1/grid
-if [[ "`ps -ef | grep crsd.bin|grep -v grep|wc -l`" == 1 ]]
-  then
+if [[ "`ps -ef | grep crsd.bin|grep -v grep|wc -l`" == 1 ]]; then
       export ORA_CRS_HOME=`ps -ef | grep crsd.bin|grep -v grep |sed 's/\/bin\/crsd.bin.*//g'|grep root|sed 's/.* \//\//g'`
 fi
 # ustawianie ORA_CRS_HOME - koniec
@@ -169,8 +166,7 @@ if [[ $USER = "grid" ]]; then
 fi
 
 if [[ $DISPLAY = ""  ]]; then
-  if [ -f ${profile_location_dir}/bashrc ]
-   then
+  if [ -f ${profile_location_dir}/bashrc ]; then
       if [[ "`tty`" = "/dev/console" ]]; then
           . "${profile_location_dir}/bashrc"
       else
@@ -179,7 +175,7 @@ if [[ $DISPLAY = ""  ]]; then
         else
           export DISPLAY=`who am i| awk '{print $6}'| tr -d '()'`:0
         fi
-        if [ "$DISPLAY" == ":0" ];then DISPLAY=`who am i| awk '{print $5}'| tr -d '()'`:0;fi
+        if [ "$DISPLAY" == ":0" ]; then DISPLAY=`who am i| awk '{print $5}'| tr -d '()'`:0;fi
         echo DISPLAY=${DISPLAY}
         $SHELL --rcfile "${profile_location_dir}/bashrc"
         if [[ ! -z "${SSH_TTY}" ]]; then     # remote session
@@ -190,8 +186,7 @@ if [[ $DISPLAY = ""  ]]; then
         fi
       fi
    else
-     if [[ "`tty`" = "/dev/console" ]]
-        then
+     if [[ "`tty`" = "/dev/console" ]]; then
           . /root/pgm/bashrc
      else
           export DISPLAY=`who am i| awk '{print $6}'| tr -d '()'`:0
@@ -202,7 +197,7 @@ if [[ $DISPLAY = ""  ]]; then
      fi
   fi
 else
-  if [[ "`tty`" = "not a tty" ]];then     # XDMCP session
+  if [[ "`tty`" = "not a tty" ]]; then     # XDMCP session
     $SHELL --rcfile ${profile_location_dir}/bashrc
   else    # ssh session
     $SHELL --rcfile ${profile_location_dir}/bashrc && exit
