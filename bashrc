@@ -1,3 +1,4 @@
+# v. 3.11- 2023.05.24 - a lot of changes: function screen, and many more
 # v. 3.10- 2023.05.24 - bugfix: SOCGEN customizations
 # v. 3.09- 2023.05.23 - added alias help-rsync, vi and vim aliases, changed screen
 # v. 3.08- 2023.03.23 - added SOCGEN customizations
@@ -127,7 +128,7 @@ if [ -f /root/bin/smart-indicators.sh ]; then MATUSZYK=1 ; fi
 cat /etc/hosts|grep -qi 'gov.pl'
 if (( $? == 0 )); then KGP=1 ; fi
 
-cat /etc/chrony.conf /etc/resolv.conf 2>/dev/null |grep socgen | wc -l
+cat /etc/chrony.conf /etc/resolv.conf 2>/dev/null |grep -qi socgen
 if (( $? == 0 )); then SOCGEN=1 ; fi
 
 if [ $SOCGEN == 1 ]; then
@@ -152,12 +153,13 @@ if [ $MATUSZYK == 1 ]; then
   fi
 fi
 if [ $JPMORGAN == 1 ]; then
+  alias global="cd /orcl/app/oracle/admin"
   if [ "$USER" == "oracle" ]; then
     export profile_location_dir=/export/home/r062068
   else
     export profile_location_dir=$HOME
   fi
-fi
+fi          
 if [ $UBS == 1 ]; then
   export PBSETUTMP=no
   export PBREMEX=yes
@@ -306,8 +308,20 @@ fi    # end of condition: [ "$USER" != "root" ]
 function hg() { if [ $# -gt 0 ]; then (history | grep -i $* ) ; else history ;fi }
 alias env="env | sort"
 alias prstat='prstat 1'
-alias screen="screen -ln -h 99999 -T xterm -c $profile_location_dir/.screenrc "
-alias ver='clear;echo '\''### .pgm-boundle-version ###'\'';cat ${profile_location_dir}/.pgm-boundle-version|head -7;echo;echo; echo '\''### BASHRC ###'\'';cat ${profile_location_dir}/bashrc|head -7|grep '\''^#'\'';echo;echo '\''### BASH_PROFILE ###'\'';cat ${profile_location_dir}/bash_profile|head -7|grep '\''^#'\'''
+function screen() {
+  if [ -f "$profile_location_dir/.screenrc" ];then
+    "$(type -fP screen)" -u "$profile_location_dir/.screenrc" -ln -h 599999 -T xterm $*
+  else
+    "$(type -fP screen)" -ln -h 599999 -T xterm $*
+  fi
+  }
+
+alias ver='clear;
+           echo '\''### .pgm-bundle-version ###'\'';
+           cat ${profile_location_dir}/.pgm-bundle-version|head -7;echo;echo; 
+           echo '\''### BASHRC ###'\'';cat ${profile_location_dir}/bashrc|head -7|grep '\''^#'\'';
+           echo;echo '\''### BASH_PROFILE ###'\'';cat ${profile_location_dir}/bash_profile|head -7|grep '\''^#'\''
+           '          
 alias unwrap='HISTFILE=/dev/null;if [ "$profile_location_dir" == "" ];then echo "profile_location_dir is not set, exiting..." ;else cd $profile_location_dir;vi a;uudecode a && bzip2 -d profile.tar.bz2 && tar xvf profile.tar && (ls -l bash*; ./test.sh ; ls -l bash*);fi'
 
 # even though pmon and lsnr are Oracle-related aliases but it is very useful to have it even in e.g. root environement
@@ -329,12 +343,16 @@ if [ `uname -s` == 'Linux' ];then
    alias ls="ls --full-time  --color=none"
 fi
 
-# JP Morgan - specific settings
-alias global="cd /orcl/app/oracle/admin"
 alias ll="ls -la "
 alias  l="ls -la "
-alias vi="vi -u $profile_location_dir/.vimrc "
-alias vim="vi "
+function vi() {
+  if [ -f "$profile_location_dir/.vimrc" ];then
+    "$(type -fP vi)" -u "$profile_location_dir/.vimrc" $*
+  else
+    "$(type -fP vi)" $*
+  fi
+  }
+alias vim='vi $* '
 
 alias help-date="echo date \'+%Y.%m.%d %H:%M:%S\'"
 alias help-dd="echo dd bs=50M if= of= status=progress conv=fdatasync  oflag=direct"
@@ -460,7 +478,9 @@ bash_prompt_command() {
     fi
     history -a                          # Whenever displaying the prompt, write the previous line to disk
 }
+export -f bash_prompt_command   # In Bash you can export function definitions to other shell scripts that your script calls
 export PROMPT_COMMAND=bash_prompt_command
+
 
 # After each command, append to the history file and reread it
 #PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND$'\n'}history -a; history -c; history -r"

@@ -1,3 +1,4 @@
+# v. 1.36- 2023.05.24 - a lot of changes in bashrc and bash_profile
 # v. 1.35- 2023.05.24 - changed bashrc: bugfix for SOCGEN customizations
 # v. 1.34- 2023.05.23 - changed bashrc: added alias help-rsync, changed screen, vi and vim aliases
 # v. 1.33- 2023.02.09 - changed bashrc: added github aliases

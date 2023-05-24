@@ -77,13 +77,14 @@ if [ $MATUSZYK == 1 ]
     fi
 fi
 
-if [ $JPMORGAN == 1 ]
- then
-    if [ "$USER" == "oracle" ]; then
-      export profile_location_dir=/export/home/r062068
-    else
-      export profile_location_dir=$HOME
-    fi
+if [ $JPMORGAN == 1 ]; then
+  export http_proxy=http://emeaproxy.jpmchase.net:8080
+  alias global="cd /orcl/app/oracle/admin"
+  if [ "$USER" == "oracle" ]; then
+    export profile_location_dir=/export/home/r062068
+  else
+    export profile_location_dir=$HOME
+  fi
 fi
 
 if [ $UBS == 1 ]
@@ -141,11 +142,6 @@ export TMOUT=
 
 export RLWRAP_HOME=${profile_location_dir}
 
-if [ $JPMORGAN == 1 ]
-  then
-    export http_proxy=http://emeaproxy.jpmchase.net:8080
-fi
-
 ################################################################################################
 
 stty erase '^?'
@@ -175,9 +171,8 @@ fi
 if [[ $DISPLAY = ""  ]]; then
   if [ -f ${profile_location_dir}/bashrc ]
    then
-      if [[ "`tty`" = "/dev/console" ]]
-        then
-          . ${profile_location_dir}/bashrc
+      if [[ "`tty`" = "/dev/console" ]]; then
+          . "${profile_location_dir}/bashrc"
       else
         if [ `uname -s` == 'HP-UX' ];then
           export DISPLAY=`who am i -R | awk '{print $6}'| tr -d '()'`:0
@@ -186,7 +181,7 @@ if [[ $DISPLAY = ""  ]]; then
         fi
         if [ "$DISPLAY" == ":0" ];then DISPLAY=`who am i| awk '{print $5}'| tr -d '()'`:0;fi
         echo DISPLAY=${DISPLAY}
-        $SHELL --rcfile ${profile_location_dir}/bashrc
+        $SHELL --rcfile "${profile_location_dir}/bashrc"
         if [[ ! -z "${SSH_TTY}" ]]; then     # remote session
           exit
         fi
