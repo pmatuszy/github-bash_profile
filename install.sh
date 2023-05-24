@@ -70,7 +70,7 @@ if [[ "$USER" == "oracle" || "$USER" == "grid" ]]; then
   pushd .
   cd ${profile_location_dir}
  
-  chmod 644 bin/wynik.txt .pgm-boundle-version 2>/dev/null
+  chmod 644 bin/wynik.txt .pgm-bundle-version 2>/dev/null
 
   touch adrci_history expdp_history impdp_history sqlplus_history asmcmd_history dgmgrl_history .moja_historia_${USER}
   chmod 666 adrci_history expdp_history impdp_history sqlplus_history 2> /dev/null
@@ -93,7 +93,11 @@ mv a bashrc
 
 popd 
 
-cp .pgm-boundle-version ${profile_location_dir}
+cp .pgm-bundle-version "${profile_location_dir}"
+if [ -f "${profile_location_dir}/.pgm-boundle-version" ];then
+  rm "${profile_location_dir}/.pgm-boundle-version"
+fi
+
 cp .vimrc ${profile_location_dir}
 cp .screenrc ${profile_location_dir}
 
