@@ -310,7 +310,7 @@ alias env="env | sort"
 alias prstat='prstat 1'
 function screen() {
   if [ -f "$profile_location_dir/.screenrc" ];then
-    "$(type -fP screen)" -u "$profile_location_dir/.screenrc" -ln -h 599999 -T xterm $*
+    "$(type -fP screen)" -c "$profile_location_dir/.screenrc" -ln -h 599999 -T xterm $*
   else
     "$(type -fP screen)" -ln -h 599999 -T xterm $*
   fi
