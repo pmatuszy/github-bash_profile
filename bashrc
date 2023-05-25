@@ -1,3 +1,5 @@
+# v. 3.11- 2023.05.24 - a lot of changes: function screen, and many more
+# v. 3.10- 2023.05.24 - bugfix: SOCGEN customizations
 # v. 3.09- 2023.05.23 - added alias help-rsync, vi and vim aliases, changed screen
 # v. 3.08- 2023.03.23 - added SOCGEN customizations
 # v. 3.07- 2023.03.03 - changed aptitude-all by adding checking # of pkgs to be updated
@@ -126,14 +128,17 @@ if [ -f /root/bin/smart-indicators.sh ]; then MATUSZYK=1 ; fi
 cat /etc/hosts|grep -qi 'gov.pl'
 if (( $? == 0 )); then KGP=1 ; fi
 
-cat /etc/chrony.conf 2>/dev/null | grep -qi 'socgen'
+cat /etc/chrony.conf /etc/resolv.conf 2>/dev/null |grep -qi socgen
 if (( $? == 0 )); then SOCGEN=1 ; fi
 
 if [ $SOCGEN == 1 ]; then
-   export MRL_PUTTY_PS1=     # unset MRL_PUTTY_PS1 as it corrupts terminal colors...
+  export MRL_PUTTY_PS1=     # unset MRL_PUTTY_PS1 as it corrupts terminal colors...
+  # below is  making TMOUT which is set read-only to read-write 
+  gdb -ex 'call (int) unbind_variable("TMOUT")' --pid=$$ --batch 2>&1 > /dev/null
+  export TMOUT=0            # to disable auto-logout set the TMOUT to zero or unset it 
 fi
 
-if [ $KGP == 1 ];then
+if [ $KGP == 1 ]; then
   if [ "$USER" == "root" ]; then
     export profile_location_dir=/root/pgm
   else
@@ -148,12 +153,13 @@ if [ $MATUSZYK == 1 ]; then
   fi
 fi
 if [ $JPMORGAN == 1 ]; then
+  alias global="cd /orcl/app/oracle/admin"
   if [ "$USER" == "oracle" ]; then
     export profile_location_dir=/export/home/r062068
   else
     export profile_location_dir=$HOME
   fi
-fi
+fi          
 if [ $UBS == 1 ]; then
   export PBSETUTMP=no
   export PBREMEX=yes
@@ -162,12 +168,12 @@ fi
 # settig profile_location_dir END   #
 #####################################
 
-alias pgm='if [ -d $HOME/pgm ];then cd $HOME/pgm; ls -l ; echo ; else mkdir ${profile_location_dir} 2>/dev/null;cd ${profile_location_dir}; ls -l ; fi'
+alias pgm='if [ -d $HOME/pgm ]; then cd $HOME/pgm; ls -l ; echo ; else mkdir ${profile_location_dir} 2>/dev/null;cd ${profile_location_dir}; ls -l ; fi'
 
 if [ "$USER" != "root" ]; then
 
   function lsnrs() {
-   if [ "$1" == "" ];then echo "ERROR dude - specify listener name or part of it"
+   if [ "$1" == "" ]; then echo "ERROR dude - specify listener name or part of it"
    else
      for p in `lsnr | sed 's/^.*tnslsnr //g'|awk '{print $1}'|grep -v '//g'|grep -i $1`; do
        org_ORACLE_HOME=$ORACLE_HOME
@@ -184,12 +190,12 @@ if [ "$USER" != "root" ]; then
    fi;
   }
 
-  alias valert="if [ \""\$ORACLE_SID\"" == \"\" ];then echo \"ORACLE_SID is not set\";else adrci exec=\"set base \$ORACLE_BASE;set homepath \`adrci exec=\"set base \$ORACLE_BASE;show homes\"|egrep \"rdbms|asm\"|grep -i \$ORACLE_SID\`;show alert\";fi"
-  alias talert="if [ \""\$ORACLE_SID\"" == \"\" ];then echo \"ORACLE_SID is not set\";else adrci exec=\"set base \$ORACLE_BASE;set homepath \`adrci exec=\"set base \$ORACLE_BASE;show homes\"|egrep \"rdbms|asm\"|grep -i \"/\$ORACLE_SID\$\"\`;show alert -tail 500 -f\";fi"
+  alias valert="if [ \""\$ORACLE_SID\"" == \"\" ]; then echo \"ORACLE_SID is not set\";else adrci exec=\"set base \$ORACLE_BASE;set homepath \`adrci exec=\"set base \$ORACLE_BASE;show homes\"|egrep \"rdbms|asm\"|grep -i \$ORACLE_SID\`;show alert\";fi"
+  alias talert="if [ \""\$ORACLE_SID\"" == \"\" ]; then echo \"ORACLE_SID is not set\";else adrci exec=\"set base \$ORACLE_BASE;set homepath \`adrci exec=\"set base \$ORACLE_BASE;show homes\"|egrep \"rdbms|asm\"|grep -i \"/\$ORACLE_SID\$\"\`;show alert -tail 500 -f\";fi"
   alias va="valert"
   alias ta="talert"
-  alias tha='if [ -e "$HOME/pgm/alert_${ORACLE_SID}.log" ];then tail -n 1000 -f "$HOME/pgm/alert_${ORACLE_SID}.log";else echo file $HOME/pgm/alert_${ORACLE_SID}.log does not exist;fi'   # abbreviation from 'tail home alert'
-  alias cha='if [ -e "$HOME/pgm/alert_${ORACLE_SID}.log" ];then tail -n 1000 "$HOME/pgm/alert_${ORACLE_SID}.log" | less +G;else echo file $HOME/pgm/alert_${ORACLE_SID}.log does not exist;fi'   # abbreviateion from 'cat home alert'
+  alias tha='if [ -e "$HOME/pgm/alert_${ORACLE_SID}.log" ]; then tail -n 1000 -f "$HOME/pgm/alert_${ORACLE_SID}.log";else echo file $HOME/pgm/alert_${ORACLE_SID}.log does not exist;fi'   # abbreviation from 'tail home alert'
+  alias cha='if [ -e "$HOME/pgm/alert_${ORACLE_SID}.log" ]; then tail -n 1000 "$HOME/pgm/alert_${ORACLE_SID}.log" | less +G;else echo file $HOME/pgm/alert_${ORACLE_SID}.log does not exist;fi'   # abbreviateion from 'cat home alert'
 
   # to find the names of the defined function use:
   # declare -F      - summary
@@ -283,12 +289,12 @@ if [ "$USER" != "root" ]; then
 
   alias wia="if [ \""\$ORACLE_SID\"" == \"\" ];then echo \"ORACLE_SID is not set\";else echo \`ls -1t \\\`locate alert_\${ORACLE_SID}|egrep \"/alert.\${ORACLE_SID}.log$\"\\\`|head -1\`; fi"
 
-  alias  oh='if [ -z "$ORACLE_HOME" ] || [ ! -d "$ORACLE_HOME" ] ;then echo ORACLE_HOME not set or non-existent, exiting ...;echo;echo;else cd $ORACLE_HOME ; pwd ; echo ; fi'
+  alias  oh='if [ -z "$ORACLE_HOME" ] || [ ! -d "$ORACLE_HOME" ]; then echo ORACLE_HOME not set or non-existent, exiting ...;echo;echo;else cd $ORACLE_HOME ; pwd ; echo ; fi'
   alias soh='echo;echo ORACLE_HOME = $ORACLE_HOME ; echo '
-  alias  ob='if [ -z "$ORACLE_BASE" ] || [ ! -d "$ORACLE_BASE" ] ;then echo ORACLE_BASE not set or non-existent, exiting ...;echo;echo;else cd $ORACLE_BASE ; pwd ; echo ; fi'
+  alias  ob='if [ -z "$ORACLE_BASE" ] || [ ! -d "$ORACLE_BASE" ]; then echo ORACLE_BASE not set or non-existent, exiting ...;echo;echo;else cd $ORACLE_BASE ; pwd ; echo ; fi'
   alias sob='echo;echo ORACLE_BASE = $ORACLE_BASE ; echo'
-  alias dbs='if [ -z "$ORACLE_HOME" ] || [ ! -d "$ORACLE_HOME" ];then echo ORACLE_HOME not set or non-existent, exiting ...;echo;echo;else cd $ORACLE_HOME/dbs ; pwd ; ls -l ; echo ; fi'
-  alias tns='if [ -z "$ORACLE_HOME" ] || [ ! -d "$ORACLE_HOME" ];then echo ORACLE_HOME not set or non-existent, exiting ...;echo;echo;else cd ${TNS_ADMIN:-$ORACLE_HOME/network/admin} ; pwd ; ls -l ; echo ; fi'
+  alias dbs='if [ -z "$ORACLE_HOME" ] || [ ! -d "$ORACLE_HOME" ]; then echo ORACLE_HOME not set or non-existent, exiting ...;echo;echo;else cd $ORACLE_HOME/dbs ; pwd ; ls -l ; echo ; fi'
+  alias tns='if [ -z "$ORACLE_HOME" ] || [ ! -d "$ORACLE_HOME" ]; then echo ORACLE_HOME not set or non-existent, exiting ...;echo;echo;else cd ${TNS_ADMIN:-$ORACLE_HOME/network/admin} ; pwd ; ls -l ; echo ; fi'
   alias po='. pickora $*'
   alias var='env|egrep "ORA|TNS_ADMIN_NLS|SQLPATH|NLS_|TWO_TASK"|sort'
   alias dgsp='echo show database verbose `echo show configuration|dgmgrl -silent / | grep "Primary database" | sed "s/ - Primary database//"` |dgmgrl -silent /|less'
@@ -302,9 +308,21 @@ fi    # end of condition: [ "$USER" != "root" ]
 function hg() { if [ $# -gt 0 ]; then (history | grep -i $* ) ; else history ;fi }
 alias env="env | sort"
 alias prstat='prstat 1'
-alias screen="screen -ln -h 99999 -T xterm -c $profile_location_dir/.screenrc "
-alias ver='clear;echo '\''### .pgm-boundle-version ###'\'';cat ${profile_location_dir}/.pgm-boundle-version|head -7;echo;echo; echo '\''### BASHRC ###'\'';cat ${profile_location_dir}/bashrc|head -7|grep '\''^#'\'';echo;echo '\''### BASH_PROFILE ###'\'';cat ${profile_location_dir}/bash_profile|head -7|grep '\''^#'\'''
-alias unwrap='HISTFILE=/dev/null;if [ "$profile_location_dir" == "" ];then echo "profile_location_dir is not set, exiting..." ;else cd $profile_location_dir;vi a;uudecode a && bzip2 -d profile.tar.bz2 && tar xvf profile.tar && (ls -l bash*; ./test.sh ; ls -l bash*);fi'
+function screen() {
+  if [ -f "$profile_location_dir/.screenrc" ]; then
+    "$(type -fP screen)" -c "$profile_location_dir/.screenrc" -ln -h 599999 -T xterm $*
+  else
+    "$(type -fP screen)" -ln -h 599999 -T xterm $*
+  fi
+  }
+
+alias ver='clear;
+           echo '\''### .pgm-bundle-version ###'\'';
+           cat ${profile_location_dir}/.pgm-bundle-version|head -7;echo;echo; 
+           echo '\''### BASHRC ###'\'';cat ${profile_location_dir}/bashrc|head -7|grep '\''^#'\'';
+           echo;echo '\''### BASH_PROFILE ###'\'';cat ${profile_location_dir}/bash_profile|head -7|grep '\''^#'\''
+           '          
+alias unwrap='HISTFILE=/dev/null;if [ "$profile_location_dir" == "" ]; then echo "profile_location_dir is not set, exiting..." ;else cd $profile_location_dir;vi a;uudecode a && bzip2 -d profile.tar.bz2 && tar xvf profile.tar && (ls -l bash*; ./test.sh ; ls -l bash*);fi'
 
 # even though pmon and lsnr are Oracle-related aliases but it is very useful to have it even in e.g. root environement
 # why? to check if we can shut down / restart the server and if any Oracle instaces / listeners are running
@@ -313,24 +331,28 @@ alias lsnr='ps -ef|grep lsnr|grep -v grep'
 
 alias dis='echo your display is set to $DISPLAY'
 alias dssh="export DISPLAY=:10;dis"
-# alias dip="export DISPLAY=`who am i| awk '{print $6}'| tr -d '()'`:0;if [ "$DISPLAY" == ":0" ];then DISPLAY=`who am i| awk '{print $5}'| tr -d '()'`:0;fi;dis"
+# alias dip="export DISPLAY=`who am i| awk '{print $6}'| tr -d '()'`:0;if [ "$DISPLAY" == ":0" ]; then DISPLAY=`who am i| awk '{print $5}'| tr -d '()'`:0;fi;dis"
 
-if [ `uname -s` == 'HP-UX' ];then
+if [ `uname -s` == 'HP-UX' ]; then
    alias dip="export DISPLAY=`who am i -R | awk '{print $6}'| tr -d '()'`:0;dis"
 else
    alias dip="export DISPLAY=`who am i| awk '{print $6}'| tr -d '()'`:0;dis"
 fi
 
-if [ `uname -s` == 'Linux' ];then
+if [ `uname -s` == 'Linux' ]; then
    alias ls="ls --full-time  --color=none"
 fi
 
-# JP Morgan - specific settings
-alias global="cd /orcl/app/oracle/admin"
 alias ll="ls -la "
 alias  l="ls -la "
-alias vi="vi -u $profile_location_dir/.vimrc "
-alias vim="vi "
+function vi() {
+  if [ -f "$profile_location_dir/.vimrc" ]; then
+    "$(type -fP vi)" -u "$profile_location_dir/.vimrc" $*
+  else
+    "$(type -fP vi)" $*
+  fi
+  }
+alias vim='vi $* '
 
 alias help-date="echo date \'+%Y.%m.%d %H:%M:%S\'"
 alias help-dd="echo dd bs=50M if= of= status=progress conv=fdatasync  oflag=direct"
@@ -382,10 +404,9 @@ bash_prompt_command() {
     # NEW_PWD=${PWD/#$HOME/~}
     NEW_PWD=${PWD}
     local pwdoffset=$(( ${#NEW_PWD} - pwdmaxlen ))
-    if [ ${pwdoffset} -gt "0" ]
-    then
-        NEW_PWD=${NEW_PWD:$pwdoffset:$pwdmaxlen}
-        NEW_PWD=${trunc_symbol}/${NEW_PWD#*/}
+    if [ ${pwdoffset} -gt "0" ]; then
+      NEW_PWD=${NEW_PWD:$pwdoffset:$pwdmaxlen}
+      NEW_PWD=${trunc_symbol}/${NEW_PWD#*/}
     fi
 
     local NONE='\[\033[0m\]'    # unsets color to term's fg color
@@ -423,40 +444,38 @@ bash_prompt_command() {
     [ $UID -eq "0" ] && UC=$R   # root's color
 
     #if [ -z $ORACLE_SID ]
-    if [ $ORACLE_SID ]
-      then
-         PS1="${B}${BGY}${ORACLE_SID}${EMK}${BGK}${UC}"
+    if [ $ORACLE_SID ]; then
+      PS1="${B}${BGY}${ORACLE_SID}${EMK}${BGK}${UC}"
     else
       PS1=""
     fi
 
     SCREEN_RUNNING=""
-    if [ $WINDOW ]
-      then
+    if [ $WINDOW ]; then
       SCREEN_RUNNING="SCREEN-$WINDOW"
       PS1="${PS1} ${B}${BGR}${SCREEN_RUNNING}${EMK}${BGK}${UC} "
     fi
 
     # firstly let's check if hostname gives us FQDN
-    if [ ! `hostname|grep '\.' > /dev/null` ]
-      then
-        # hostname gives us FQDN
-        host=`hostname`
+    if [ ! `hostname|grep '\.' > /dev/null` ]; then
+      # hostname gives us FQDN
+      host=`hostname`
     elif [ ! `cat /etc/resolv.conf |grep search|awk '{print $2}'` ]; then
       host=`hostname`.`cat /etc/resolv.conf |grep search|awk '{print $2}'`
     else
       host=`hostname`
     fi
     export PS1="`date '+%Y.%m.%d %H:%M:%S'` [ \u${W}@${C}`echo $host`:${W}${EMC}`pwd` ] ${EMK}\n${PS1} \\$ ${NONE}"
-    if [ $ORACLE_SID ]
-      then
-        echo -ne "\033]0; ORACLE_SID = \"${ORACLE_SID}\" ${LOGNAME}@`echo $host` `pwd`\007"
+    if [ $ORACLE_SID ]; then
+      echo -ne "\033]0; ORACLE_SID = \"${ORACLE_SID}\" ${LOGNAME}@`echo $host` `pwd`\007"
     else
-        echo -ne "\033]0; ${LOGNAME}@`echo $host` `pwd`\007"
+      echo -ne "\033]0; ${LOGNAME}@`echo $host` `pwd`\007"
     fi
     history -a                          # Whenever displaying the prompt, write the previous line to disk
 }
+export -f bash_prompt_command   # In Bash you can export function definitions to other shell scripts that your script calls
 export PROMPT_COMMAND=bash_prompt_command
+
 
 # After each command, append to the history file and reread it
 #PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND$'\n'}history -a; history -c; history -r"
@@ -470,7 +489,7 @@ export LANG=en_US.utf8           # by pass i mc sie ladnie wyswietlaly
 export LANGUAGE=en_US:en
 export LC_CTYPE=en_US.UTF-8
 
-if (( `cat /proc/cpuinfo |grep -i Raspberry |wc -l` != 0 ));then
+if (( `cat /proc/cpuinfo |grep -i Raspberry |wc -l` != 0 )); then
 #  echo "bashrc: platforma Raspberry" 
   if [ ! `mountpoint -q /encrypted` ];then
     mkdir -p /encrypted/$USER/XDG_DATA_HOME
