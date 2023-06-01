@@ -1,3 +1,4 @@
+# v. 2.14- 2023.06.01 - cosmetic changes to setting profile_location_dir 
 # v. 2.13- 2023.05.24 - added HISTIGNORE and HISTTIMEFORMAT variable
 # v. 2.12- 2021.03.04 - added HISTIGNORE and HISTTIMEFORMAT variable
 # v. 2.11- 2020.03.05 - added UBS specific environment variables
@@ -42,7 +43,6 @@
 # v. 1.0 - 2008.03.28
 #
 
-
 #####################################
 # settig profile_location_dir START #
 #####################################
@@ -51,14 +51,21 @@ JPMORGAN=0
 MATUSZYK=0
 KGP=0
 UBS=0
-cat /etc/hosts|grep -q jpmchase
-if (( $? == 0 )); then JPMORGAN=1 ; fi
+SOCGEN=0
 
-cat /etc/hosts|grep -q matuszyk
-if (( $? == 0 )); then MATUSZYK=1 ; fi
+cat /etc/hosts|grep -qi jpmchase                                   && JPMORGAN=1
+[ -f /root/bin/smart-indicators.sh ]                               && MATUSZYK=1
+cat /etc/hosts|grep -qi 'gov.pl'                                   && KGP=1
+cat /etc/chrony.conf /etc/resolv.conf 2>/dev/null |grep -qi ubs    && UBS=1
+cat /etc/chrony.conf /etc/resolv.conf 2>/dev/null |grep -qi socgen && SOCGEN=1
 
-cat /etc/hosts|grep -q 'gov.pl'
-if (( $? == 0 )); then KGP=1 ; fi
+if [ $SOCGEN == 1 ]; then
+  export MRL_PUTTY_PS1=     # unset MRL_PUTTY_PS1 as it corrupts terminal colors...
+  # below is  making TMOUT which is set read-only to read-write
+  gdb -ex 'call (int) unbind_variable("TMOUT")' --pid=$$ --batch 2>&1 > /dev/null
+  export TMOUT=0            # to disable auto-logout set the TMOUT to zero or unset it
+  export profile_location_dir=$HOME/pgm
+fi
 
 if [ $KGP == 1 ]; then
   if [ "$USER" == "root" ]; then
@@ -187,7 +194,7 @@ if [[ $DISPLAY = ""  ]]; then
       fi
    else
      if [[ "`tty`" = "/dev/console" ]]; then
-          . /root/pgm/bashrc
+          . ${profile_location_dir}/bashrc
      else
           export DISPLAY=`who am i| awk '{print $6}'| tr -d '()'`:0
           if [ "$DISPLAY" == ":0" ];then DISPLAY=`who am i| awk '{print $5}'| tr -d '()'`:0;fi
