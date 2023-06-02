@@ -1,3 +1,4 @@
+# v. 3.12- 2023.06.01 - cosmetic changes to setting profile_location_dir 
 # v. 3.11- 2023.05.24 - a lot of changes: function screen, and many more
 # v. 3.10- 2023.05.24 - bugfix: SOCGEN customizations
 # v. 3.09- 2023.05.23 - added alias help-rsync, vi and vim aliases, changed screen
@@ -116,26 +117,25 @@
 #####################################
 # settig profile_location_dir START #
 #####################################
-export profile_location_dir=/tools/oracle/pgm
+export profile_location_dir=/root
 JPMORGAN=0
 MATUSZYK=0
 KGP=0
 UBS=0
 SOCGEN=0
-cat /etc/hosts|grep -qi jpmchase
-if (( $? == 0 )); then JPMORGAN=1 ; fi
-if [ -f /root/bin/smart-indicators.sh ]; then MATUSZYK=1 ; fi
-cat /etc/hosts|grep -qi 'gov.pl'
-if (( $? == 0 )); then KGP=1 ; fi
 
-cat /etc/chrony.conf /etc/resolv.conf 2>/dev/null |grep -qi socgen
-if (( $? == 0 )); then SOCGEN=1 ; fi
+cat /etc/hosts|grep -qi jpmchase                                   && JPMORGAN=1
+[ -f /root/bin/smart-indicators.sh ]                               && MATUSZYK=1
+cat /etc/hosts|grep -qi 'gov.pl'                                   && KGP=1
+cat /etc/chrony.conf /etc/resolv.conf 2>/dev/null |grep -qi ubs    && UBS=1
+cat /etc/chrony.conf /etc/resolv.conf 2>/dev/null |grep -qi socgen && SOCGEN=1
 
 if [ $SOCGEN == 1 ]; then
   export MRL_PUTTY_PS1=     # unset MRL_PUTTY_PS1 as it corrupts terminal colors...
   # below is  making TMOUT which is set read-only to read-write 
   gdb -ex 'call (int) unbind_variable("TMOUT")' --pid=$$ --batch 2>&1 > /dev/null
   export TMOUT=0            # to disable auto-logout set the TMOUT to zero or unset it 
+  export profile_location_dir=$HOME/pgm
 fi
 
 if [ $KGP == 1 ]; then
@@ -145,6 +145,7 @@ if [ $KGP == 1 ]; then
     export profile_location_dir=$HOME/pgm
   fi
 fi
+
 if [ $MATUSZYK == 1 ]; then
   if [ "$USER" == "root" ]; then
     export profile_location_dir=/root
@@ -152,6 +153,7 @@ if [ $MATUSZYK == 1 ]; then
     export profile_location_dir=$HOME
   fi
 fi
+
 if [ $JPMORGAN == 1 ]; then
   alias global="cd /orcl/app/oracle/admin"
   if [ "$USER" == "oracle" ]; then
@@ -160,6 +162,7 @@ if [ $JPMORGAN == 1 ]; then
     export profile_location_dir=$HOME
   fi
 fi          
+
 if [ $UBS == 1 ]; then
   export PBSETUTMP=no
   export PBREMEX=yes
@@ -287,7 +290,14 @@ if [ "$USER" != "root" ]; then
     fi
     }
 
-  alias wia="if [ \""\$ORACLE_SID\"" == \"\" ];then echo \"ORACLE_SID is not set\";else echo \`ls -1t \\\`locate alert_\${ORACLE_SID}|egrep \"/alert.\${ORACLE_SID}.log$\"\\\`|head -1\`; fi"
+  # 'where is alert'
+  function wia () {
+    if [ "$ORACLE_SID" == "" ];then
+      echo "ORACLE_SID is not set"
+    else
+      echo $(/bin/ls -1t $(locate alert_${ORACLE_SID}|egrep "/alert.${ORACLE_SID}.log$")|head -1)
+    fi 
+    }
 
   alias  oh='if [ -z "$ORACLE_HOME" ] || [ ! -d "$ORACLE_HOME" ]; then echo ORACLE_HOME not set or non-existent, exiting ...;echo;echo;else cd $ORACLE_HOME ; pwd ; echo ; fi'
   alias soh='echo;echo ORACLE_HOME = $ORACLE_HOME ; echo '
@@ -307,12 +317,24 @@ fi    # end of condition: [ "$USER" != "root" ]
 
 function hg() { if [ $# -gt 0 ]; then (history | grep -i $* ) ; else history ;fi }
 alias env="env | sort"
-alias prstat='prstat 1'
+alias prstat='prstat 1 '
+alias df='echo ; echo "---- (PGM ) df is an alias ----" ; echo ; df -P --sync --total --print-type '
+alias htop="htop --no-color "
+
 function screen() {
   if [ -f "$profile_location_dir/.screenrc" ]; then
     "$(type -fP screen)" -c "$profile_location_dir/.screenrc" -ln -h 599999 -T xterm $*
   else
     "$(type -fP screen)" -ln -h 599999 -T xterm $*
+  fi
+  }
+
+# show disk usage and sorts the output according to the size
+function ds () {         
+  if [ $# -eq 0 ]; then
+    du -hs * | sort -h
+  else
+    du -hs $* | sort -h
   fi
   }
 
