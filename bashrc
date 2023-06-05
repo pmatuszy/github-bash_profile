@@ -1,3 +1,4 @@
+# v. 3.13- 2023.06.05 - df and ver are now funtions, cosmetic change in dba,asm,impdp,expdp,adrci,asmcmd,dgmgrl
 # v. 3.12- 2023.06.01 - cosmetic changes to setting profile_location_dir 
 # v. 3.11- 2023.05.24 - a lot of changes: function screen, and many more
 # v. 3.10- 2023.05.24 - bugfix: SOCGEN customizations
@@ -174,6 +175,7 @@ fi
 alias pgm='if [ -d $HOME/pgm ]; then cd $HOME/pgm; ls -l ; echo ; else mkdir ${profile_location_dir} 2>/dev/null;cd ${profile_location_dir}; ls -l ; fi'
 
 if [ "$USER" != "root" ]; then
+  export NLS_DATE_FORMAT='yyyy.mm.dd hh24:mi:ss'
 
   function lsnrs() {
    if [ "$1" == "" ]; then echo "ERROR dude - specify listener name or part of it"
@@ -205,38 +207,36 @@ if [ "$USER" != "root" ]; then
   # declare -f      - all functions with definition
   # declare -F dba  - show definition of dba function
   function dba() {
-    if [   -z "$ORACLE_HOME" ] ; then echo ORACLE_HOME not set exiting ...;echo;echo; return 1 ; fi
-    if [ ! -d "$ORACLE_HOME" ] ; then echo ORACLE_HOME does NOT exit   ...;echo;echo; return 2 ; fi
-    if [ ! -f "$ORACLE_HOME/bin/sqlplus" ] ; then echo "$ORACLE_HOME/bin/${FUNCNAME[0]}" does NOT exist, exiting ...;echo;echo; return 3 ; fi
-    if [ `uname -a|grep -i Linux|wc -l` -eq 1 ]; then
-       printf '\e[8;71;175t'
-    fi
-    if [ -f "${profile_location_dir}/bin/rlwrap" ]; then
-          "${profile_location_dir}/bin/rlwrap" -p"1;34" -c -f "${profile_location_dir}/bin/wynik.txt" -r -b "(){}[],+^='@$" "$ORACLE_HOME/bin/sqlplus" "/ as sysdba" $*
-    else
-      "$ORACLE_HOME/bin/sqlplus" "/ as sysdba" $*
-    fi
-    }
-
+      if [   -z "$ORACLE_HOME" ] ; then echo "ORACLE_HOME is not set, exiting ...";echo;echo; return 1 ; fi
+      if [ ! -d "$ORACLE_HOME" ] ; then echo "ORACLE_HOME does NOT exist, exiting  ...";echo;echo; return 2 ; fi
+      if [ ! -f "$ORACLE_HOME/bin/sqlplus" ] ; then echo "$ORACLE_HOME/bin/${FUNCNAME[0]}" does NOT exist, exiting ...;echo;echo; return 3 ; fi
+      if [ `uname -a|grep -i Linux|wc -l` -eq 1 ]; then
+         printf '\e[8;71;175t'
+      fi
+      if [ -f "${profile_location_dir}/bin/rlwrap" ]; then
+            "${profile_location_dir}/bin/rlwrap" -p"1;34" -c -f "${profile_location_dir}/bin/wynik.txt" -r -b "(){}[],+^='@$" "$ORACLE_HOME/bin/sqlplus" "/ as sysdba" $*
+      else
+        "$ORACLE_HOME/bin/sqlplus" "/ as sysdba" $*
+      fi
+      }
+  
   function asm() {
-    if [   -z "$ORACLE_HOME" ] ; then echo ORACLE_HOME not set exiting ...;echo;echo; return 1 ; fi
-    if [ ! -d "$ORACLE_HOME" ] ; then echo ORACLE_HOME does NOT exit   ...;echo;echo; return 2 ; fi
+    if [   -z "$ORACLE_HOME" ] ; then echo "ORACLE_HOME is not set, exiting ...";echo;echo; return 1 ; fi
+    if [ ! -d "$ORACLE_HOME" ] ; then echo "ORACLE_HOME does NOT exist, exiting  ...";echo;echo; return 2 ; fi
     if [ ! -f "$ORACLE_HOME/bin/sqlplus" ] ; then echo "$ORACLE_HOME/bin/sqlplus" does NOT exist, exiting ...;echo;echo; return 3 ; fi
     # let's try resize the terminal to 175x71 on linux systems (so login.sql will be seen nicely)
     if [ `uname -a|grep -i Linux|wc -l` -eq 1 ]; then
        printf '\e[8;71;181t'
     fi
-
     if [ -f "${profile_location_dir}/bin/rlwrap" ]; then
           "${profile_location_dir}/bin/rlwrap" -p"1;34" -c -f "${profile_location_dir}/bin/wynik.txt" -r -b "(){}[],+^='@$" "$ORACLE_HOME/bin/sqlplus" "/ as sysasm" $*
     else
       "$ORACLE_HOME/bin/sqlplus" "/ as sysasm" $*
     fi
     }
-
   function impdp() {
-    if [   -z "$ORACLE_HOME" ] ; then echo ORACLE_HOME not set exiting ...;echo;echo; return 1 ; fi
-    if [ ! -d "$ORACLE_HOME" ] ; then echo ORACLE_HOME does NOT exit   ...;echo;echo; return 2 ; fi
+    if [   -z "$ORACLE_HOME" ] ; then echo "ORACLE_HOME is not set, exiting ...";echo;echo; return 1 ; fi
+    if [ ! -d "$ORACLE_HOME" ] ; then echo "ORACLE_HOME does NOT exist, exiting  ...";echo;echo; return 2 ; fi
     if [ ! -f "$ORACLE_HOME/bin/${FUNCNAME[0]}" ] ; then echo "$ORACLE_HOME/bin/${FUNCNAME[0]}" does NOT exist, exiting ...;echo;echo; return 3 ; fi
     if [ -f "${profile_location_dir}/bin/rlwrap" ]; then
       "${profile_location_dir}/bin/rlwrap" -p"7;37" -c -r -b "(){}[],+^='@$" "$ORACLE_HOME/bin/${FUNCNAME[0]}" $*
@@ -244,10 +244,9 @@ if [ "$USER" != "root" ]; then
       "$ORACLE_HOME/bin/${FUNCNAME[0]}" $*
     fi
     }
-
   function adrci() {
-    if [   -z "$ORACLE_HOME" ] ; then echo ORACLE_HOME not set exiting ...;echo;echo; return 1 ; fi
-    if [ ! -d "$ORACLE_HOME" ] ; then echo ORACLE_HOME does NOT exit   ...;echo;echo; return 2 ; fi
+    if [   -z "$ORACLE_HOME" ] ; then echo "ORACLE_HOME is not set, exiting ...";echo;echo; return 1 ; fi
+    if [ ! -d "$ORACLE_HOME" ] ; then echo "ORACLE_HOME does NOT exist, exiting  ...";echo;echo; return 2 ; fi
     if [ ! -f "$ORACLE_HOME/bin/${FUNCNAME[0]}" ] ; then echo "$ORACLE_HOME/bin/${FUNCNAME[0]}" does NOT exist, exiting ...;echo;echo; return 3 ; fi
     if [ -f "${profile_location_dir}/bin/rlwrap" ]; then
       "${profile_location_dir}/bin/rlwrap" -p"7;36" -c -r -b "(){}[],+^='@$" "$ORACLE_HOME/bin/${FUNCNAME[0]}" $*
@@ -255,10 +254,9 @@ if [ "$USER" != "root" ]; then
       "$ORACLE_HOME/bin/${FUNCNAME[0]}" $*
     fi
     }
-
   function asmcmd() {
-    if [   -z "$ORACLE_HOME" ] ; then echo ORACLE_HOME not set exiting ...;echo;echo; return 1 ; fi
-    if [ ! -d "$ORACLE_HOME" ] ; then echo ORACLE_HOME does NOT exit   ...;echo;echo; return 2 ; fi
+    if [   -z "$ORACLE_HOME" ] ; then echo "ORACLE_HOME is not set, exiting ...";echo;echo; return 1 ; fi
+    if [ ! -d "$ORACLE_HOME" ] ; then echo "ORACLE_HOME does NOT exist, exiting  ...";echo;echo; return 2 ; fi
     if [ ! -f "$ORACLE_HOME/bin/${FUNCNAME[0]}" ] ; then echo "$ORACLE_HOME/bin/${FUNCNAME[0]}" does NOT exist, exiting ...;echo;echo; return 3 ; fi
     declare -a ARGS;
     for var in "$@";
@@ -278,10 +276,9 @@ if [ "$USER" != "root" ]; then
     export ORACLE_PATH=$ORG_ORACLE_PATH
     export ORG_ORACLE_PATH=
     }
-
   function dgmgrl() {
-    if [   -z "$ORACLE_HOME" ] ; then echo ORACLE_HOME not set exiting ...;echo;echo; return 1 ; fi
-    if [ ! -d "$ORACLE_HOME" ] ; then echo ORACLE_HOME does NOT exit   ...;echo;echo; return 2 ; fi
+    if [   -z "$ORACLE_HOME" ] ; then echo "ORACLE_HOME is not set, exiting ...";echo;echo; return 1 ; fi
+    if [ ! -d "$ORACLE_HOME" ] ; then echo "ORACLE_HOME does NOT exist, exiting  ...";echo;echo; return 2 ; fi
     if [ ! -f "$ORACLE_HOME/bin/${FUNCNAME[0]}" ] ; then echo "$ORACLE_HOME/bin/${FUNCNAME[0]}" does NOT exist, exiting ...;echo;echo; return 3 ; fi
     if [ -f "${profile_location_dir}/bin/rlwrap" ]; then
       "${profile_location_dir}/bin/rlwrap" -p"7;35" -c -r -b "(){}[],+^='@$" "$ORACLE_HOME/bin/${FUNCNAME[0]}" $*
@@ -318,8 +315,29 @@ fi    # end of condition: [ "$USER" != "root" ]
 function hg() { if [ $# -gt 0 ]; then (history | grep -i $* ) ; else history ;fi }
 alias env="env | sort"
 alias prstat='prstat 1 '
-alias df='echo ; echo "---- (PGM ) df is an alias ----" ; echo ; df -P --sync --total --print-type '
 alias htop="htop --no-color "
+function df(){
+  echo ; echo "---- (PGM) df is an alias ----" ; echo ;
+  df_args=""
+  grep_args=""
+  while [[ $# -gt 0 ]]; do
+    case $1 in
+      -*|--*) 
+        df_args="$df_args $1"
+        shift
+        ;;
+      *) 
+        grep_args="$1"
+        shift
+        ;;
+    esac
+  done
+  if [[ "$grep_args" == "" ]];then
+    /bin/df -P --sync --total --print-type ${df_args}
+  else
+    /bin/df -P --sync --total --print-type ${df_args} | egrep -i "${grep_args}|Filesystem"
+  fi
+  }
 
 function screen() {
   if [ -f "$profile_location_dir/.screenrc" ]; then
@@ -337,13 +355,19 @@ function ds () {
     du -hs $* | sort -h
   fi
   }
+function ver() {
+  clear;echo '### .pgm-boundle-version ###';
+  if [ -f "${profile_location_dir}"/.pgm-boundle-version ];then
+    cat "${profile_location_dir}"/.pgm-boundle-version|head -7 
+  else
+    echo "(PGM) file ${profile_location_dir}/.pgm-boundle-version doesn't exits so I will not cat it here..."
+  fi
+  echo;echo;
+  echo '### BASHRC ###';
+  cat ${profile_location_dir}/bashrc|head -7|grep '^#';echo;
+  echo '### BASH_PROFILE ###';cat ${profile_location_dir}/bash_profile|head -7|grep '^#'
+  }
 
-alias ver='clear;
-           echo '\''### .pgm-bundle-version ###'\'';
-           cat ${profile_location_dir}/.pgm-bundle-version|head -7;echo;echo; 
-           echo '\''### BASHRC ###'\'';cat ${profile_location_dir}/bashrc|head -7|grep '\''^#'\'';
-           echo;echo '\''### BASH_PROFILE ###'\'';cat ${profile_location_dir}/bash_profile|head -7|grep '\''^#'\''
-           '          
 alias unwrap='HISTFILE=/dev/null;if [ "$profile_location_dir" == "" ]; then echo "profile_location_dir is not set, exiting..." ;else cd $profile_location_dir;vi a;uudecode a && bzip2 -d profile.tar.bz2 && tar xvf profile.tar && (ls -l bash*; ./test.sh ; ls -l bash*);fi'
 
 # even though pmon and lsnr are Oracle-related aliases but it is very useful to have it even in e.g. root environement
