@@ -317,10 +317,11 @@ function hg() { if [ $# -gt 0 ]; then (history | grep -i $* ) ; else history ;fi
 alias env="env | sort"
 alias prstat='prstat 1 '
 alias htop="htop --no-color "
+
 function df(){
   echo ; echo "---- (PGM) df is an alias ----" ; echo ;
   df_args=""
-  grep_args=""
+  file_dir_spec=""
   while [[ $# -gt 0 ]]; do
     case $1 in
       -*|--*) 
@@ -328,16 +329,32 @@ function df(){
         shift
         ;;
       *) 
-        grep_args="$1"
+        if [ -z "$file_dir_spec" ];then
+          file_dir_spec="${1%/}" 
+        else 
+          file_dir_spec="$file_dir_spec|${1%/}"
+        fi
         shift
         ;;
     esac
   done
-  if [[ "$grep_args" == "" ]];then
-    /bin/df -P --sync --total --print-type ${df_args}
+  if [[ "$file_dir_spec" == "" ]];then
+    export longest_line=$(/bin/df -P --sync --total --print-type ${df_args} | awk '{ print length}' | sort -n | tail -1)
+    /bin/df -P --sync --total --print-type ${df_args} | sed "/total/i $(for ((i=0;i<$longest_line;i++));do printf '%.0s-';done)" \
+       | sed "/^Filesystem/a $(for ((i=0;i<$longest_line;i++));do printf '%.0s-';done)"
   else
-    /bin/df -P --sync --total --print-type ${df_args} | egrep -i "${grep_args}|Filesystem"
+    /bin/df "${file_dir_spec}" >/dev/null 2>&1
+    if (( $? == 0 )); then
+      echo "bbb ${file_dir_spec}"
+      export longest_line=$(/bin/df -P --sync --total --print-type ${df_args} "${file_dir_spec}" | awk '{ print length}' | sort -n | tail -1)
+      /bin/df -P --sync --total --print-type ${df_args} "${file_dir_spec}" | sed "/total/i $(for ((i=0;i<$longest_line;i++));do printf '%.0s-';done)" \
+        | sed "/^Filesystem/a $(for ((i=0;i<$longest_line;i++));do printf '%.0s-';done)"
+    else
+      export longest_line=$(/bin/df -P --sync --total --print-type ${df_args} | egrep -i "${file_dir_spec}|^Filesystem" | awk '{ print length}' | sort -n | tail -1)
+      /bin/df -P --sync --total --print-type ${df_args} | egrep -i "${file_dir_spec}|^Filesystem" | sed "/^Filesystem/a $(for ((i=0;i<$longest_line;i++));do printf '%.0s-';done)"
+    fi
   fi
+  echo
   }
 
 function screen() {
