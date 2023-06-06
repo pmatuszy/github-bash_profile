@@ -1,3 +1,4 @@
+# v. 3.14- 2023.06.05 - aptitude-all is now a funtion, cosmetic change in df
 # v. 3.13- 2023.06.05 - df and ver are now funtions, cosmetic change in dba,asm,impdp,expdp,adrci,asmcmd,dgmgrl
 # v. 3.12- 2023.06.01 - cosmetic changes to setting profile_location_dir 
 # v. 3.11- 2023.05.24 - a lot of changes: function screen, and many more
@@ -303,7 +304,7 @@ if [ "$USER" != "root" ]; then
   alias dbs='if [ -z "$ORACLE_HOME" ] || [ ! -d "$ORACLE_HOME" ]; then echo ORACLE_HOME not set or non-existent, exiting ...;echo;echo;else cd $ORACLE_HOME/dbs ; pwd ; ls -l ; echo ; fi'
   alias tns='if [ -z "$ORACLE_HOME" ] || [ ! -d "$ORACLE_HOME" ]; then echo ORACLE_HOME not set or non-existent, exiting ...;echo;echo;else cd ${TNS_ADMIN:-$ORACLE_HOME/network/admin} ; pwd ; ls -l ; echo ; fi'
   alias po='. pickora $*'
-  alias var='env|egrep "ORA|TNS_ADMIN_NLS|SQLPATH|NLS_|TWO_TASK"|sort'
+  alias var='env|egrep "ORA|TNS_ADMIN|SQLPATH|NLS_|TWO_TASK"|sort'
   alias dgsp='echo show database verbose `echo show configuration|dgmgrl -silent / | grep "Primary database" | sed "s/ - Primary database//"` |dgmgrl -silent /|less'
   alias dgss='echo show database verbose `echo show configuration|dgmgrl -silent / | grep "standby database" | sed "s/ - Physical standby database//"` |dgmgrl -silent /|less'
   alias dgsc='echo show configuration |dgmgrl -silent /'
@@ -417,7 +418,28 @@ if [ $MATUSZYK == 1 ]; then
   alias gitbub="${profile_location_dir}/github-bin/git-push.sh batch"
 fi
 
-alias aptitude-all="boxes <<<'aptitude -q update';aptitude -q update;boxes <<<'aptitude -q upgrade';aptitude -q upgrade;boxes <<<'aptitude -q autoclean';aptitude -q autoclean ; if [ -x $HOME/bin/sprawdz-ile-apt-list--upgradable.sh ]; then $HOME/bin/sprawdz-ile-apt-list--upgradable.sh ; fi"
+# alias aptitude-all="boxes <<<'aptitude -q update';aptitude -q update;boxes <<<'aptitude -q upgrade';aptitude -q upgrade;boxes <<<'aptitude -q autoclean';aptitude -q autoclean ; if [ -x $HOME/bin/sprawdz-ile-apt-list--upgradable.sh ]; then $HOME/bin/sprawdz-ile-apt-list--upgradable.sh ; fi"
+
+function aptitude-all() {
+  assume_yes=""
+  if (( $# != 0 )) && [ "${1-nonbatch}" == "batch" ]; then
+    echo ; echo "(PGM) enabling batch mode (no questions asked)"
+    assume_yes="-y"
+  fi
+
+  boxes <<<'aptitude -q ${assume_yes} update';
+  aptitude -q ${assume_yes} update;     
+  
+  boxes <<<'aptitude -q ${assume_yes} upgrade';
+  aptitude -q ${assume_yes} upgrade;  
+  
+  boxes <<<'aptitude -q ${assume_yes} autoclean';
+  aptitude -q ${assume_yes} autoclean ;
+  
+  if [ -x $HOME/bin/sprawdz-ile-apt-list--upgradable.sh ]; then 
+    $HOME/bin/sprawdz-ile-apt-list--upgradable.sh
+  fi
+  }
 
 boldon="`tty -s && /usr/bin/tput smso`"
 boldoff="`tty -s && /usr/bin/tput rmso`"
