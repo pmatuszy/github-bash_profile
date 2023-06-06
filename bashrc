@@ -319,7 +319,7 @@ alias prstat='prstat 1 '
 alias htop="htop --no-color "
 
 function df(){
-  echo ; echo "---- (PGM) df is an alias ----" ; echo ;
+  echo ; echo "---- (PGM) df is a function ----" ; echo ;
   df_args=""
   file_dir_spec=""
   while [[ $# -gt 0 ]]; do
