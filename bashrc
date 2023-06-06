@@ -418,8 +418,6 @@ if [ $MATUSZYK == 1 ]; then
   alias gitbub="${profile_location_dir}/github-bin/git-push.sh batch"
 fi
 
-# alias aptitude-all="boxes <<<'aptitude -q update';aptitude -q update;boxes <<<'aptitude -q upgrade';aptitude -q upgrade;boxes <<<'aptitude -q autoclean';aptitude -q autoclean ; if [ -x $HOME/bin/sprawdz-ile-apt-list--upgradable.sh ]; then $HOME/bin/sprawdz-ile-apt-list--upgradable.sh ; fi"
-
 function aptitude-all() {
   assume_yes=""
   if (( $# != 0 )) && [ "${1-nonbatch}" == "batch" ]; then
@@ -427,13 +425,13 @@ function aptitude-all() {
     assume_yes="-y"
   fi
 
-  boxes <<<'aptitude -q ${assume_yes} update';
+  boxes <<< "aptitude -q ${assume_yes} update";
   aptitude -q ${assume_yes} update;     
   
-  boxes <<<'aptitude -q ${assume_yes} upgrade';
+  boxes <<< "aptitude -q ${assume_yes} upgrade";
   aptitude -q ${assume_yes} upgrade;  
   
-  boxes <<<'aptitude -q ${assume_yes} autoclean';
+  boxes <<< "aptitude -q ${assume_yes} autoclean";
   aptitude -q ${assume_yes} autoclean ;
   
   if [ -x $HOME/bin/sprawdz-ile-apt-list--upgradable.sh ]; then 
