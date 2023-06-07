@@ -1,3 +1,4 @@
+# v. 3.15- 2023.06.06 - df changed 
 # v. 3.14- 2023.06.05 - aptitude-all is now a funtion, cosmetic change in df
 # v. 3.13- 2023.06.05 - df and ver are now funtions, cosmetic change in dba,asm,impdp,expdp,adrci,asmcmd,dgmgrl
 # v. 3.12- 2023.06.01 - cosmetic changes to setting profile_location_dir 
@@ -320,7 +321,9 @@ alias htop="htop --no-color "
 
 function df(){
   echo ; echo "---- (PGM) df is a function ----" ; echo ;
+  ## all arguments starting with '-' we treat and df switches
   df_args=""
+  ## all arguments starting with NO '-' we pass to grep
   file_dir_spec=""
   while [[ $# -gt 0 ]]; do
     case $1 in
@@ -329,29 +332,42 @@ function df(){
         shift
         ;;
       *) 
-        if [ -z "$file_dir_spec" ];then
-          file_dir_spec="${1%/}" 
-        else 
-          file_dir_spec="$file_dir_spec|${1%/}"
+        if [[ -z "$file_dir_spec" ]];then
+          if [[ ${#1} > 1 ]];then 
+            file_dir_spec="${1%/}" 
+          else
+            file_dir_spec="${1}"
+          fi
+        else # if we have already something in file_dir_spec we append to it with "|"
+          if [[ ${#1} > 1 ]];then # when the pattern ends with / we remove it unless the pattern contains only '/'
+            file_dir_spec="$file_dir_spec|${1%/}"
+          else
+            file_dir_spec="$file_dir_spec|${1}"
+          fi
         fi
         shift
         ;;
     esac
   done
   if [[ "$file_dir_spec" == "" ]];then
-    export longest_line=$(/bin/df -P --sync --total --print-type ${df_args} | awk '{ print length}' | sort -n | tail -1)
-    /bin/df -P --sync --total --print-type ${df_args} | sed "/total/i $(for ((i=0;i<$longest_line;i++));do printf '%.0s-';done)" \
-       | sed "/^Filesystem/a $(for ((i=0;i<$longest_line;i++));do printf '%.0s-';done)"
+    export longest_line=$(/bin/df -P --sync --total --print-type ${df_args} \
+      | awk '{ print length}' | sort -n | tail -1)
+    /bin/df -P --sync --total --print-type ${df_args} \
+      | sed "/total/i $(for ((i=0;i<$longest_line;i++));do printf '%.0s-';done)" \
+      | sed "/^Filesystem/a $(for ((i=0;i<$longest_line;i++));do printf '%.0s-';done)"
   else
     /bin/df "${file_dir_spec}" >/dev/null 2>&1
     if (( $? == 0 )); then
-      echo "bbb ${file_dir_spec}"
-      export longest_line=$(/bin/df -P --sync --total --print-type ${df_args} "${file_dir_spec}" | awk '{ print length}' | sort -n | tail -1)
-      /bin/df -P --sync --total --print-type ${df_args} "${file_dir_spec}" | sed "/total/i $(for ((i=0;i<$longest_line;i++));do printf '%.0s-';done)" \
-        | sed "/^Filesystem/a $(for ((i=0;i<$longest_line;i++));do printf '%.0s-';done)"
+      export longest_line=$(/bin/df -P --sync --total --print-type ${df_args} "${file_dir_spec}" | \
+        awk '{ print length}' | sort -n | tail -1)
+      /bin/df -P --sync --total --print-type ${df_args} "${file_dir_spec}" | \
+        sed "/total/i $(for ((i=0;i<$longest_line;i++));do printf '%.0s-';done)" | \
+        sed "/^Filesystem/a $(for ((i=0;i<$longest_line;i++));do printf '%.0s-';done)"
     else
-      export longest_line=$(/bin/df -P --sync --total --print-type ${df_args} | egrep -i "${file_dir_spec}|^Filesystem" | awk '{ print length}' | sort -n | tail -1)
-      /bin/df -P --sync --total --print-type ${df_args} | egrep -i "${file_dir_spec}|^Filesystem" | sed "/^Filesystem/a $(for ((i=0;i<$longest_line;i++));do printf '%.0s-';done)"
+      export longest_line=$(/bin/df -P --sync --total --print-type ${df_args} | \
+        egrep -i "${file_dir_spec}|^Filesystem" | awk '{ print length}' | sort -n | tail -1)
+      /bin/df -P --sync --total --print-type ${df_args} | egrep -i "${file_dir_spec}|^Filesystem" | \
+        sed "/^Filesystem/a $(for ((i=0;i<$longest_line;i++));do printf '%.0s-';done)"
     fi
   fi
   echo
