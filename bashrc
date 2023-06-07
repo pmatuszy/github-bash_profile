@@ -1,3 +1,4 @@
+# v. 3.14- 2023.06.05 - aptitude-all is now a funtion, cosmetic change in df
 # v. 3.13- 2023.06.05 - df and ver are now funtions, cosmetic change in dba,asm,impdp,expdp,adrci,asmcmd,dgmgrl
 # v. 3.12- 2023.06.01 - cosmetic changes to setting profile_location_dir 
 # v. 3.11- 2023.05.24 - a lot of changes: function screen, and many more
@@ -303,7 +304,7 @@ if [ "$USER" != "root" ]; then
   alias dbs='if [ -z "$ORACLE_HOME" ] || [ ! -d "$ORACLE_HOME" ]; then echo ORACLE_HOME not set or non-existent, exiting ...;echo;echo;else cd $ORACLE_HOME/dbs ; pwd ; ls -l ; echo ; fi'
   alias tns='if [ -z "$ORACLE_HOME" ] || [ ! -d "$ORACLE_HOME" ]; then echo ORACLE_HOME not set or non-existent, exiting ...;echo;echo;else cd ${TNS_ADMIN:-$ORACLE_HOME/network/admin} ; pwd ; ls -l ; echo ; fi'
   alias po='. pickora $*'
-  alias var='env|egrep "ORA|TNS_ADMIN_NLS|SQLPATH|NLS_|TWO_TASK"|sort'
+  alias var='env|egrep "ORA|TNS_ADMIN|SQLPATH|NLS_|TWO_TASK"|sort'
   alias dgsp='echo show database verbose `echo show configuration|dgmgrl -silent / | grep "Primary database" | sed "s/ - Primary database//"` |dgmgrl -silent /|less'
   alias dgss='echo show database verbose `echo show configuration|dgmgrl -silent / | grep "standby database" | sed "s/ - Physical standby database//"` |dgmgrl -silent /|less'
   alias dgsc='echo show configuration |dgmgrl -silent /'
@@ -316,10 +317,11 @@ function hg() { if [ $# -gt 0 ]; then (history | grep -i $* ) ; else history ;fi
 alias env="env | sort"
 alias prstat='prstat 1 '
 alias htop="htop --no-color "
+
 function df(){
-  echo ; echo "---- (PGM) df is an alias ----" ; echo ;
+  echo ; echo "---- (PGM) df is a function ----" ; echo ;
   df_args=""
-  grep_args=""
+  file_dir_spec=""
   while [[ $# -gt 0 ]]; do
     case $1 in
       -*|--*) 
@@ -327,16 +329,32 @@ function df(){
         shift
         ;;
       *) 
-        grep_args="$1"
+        if [ -z "$file_dir_spec" ];then
+          file_dir_spec="${1%/}" 
+        else 
+          file_dir_spec="$file_dir_spec|${1%/}"
+        fi
         shift
         ;;
     esac
   done
-  if [[ "$grep_args" == "" ]];then
-    /bin/df -P --sync --total --print-type ${df_args}
+  if [[ "$file_dir_spec" == "" ]];then
+    export longest_line=$(/bin/df -P --sync --total --print-type ${df_args} | awk '{ print length}' | sort -n | tail -1)
+    /bin/df -P --sync --total --print-type ${df_args} | sed "/total/i $(for ((i=0;i<$longest_line;i++));do printf '%.0s-';done)" \
+       | sed "/^Filesystem/a $(for ((i=0;i<$longest_line;i++));do printf '%.0s-';done)"
   else
-    /bin/df -P --sync --total --print-type ${df_args} | egrep -i "${grep_args}|Filesystem"
+    /bin/df "${file_dir_spec}" >/dev/null 2>&1
+    if (( $? == 0 )); then
+      echo "bbb ${file_dir_spec}"
+      export longest_line=$(/bin/df -P --sync --total --print-type ${df_args} "${file_dir_spec}" | awk '{ print length}' | sort -n | tail -1)
+      /bin/df -P --sync --total --print-type ${df_args} "${file_dir_spec}" | sed "/total/i $(for ((i=0;i<$longest_line;i++));do printf '%.0s-';done)" \
+        | sed "/^Filesystem/a $(for ((i=0;i<$longest_line;i++));do printf '%.0s-';done)"
+    else
+      export longest_line=$(/bin/df -P --sync --total --print-type ${df_args} | egrep -i "${file_dir_spec}|^Filesystem" | awk '{ print length}' | sort -n | tail -1)
+      /bin/df -P --sync --total --print-type ${df_args} | egrep -i "${file_dir_spec}|^Filesystem" | sed "/^Filesystem/a $(for ((i=0;i<$longest_line;i++));do printf '%.0s-';done)"
+    fi
   fi
+  echo
   }
 
 function screen() {
@@ -417,7 +435,26 @@ if [ $MATUSZYK == 1 ]; then
   alias gitbub="${profile_location_dir}/github-bin/git-push.sh batch"
 fi
 
-alias aptitude-all="boxes <<<'aptitude -q update';aptitude -q update;boxes <<<'aptitude -q upgrade';aptitude -q upgrade;boxes <<<'aptitude -q autoclean';aptitude -q autoclean ; if [ -x $HOME/bin/sprawdz-ile-apt-list--upgradable.sh ]; then $HOME/bin/sprawdz-ile-apt-list--upgradable.sh ; fi"
+function aptitude-all() {
+  assume_yes=""
+  if (( $# != 0 )) && [ "${1-nonbatch}" == "batch" ]; then
+    echo ; echo "(PGM) enabling batch mode (no questions asked)"
+    assume_yes="-y"
+  fi
+
+  boxes <<< "aptitude -q ${assume_yes} update";
+  aptitude -q ${assume_yes} update;     
+  
+  boxes <<< "aptitude -q ${assume_yes} upgrade";
+  aptitude -q ${assume_yes} upgrade;  
+  
+  boxes <<< "aptitude -q ${assume_yes} autoclean";
+  aptitude -q ${assume_yes} autoclean ;
+  
+  if [ -x $HOME/bin/sprawdz-ile-apt-list--upgradable.sh ]; then 
+    $HOME/bin/sprawdz-ile-apt-list--upgradable.sh
+  fi
+  }
 
 boldon="`tty -s && /usr/bin/tput smso`"
 boldoff="`tty -s && /usr/bin/tput rmso`"
