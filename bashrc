@@ -364,10 +364,16 @@ fi    # end of condition: [ "$USER" != "root" ]
 function hg() { if [ $# -gt 0 ]; then (history | grep -i $* ) ; else history ;fi }
 export -f hg
 
-alias env="env | sort"
 if [ $(type -fP prstat) ];then
   alias prstat='prstat 1 '
 fi
+
+function env(){
+  echo ; echo "---- (PGM) env is a function ----" ; echo 
+  $(type -fP env) | sed '/BASH_FUNC_/,/^}$/d' | sed '/^$/d'|sort|uniq # get rid of function and display ony environment variables
+  echo
+  }
+export -f env
 
 alias htop="htop --no-color "
 
@@ -448,14 +454,20 @@ export -f dsl
 
 function help-disk() {
   echo
-  echo "ds  - DiskSort (human way)"
-  echo "dsl - 'ds' but for the local file system only"
-  echo 
-  echo "df  - DiskFree"
-  echo "dfs - 'df' with --sync option"
+  echo "/***********************/"
+  echo "/*      du | sort      */"
+  echo "/***********************/"
+  echo "ds     - DiskSort (human way)"
+  echo "dsl    - 'ds' but for the local file system only"
+  echo
+  echo "/***********************/"
+  echo "/*      df | grep      */"
+  echo "/***********************/"
+  echo "df     - DiskFree"
+  echo "dfs    - 'df' with --sync option"
   echo
   }
-
+export -f help-disk
 function screen() {
   if [ -f "$profile_location_dir/.screenrc" ]; then
     "$(type -fP screen)" -c "$profile_location_dir/.screenrc" -ln -h 599999 -T xterm $*
@@ -519,10 +531,11 @@ alias vim='vi $* '
 
 alias help-date="echo date \'+%Y.%m.%d %H:%M:%S\'"
 alias help-dd="echo dd bs=50M if= of= status=progress conv=fdatasync  oflag=direct"
-alias help-sshfs="echo sshfs -o Compression=no -o ServerAliveCountMax=2 -o ServerAliveInterval=15 root@.eth.r.matuszyk.com:/directory /mnt/"
+alias help-sshfs="echo sshfs -o Compression=no -o ServerAliveCountMax=2 -o ServerAliveInterval=15 user@hostname:/directory /mnt/"
 alias help-rsync="echo rsync -a -v --inplace --no-compress --stats --progress --info=progress1 --partial --remove-source-files -e \'ssh -T -p 4444 -o Compression=no -x \' SOURCE DEST "
 alias help-sshfs="echo sshfs -o Compression=no -o ServerAliveCountMax=2 -o ServerAliveInterval=15 root@hostname:/directory /mnt/sshfs-tmp"
 alias help-vi="echo ; echo 'vi +/{pat} +[num]' ; echo "
+alias help-boxes="boxes -s WxH -a l/c/r"
 
 function help-kitty(){
   # trick with $ at the beginning - "ksh, bash, and zsh only, does not expand variables"
@@ -562,7 +575,7 @@ function aptitude-all() {
     $HOME/bin/sprawdz-ile-apt-list--upgradable.sh
   fi
   }
-if [ $(type -fP aptitude) ];then
+if [ ! $(type -fP aptitude) ];then
   unset -f aptitude-all
 else
   export -f aptitude-all
@@ -682,7 +695,6 @@ export -f df
 export -f dfs
 export -f ds
 export -f dsl
-export -f help-disk
 
 # After each command, append to the history file and reread it
 #PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND$'\n'}history -a; history -c; history -r"
