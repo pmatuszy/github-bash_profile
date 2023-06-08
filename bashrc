@@ -535,7 +535,7 @@ alias help-sshfs="echo sshfs -o Compression=no -o ServerAliveCountMax=2 -o Serve
 alias help-rsync="echo rsync -a -v --inplace --no-compress --stats --progress --info=progress1 --partial --remove-source-files -e \'ssh -T -p 4444 -o Compression=no -x \' SOURCE DEST "
 alias help-sshfs="echo sshfs -o Compression=no -o ServerAliveCountMax=2 -o ServerAliveInterval=15 root@hostname:/directory /mnt/sshfs-tmp"
 alias help-vi="echo ; echo 'vi +/{pat} +[num]' ; echo "
-alias help-boxes="boxes -s WxH -a l/c/r"
+alias help-boxes="echo boxes -s WxH -a l/c/r"
 
 function help-kitty(){
   # trick with $ at the beginning - "ksh, bash, and zsh only, does not expand variables"
