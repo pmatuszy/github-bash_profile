@@ -1,3 +1,5 @@
+# v. 3.16- 2023.06.08 - exporting all functions, added help-oracle, help-disk, help-vi, expdp, 
+#                       prstat and aptitude-all are created only when commands are available in the OS
 # v. 3.15- 2023.06.06 - df changed 
 # v. 3.14- 2023.06.05 - aptitude-all is now a funtion, cosmetic change in df
 # v. 3.13- 2023.06.05 - df and ver are now funtions, cosmetic change in dba,asm,impdp,expdp,adrci,asmcmd,dgmgrl
@@ -246,6 +248,16 @@ if [ "$USER" != "root" ]; then
       "$ORACLE_HOME/bin/${FUNCNAME[0]}" $*
     fi
     }
+  function expdp() {
+    if [   -z "$ORACLE_HOME" ] ; then echo "ORACLE_HOME is not set, exiting ...";echo;echo; return 1 ; fi
+    if [ ! -d "$ORACLE_HOME" ] ; then echo "ORACLE_HOME does NOT exist, exiting  ...";echo;echo; return 2 ; fi
+    if [ ! -f "$ORACLE_HOME/bin/${FUNCNAME[0]}" ] ; then echo "$ORACLE_HOME/bin/${FUNCNAME[0]}" does NOT exist, exiting ...;echo;echo; return 3 ; fi
+    if [ -f "${profile_location_dir}/bin/rlwrap" ]; then
+      "${profile_location_dir}/bin/rlwrap" -p"7;37" -c -r -b "(){}[],+^='@$" "$ORACLE_HOME/bin/${FUNCNAME[0]}" $*
+    else
+      "$ORACLE_HOME/bin/${FUNCNAME[0]}" $*
+    fi
+    }
   function adrci() {
     if [   -z "$ORACLE_HOME" ] ; then echo "ORACLE_HOME is not set, exiting ...";echo;echo; return 1 ; fi
     if [ ! -d "$ORACLE_HOME" ] ; then echo "ORACLE_HOME does NOT exist, exiting  ...";echo;echo; return 2 ; fi
@@ -312,15 +324,55 @@ if [ "$USER" != "root" ]; then
   alias dgscv='echo show configuration verbose|dgmgrl -silent /'
   alias dgscl='echo show configuration lag|dgmgrl -silent /'
 
+  function help-oracle() {
+    echo
+    echo "~~~ Data Guard ~~~"
+    echo "dgsc  - DG show configuration"
+    echo "dgscv - DG show configuration verbose"
+    echo "dgscl - DG show confiuration lag"
+    echo "dgsp  - DG show Primary DB"
+    echo "dgss  - DG show Standby database"
+    echo ; echo "~~~ alert.log ~~~"
+    echo "ta, talert - tail alert.log"
+    echo "va, valert - vi alert.log"
+    echo ; echo "~~~ listeners ~~~"
+    echo "lsnr  - show running listeners"
+    echo "lsnrh - show running listeners from the CURRENTLY set ORACLE_HOME"
+    echo ; echo "~~~ ORACLE_HOME and ORACLE_BASE ~~~"
+    echo "ob  - go to ORACLE_BASE and show the ORACLE_BASE value"
+    echo "oh  - go to ORACLE_HOME and show the ORACLE_HOME value"
+    echo "soh - show ORACLE_HOME value"
+    echo "sob - show ORACLE_BASE value"
+    echo ; echo "~~~ other stuff ~~~"
+    echo "pmon - show what instances are currently running"
+    echo "po - pickora - choose which instance environment variables you want to set"
+    echo "var - show ORACLE specific environment variables"
+    echo
+    }
+  export -f lsnrs
+  export -f dba
+  export -f asm
+  export -f impdp
+  export -f expdp
+  export -f asmcmd
+  export -f dgmgrl
+  export -f wia
+  export -f help-oracle
+
 fi    # end of condition: [ "$USER" != "root" ]
 
 function hg() { if [ $# -gt 0 ]; then (history | grep -i $* ) ; else history ;fi }
+export -f hg
+
 alias env="env | sort"
-alias prstat='prstat 1 '
+if [ $(type -fP prstat) ];then
+  alias prstat='prstat 1 '
+fi
+
 alias htop="htop --no-color "
 
 function df(){
-  echo ; echo "---- (PGM) df is a function ----" ; echo ;
+  echo ; echo "---- (PGM) df is a function ----" 
   ## all arguments starting with '-' we treat and df switches
   df_args=""
   ## all arguments starting with NO '-' we pass to grep
@@ -350,26 +402,57 @@ function df(){
     esac
   done
   if [[ "$file_dir_spec" == "" ]];then
-    export longest_line=$(/bin/df -P --sync --total --print-type ${df_args} \
+    message=$(/bin/df -P --total --print-type ${df_args} 2>&1) # check if invalid args are passed to df
+    if [[ $message =~ "invalid option" ]]; then
+      echo "$message"
+      return 1
+    fi
+    export longest_line=$(/bin/df -P --total --print-type ${df_args} \
       | awk '{ print length}' | sort -n | tail -1)
-    /bin/df -P --sync --total --print-type ${df_args} \
+    /bin/df -P --total --print-type ${df_args} \
       | sed "/total/i $(for ((i=0;i<$longest_line;i++));do printf '%.0s-';done)" \
       | sed "/^Filesystem/a $(for ((i=0;i<$longest_line;i++));do printf '%.0s-';done)"
   else
-    /bin/df "${file_dir_spec}" >/dev/null 2>&1
-    if (( $? == 0 )); then
-      export longest_line=$(/bin/df -P --sync --total --print-type ${df_args} "${file_dir_spec}" | \
+    message=$(//bin/df -P --total --print-type ${df_args} "${file_dir_spec}" 2>&1)  # check if invalid args are passed to df
+    exit_code=$?
+    if [[ $message =~ "invalid option" ]]; then
+      echo "$message"
+      return 1
+    fi
+    if (( exit_code == 0 )); then
+      export longest_line=$(/bin/df -P --total --print-type ${df_args} "${file_dir_spec}" | \
         awk '{ print length}' | sort -n | tail -1)
-      /bin/df -P --sync --total --print-type ${df_args} "${file_dir_spec}" | \
+      /bin/df -P  --total --print-type ${df_args} "${file_dir_spec}" | \
         sed "/total/i $(for ((i=0;i<$longest_line;i++));do printf '%.0s-';done)" | \
         sed "/^Filesystem/a $(for ((i=0;i<$longest_line;i++));do printf '%.0s-';done)"
     else
-      export longest_line=$(/bin/df -P --sync --total --print-type ${df_args} | \
+      export longest_line=$(/bin/df -P --total --print-type ${df_args} | \
         egrep -i "${file_dir_spec}|^Filesystem" | awk '{ print length}' | sort -n | tail -1)
-      /bin/df -P --sync --total --print-type ${df_args} | egrep -i "${file_dir_spec}|^Filesystem" | \
+      /bin/df -P --total --print-type ${df_args} | egrep -i "${file_dir_spec}|^Filesystem" | \
         sed "/^Filesystem/a $(for ((i=0;i<$longest_line;i++));do printf '%.0s-';done)"
     fi
   fi
+  echo
+  }
+export -f df
+
+function dfs() {
+  df --sync $*
+  }
+export -f dfs
+
+function dsl() {
+  ds --one-file-system *
+  }
+export -f dsl
+
+function help-disk() {
+  echo
+  echo "ds  - DiskSort (human way)"
+  echo "dsl - 'ds' but for the local file system only"
+  echo 
+  echo "df  - DiskFree"
+  echo "dfs - 'df' with --sync option"
   echo
   }
 
@@ -438,6 +521,14 @@ alias help-date="echo date \'+%Y.%m.%d %H:%M:%S\'"
 alias help-dd="echo dd bs=50M if= of= status=progress conv=fdatasync  oflag=direct"
 alias help-sshfs="echo sshfs -o Compression=no -o ServerAliveCountMax=2 -o ServerAliveInterval=15 root@.eth.r.matuszyk.com:/directory /mnt/"
 alias help-rsync="echo rsync -a -v --inplace --no-compress --stats --progress --info=progress1 --partial --remove-source-files -e \'ssh -T -p 4444 -o Compression=no -x \' SOURCE DEST "
+alias help-sshfs="echo sshfs -o Compression=no -o ServerAliveCountMax=2 -o ServerAliveInterval=15 root@hostname:/directory /mnt/sshfs-tmp"
+alias help-vi="echo ; echo 'vi +/{pat} +[num]' ; echo "
+
+function help-kitty(){
+  # trick with $ at the beginning - "ksh, bash, and zsh only, does not expand variables"
+  echo $'sudo su - oracle --session-command=\'/bin/bash --login --rcfile /tools/oracle/pgm/bashrc /tools/oracle/pgm/bash_profile\''
+  }
+export -f help-kitty
 
 if [ $MATUSZYK == 1 ]; then
   # github aliases
@@ -471,6 +562,11 @@ function aptitude-all() {
     $HOME/bin/sprawdz-ile-apt-list--upgradable.sh
   fi
   }
+if [ $(type -fP aptitude) ];then
+  unset -f aptitude-all
+else
+  export -f aptitude-all
+fi
 
 boldon="`tty -s && /usr/bin/tput smso`"
 boldoff="`tty -s && /usr/bin/tput rmso`"
@@ -575,6 +671,18 @@ bash_prompt_command() {
 export -f bash_prompt_command   # In Bash you can export function definitions to other shell scripts that your script calls
 export PROMPT_COMMAND=bash_prompt_command
 
+export -f hg
+export -f df
+export -f screen
+export -f ds
+export -f ver
+export -f vi
+
+export -f df
+export -f dfs
+export -f ds
+export -f dsl
+export -f help-disk
 
 # After each command, append to the history file and reread it
 #PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND$'\n'}history -a; history -c; history -r"
