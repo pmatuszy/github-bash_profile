@@ -1,3 +1,4 @@
+# v. 3.17- 2023.06.09 - bugfix: if gdb is not present it won't be executed
 # v. 3.16- 2023.06.08 - exporting all functions, added help-oracle, help-disk, help-vi, expdp, 
 #                       prstat and aptitude-all are created only when commands are available in the OS
 # v. 3.15- 2023.06.06 - df changed 
@@ -137,8 +138,8 @@ cat /etc/chrony.conf /etc/resolv.conf 2>/dev/null |grep -qi socgen && SOCGEN=1
 
 if [ $SOCGEN == 1 ]; then
   export MRL_PUTTY_PS1=     # unset MRL_PUTTY_PS1 as it corrupts terminal colors...
-  # below is  making TMOUT which is set read-only to read-write 
-  gdb -ex 'call (int) unbind_variable("TMOUT")' --pid=$$ --batch 2>&1 > /dev/null
+  # below is  making TMOUT which is may be set read-only to read-write
+  [ $(type -fP gdb) ] && gdb -ex 'call (int) unbind_variable("TMOUT")' --pid=$$ --batch 2>&1 > /dev/null
   export TMOUT=0            # to disable auto-logout set the TMOUT to zero or unset it 
   export profile_location_dir=$HOME/pgm
 fi
