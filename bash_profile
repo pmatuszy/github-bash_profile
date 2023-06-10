@@ -1,3 +1,4 @@
+# v. 2.16- 2023.06.09 - bugfix: if gdb is not present it won't be executed
 # v. 2.14- 2023.06.01 - cosmetic changes to setting profile_location_dir 
 # v. 2.13- 2023.05.24 - added HISTIGNORE and HISTTIMEFORMAT variable
 # v. 2.12- 2021.03.04 - added HISTIGNORE and HISTTIMEFORMAT variable
@@ -61,8 +62,8 @@ cat /etc/chrony.conf /etc/resolv.conf 2>/dev/null |grep -qi socgen && SOCGEN=1
 
 if [ $SOCGEN == 1 ]; then
   export MRL_PUTTY_PS1=     # unset MRL_PUTTY_PS1 as it corrupts terminal colors...
-  # below is  making TMOUT which is set read-only to read-write
-  gdb -ex 'call (int) unbind_variable("TMOUT")' --pid=$$ --batch 2>&1 > /dev/null
+  # below is  making TMOUT which is may be set read-only to read-write
+  [ $(type -fP gdb) ] && gdb -ex 'call (int) unbind_variable("TMOUT")' --pid=$$ --batch 2>&1 > /dev/null
   export TMOUT=0            # to disable auto-logout set the TMOUT to zero or unset it
   export profile_location_dir=$HOME/pgm
 fi
