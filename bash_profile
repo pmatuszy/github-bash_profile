@@ -1,3 +1,4 @@
+# v. 2.17- 2023.06.14 - better USER detection and setting some ORA* env variables only for oracle and grid users
 # v. 2.16- 2023.06.09 - bugfix: if gdb is not present it won't be executed
 # v. 2.14- 2023.06.01 - cosmetic changes to setting profile_location_dir 
 # v. 2.13- 2023.05.24 - added HISTIGNORE and HISTTIMEFORMAT variable
@@ -102,22 +103,6 @@ fi
 # settig profile_location_dir END   #
 #####################################
 
-# ustawianie ORA_CRS_HOME - poczatek
-#export ORA_CRS_HOME=/orcl/grid/oracle/product/11.2.0.1/grid
-if [[ "`ps -ef | grep crsd.bin|grep -v grep|wc -l`" == 1 ]]; then
-      export ORA_CRS_HOME=`ps -ef | grep crsd.bin|grep -v grep |sed 's/\/bin\/crsd.bin.*//g'|grep root|sed 's/.* \//\//g'`
-fi
-# ustawianie ORA_CRS_HOME - koniec
-
-export CRS_HOME=${ORA_CRS_HOME:-}
-
-#if [ "${ORACLE_BASE:-}" == "" ]; then
-#      export ORACLE_BASE=/orcl/app/oracle
-#fi
-
-export ORACLE_BASE=${ORACLE_BASE:-/u01/app/oracle}
-export ORACLE_HOME=${ORA_CRS_HOME:-}
-
 export PATH=${PATH}:/usr/sbin:/usr/openwin/bin:${HOME}/bin:/usr/local/bin:/usr/local/sbin:/usr/lib/vxvm/bin:/opt/VRTSvxfs/sbin:/opt/VRTSvcs/bin:/opt/VRTS/bin:/opt/VRTSvcs/rac/bin:/opt/VRTSob/bin:/sbin:/opt/VRTSllt:/opt/sfw/bin:${profile_location_dir}/bin:/opt/sfw/bin:/sbin:${ORACLE_HOME}/bin:${ORACLE_HOME}/OPatch:${ORA_CRS_HOME}/bin
 
 export SHELL=`type bash|awk '{print $3}'`
@@ -125,8 +110,6 @@ export PAGER=less
 export LD_LIBRARY_PATH=${profile_location_dir}/lib:${LD_LIBRARY_PATH}:${HOME}/lib
 export MANPATH=$MANPATH:/opt/VRTS/man:/usr/man:/usr/local/man:/usr/demo/link_audit/man:/usr/sfw/share/man:/usr/sfw/lib/webmin/perlmod/man:/usr/sfw/lib/webmin/mscstyle3/man:/usr/sfw/lib/webmin/man:/usr/sfw/lsr/X11/share/man:/usr/local/ssl/man:/usr/local/php/man:/usr/local/man:/usr/local/mysql/man:/usr/local/doc/ncftp/doc/man:/usr/local/doc/openldap/doc/man:/usr/local/doc/tiff/html/man:/usr/local/doc/libidn/doc:/usr/local/doc/snownews/doc/man:/usr/local/doc/apache/docs/man:/usr/local/doc/confuse/doc/man:/usr/local/doc/ncurses/doc/html/man:/usr/local/doc/neon/doc/man:/usr/local/doc/libnet/doc/man:/usr/local/doc/hf/man:/usr/local/netpbm/man:/usr/local/share/man:/usr/local/apache2/man:/usr/local/teTeX/man:/usr/local/samba/man:/usr/local/qt/doc/man:/usr/local/qt/src/3rdparty/libmng/doc/man:/usr/local/pgsql/man:/usr/loc/usr/perl5/5.6.1/man:/usr/perl5/5.8.3/man:/usr/lib/cc-ccr/man:/usr/openwin/share/man:/usr/apache2/man:/usr/dt/share/man:/usr/jdk/instances/jdk1.5.0/man:/usr/j2se/man:/usr/postgres/8.2/man
 
-export SQLPATH=${SQLPATH:-${profile_location_dir}/sqlplus/admin}
-export ORACLE_PATH=${SQLPATH}       # from 12cR2 SQLPATH is no longer in use
 export HISTCONTROL=ignoreboth
 export HISTIGNORE="*RCLONE_CONFIG_PASS*:*RCLONE_CONFIG*:*RESTIC_REPOSITORY*:*RESTIC_PASSWORD*"
 export HISTTIMEFORMAT="%F %T "
@@ -153,24 +136,26 @@ stty erase '^?'
 stty kill '^U'
 stty intr '^C'
 
-if [[ $USER = "oracle" ]]; then
-        if [ $SHELL = "/bin/ksh" ]; then
-              ulimit -u 16384
-              ulimit -n 65536
-        else
-              ulimit -u 16384 -n 65536
-        fi
-        umask 0022
+if [[ "$USER" =~ ^(.*grid|grid.*)$ ]]; then
+  # ustawianie ORA_CRS_HOME - poczatek
+  if [[ "`ps -ef | grep crsd.bin|grep -v grep|wc -l`" == 1 ]]; then
+    export ORA_CRS_HOME=`ps -ef | grep crsd.bin|grep -v grep |sed 's/\/bin\/crsd.bin.*//g'|grep root|sed 's/.* \//\//g'`
+  fi
+  # ustawianie ORA_CRS_HOME - koniec
+  export CRS_HOME=${ORA_CRS_HOME:-}
 fi
-
-if [[ $USER = "grid" ]]; then
-        if [ $SHELL = "/bin/ksh" ]; then
-              ulimit -u 16384
-              ulimit -n 65536
-        else
-              ulimit -u 16384 -n 65536
-        fi
-        umask 0022
+if [[ "$USER" =~ ^(.*grid|grid.*|.*ora|ora*.)$ ]]; then
+  if [ $SHELL = "/bin/ksh" ]; then
+        ulimit -u 16384
+        ulimit -n 65536
+  else
+        ulimit -u 16384 -n 65536
+  fi
+  umask 0022
+  export SQLPATH=${SQLPATH:-${profile_location_dir}/sqlplus/admin}
+  export ORACLE_PATH=${SQLPATH}                      # from 12cR2 SQLPATH is no longer in use
+  export ORACLE_BASE=${ORACLE_BASE:-PGM_UNKNOWN_LOCATION}
+  export ORACLE_HOME=${ORA_CRS_HOME:-}
 fi
 
 if [[ $DISPLAY = ""  ]]; then
