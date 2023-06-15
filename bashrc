@@ -1,3 +1,4 @@
+# v. 3.20- 2023.06.15 - help-find is now a function instead of alias
 # v. 3.19- 2023.06.15 - changed help-disk alias, bugfix: htop is now a function instead of alias
 # v. 3.18- 2023.06.14 - added help-find alias, aliases help-* beautified, added dfh and dfm functions 
 # v. 3.17- 2023.06.09 - bugfix: if gdb is not present it won't be executed
@@ -565,7 +566,17 @@ alias help-rsync="echo ; echo rsync -a -v --inplace --no-compress --stats --prog
 alias help-sshfs="echo ; echo sshfs -o Compression=no -o ServerAliveCountMax=2 -o ServerAliveInterval=15 root@hostname:/directory /mnt/sshfs-tmp ; echo"
 alias help-vi="echo ; echo 'vi +/{pat} +[num]' ; echo "
 alias help-boxes="echo ; echo boxes -s WxH -a l/c/r ; echo"
-alias help-find='echo;echo find PATH -xautofs -xdev \\\( -name \\\*trm -o -name \\\*trc \\\) -type f -mmin +7 -mtime +5 -size +50M -exec CMD {} \\\; ; echo'
+
+function help-find() {
+  echo;
+  echo 'find PATH -xautofs -xdev -maxdepth 1 \( -name \*trm -o -name \*trc \) -type f -mmin +7 -mtime +5 -size +50M -exec CMD {} \;'
+  echo '         -maxdepth 1 - will search only CURRENT catalog'
+  echo '         -maxdepth 0 will not search. It will only try to match among the file/directory names that you have provided as arguments in find'
+  echo '            find /etc -maxdepth 0 -name passwd # will NOT find the file'
+  echo '            find /etc -maxdepth 1 -name passwd # will     find the file'
+  echo
+  }
+export -f help-find
 
 function help-kitty(){
   # trick with $ at the beginning - "ksh, bash, and zsh only, does not expand variables"
