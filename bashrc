@@ -1,4 +1,5 @@
-# v. 3.18- 2023.06.14 - added help-find alias, aliases help-* beautified added dfh and dfm functions 
+# v. 3.19- 2023.06.15 - changed help-disk alias, bugfix: htop is now a function instead of alias
+# v. 3.18- 2023.06.14 - added help-find alias, aliases help-* beautified, added dfh and dfm functions 
 # v. 3.17- 2023.06.09 - bugfix: if gdb is not present it won't be executed
 # v. 3.16- 2023.06.08 - exporting all functions, added help-oracle, help-disk, help-vi, expdp, 
 #                       prstat and aptitude-all are created only when commands are available in the OS
@@ -377,7 +378,16 @@ function env(){
   }
 export -f env
 
-alias htop="htop --no-color "
+function htop() {
+  $(type -tPf htop) --version >/dev/null 2>&1 || ( echo "(PGM) htop is not installed :-(" ; exit 1 )
+  $(type -Pf htop) --help | grep -q -- "--no-color" >/dev/null 2>&1 
+  if (( $? > 0 ));then
+    $(type -Pf htop) $*
+  else
+    $(type -Pf htop) --no-color $*
+  fi
+  }
+export -f htop
 
 function df(){
   echo ; echo "---- (PGM) df is a function ----" 
@@ -477,9 +487,12 @@ function help-disk() {
   echo "/***********************/"
   echo "df     - DiskFree"
   echo "dfs    - 'df' with --sync option"
+  echo "dfh    - 'df' with -h    option (--human-readable)"
+  echo "dfm    - 'df' with -m    option"
   echo
   }
 export -f help-disk
+
 function screen() {
   if [ -f "$profile_location_dir/.screenrc" ]; then
     "$(type -fP screen)" -c "$profile_location_dir/.screenrc" -ln -h 599999 -T xterm $*
@@ -487,6 +500,7 @@ function screen() {
     "$(type -fP screen)" -ln -h 599999 -T xterm $*
   fi
   }
+export -f screen
 
 # show disk usage and sorts the output according to the size
 function ds () {         
@@ -496,6 +510,8 @@ function ds () {
     du -hs $* | sort -h
   fi
   }
+export ds
+
 function ver() {
   clear;echo '### .pgm-boundle-version ###';
   if [ -f "${profile_location_dir}"/.pgm-boundle-version ];then
@@ -508,6 +524,7 @@ function ver() {
   cat ${profile_location_dir}/bashrc|head -7|grep '^#';echo;
   echo '### BASH_PROFILE ###';cat ${profile_location_dir}/bash_profile|head -7|grep '^#'
   }
+export ver
 
 alias unwrap='HISTFILE=/dev/null;if [ "$profile_location_dir" == "" ]; then echo "profile_location_dir is not set, exiting..." ;else cd $profile_location_dir;vi a;uudecode a && bzip2 -d profile.tar.bz2 && tar xvf profile.tar && (ls -l bash*; ./test.sh ; ls -l bash*);fi'
 
@@ -706,7 +723,6 @@ export -f vi
 
 export -f df
 export -f dfs
-export -f ds
 export -f dsl
 
 # After each command, append to the history file and reread it
