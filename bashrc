@@ -1,3 +1,4 @@
+# v. 3.18- 2023.06.14 - added help-find alias, aliases help-* beautified added dfh and dfm functions 
 # v. 3.17- 2023.06.09 - bugfix: if gdb is not present it won't be executed
 # v. 3.16- 2023.06.08 - exporting all functions, added help-oracle, help-disk, help-vi, expdp, 
 #                       prstat and aptitude-all are created only when commands are available in the OS
@@ -443,6 +444,16 @@ function df(){
   }
 export -f df
 
+function dfh() {
+  df -h $*
+  }
+export -f dfh
+
+function dfm() {
+  df -m $*
+  }
+export -f dfm
+
 function dfs() {
   df --sync $*
   }
@@ -530,13 +541,14 @@ function vi() {
   }
 alias vim='vi $* '
 
-alias help-date="echo date \'+%Y.%m.%d %H:%M:%S\'"
-alias help-dd="echo dd bs=50M if= of= status=progress conv=fdatasync  oflag=direct"
-alias help-sshfs="echo sshfs -o Compression=no -o ServerAliveCountMax=2 -o ServerAliveInterval=15 user@hostname:/directory /mnt/"
-alias help-rsync="echo rsync -a -v --inplace --no-compress --stats --progress --info=progress1 --partial --remove-source-files -e \'ssh -T -p 4444 -o Compression=no -x \' SOURCE DEST "
-alias help-sshfs="echo sshfs -o Compression=no -o ServerAliveCountMax=2 -o ServerAliveInterval=15 root@hostname:/directory /mnt/sshfs-tmp"
+alias help-date="echo ; echo date \'+%Y.%m.%d %H:%M:%S\' ; echo"
+alias help-dd="echo ; echo dd bs=50M if= of= status=progress conv=fdatasync  oflag=direct ; echo"
+alias help-sshfs="echo ; echo sshfs -o Compression=no -o ServerAliveCountMax=2 -o ServerAliveInterval=15 user@hostname:/directory /mnt/ ; echo"
+alias help-rsync="echo ; echo rsync -a -v --inplace --no-compress --stats --progress --info=progress1 --partial --remove-source-files -e \'ssh -T -p 4444 -o Compression=no -x \' SOURCE DEST  ; echo"
+alias help-sshfs="echo ; echo sshfs -o Compression=no -o ServerAliveCountMax=2 -o ServerAliveInterval=15 root@hostname:/directory /mnt/sshfs-tmp ; echo"
 alias help-vi="echo ; echo 'vi +/{pat} +[num]' ; echo "
-alias help-boxes="echo boxes -s WxH -a l/c/r"
+alias help-boxes="echo ; echo boxes -s WxH -a l/c/r ; echo"
+alias help-find='echo;echo find PATH -xautofs -xdev \\\( -name \\\*trm -o -name \\\*trc \\\) -type f -mmin +7 -mtime +5 -size +50M -exec CMD {} \\\; ; echo'
 
 function help-kitty(){
   # trick with $ at the beginning - "ksh, bash, and zsh only, does not expand variables"
