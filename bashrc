@@ -1,3 +1,4 @@
+# v. 3.21- 2023.06.16 - some tweaks for oracle/grid users, exports moved directly under the respective function
 # v. 3.20- 2023.06.15 - help-find is now a function instead of alias
 # v. 3.19- 2023.06.15 - changed help-disk alias, bugfix: htop is now a function instead of alias
 # v. 3.18- 2023.06.14 - added help-find alias, aliases help-* beautified, added dfh and dfm functions 
@@ -182,7 +183,7 @@ fi
 
 alias pgm='if [ -d $HOME/pgm ]; then cd $HOME/pgm; ls -l ; echo ; else mkdir ${profile_location_dir} 2>/dev/null;cd ${profile_location_dir}; ls -l ; fi'
 
-if [ "$USER" != "root" ]; then
+if [[ "$USER" =~ ^(.*grid|grid.*|.*ora|ora*.)$ ]]; then
   export NLS_DATE_FORMAT='yyyy.mm.dd hh24:mi:ss'
 
   function lsnrs() {
@@ -202,6 +203,7 @@ if [ "$USER" != "root" ]; then
      done
    fi;
   }
+  export -f lsnrs
 
   alias valert="if [ \""\$ORACLE_SID\"" == \"\" ]; then echo \"ORACLE_SID is not set\";else adrci exec=\"set base \$ORACLE_BASE;set homepath \`adrci exec=\"set base \$ORACLE_BASE;show homes\"|egrep \"rdbms|asm\"|grep -i \$ORACLE_SID\`;show alert\";fi"
   alias talert="if [ \""\$ORACLE_SID\"" == \"\" ]; then echo \"ORACLE_SID is not set\";else adrci exec=\"set base \$ORACLE_BASE;set homepath \`adrci exec=\"set base \$ORACLE_BASE;show homes\"|egrep \"rdbms|asm\"|grep -i \"/\$ORACLE_SID\$\"\`;show alert -tail 500 -f\";fi"
@@ -242,6 +244,8 @@ if [ "$USER" != "root" ]; then
       "$ORACLE_HOME/bin/sqlplus" "/ as sysasm" $*
     fi
     }
+  export -f asm
+
   function impdp() {
     if [   -z "$ORACLE_HOME" ] ; then echo "ORACLE_HOME is not set, exiting ...";echo;echo; return 1 ; fi
     if [ ! -d "$ORACLE_HOME" ] ; then echo "ORACLE_HOME does NOT exist, exiting  ...";echo;echo; return 2 ; fi
@@ -252,6 +256,8 @@ if [ "$USER" != "root" ]; then
       "$ORACLE_HOME/bin/${FUNCNAME[0]}" $*
     fi
     }
+  export -f impdp
+
   function expdp() {
     if [   -z "$ORACLE_HOME" ] ; then echo "ORACLE_HOME is not set, exiting ...";echo;echo; return 1 ; fi
     if [ ! -d "$ORACLE_HOME" ] ; then echo "ORACLE_HOME does NOT exist, exiting  ...";echo;echo; return 2 ; fi
@@ -262,6 +268,8 @@ if [ "$USER" != "root" ]; then
       "$ORACLE_HOME/bin/${FUNCNAME[0]}" $*
     fi
     }
+  export -f expdp
+
   function adrci() {
     if [   -z "$ORACLE_HOME" ] ; then echo "ORACLE_HOME is not set, exiting ...";echo;echo; return 1 ; fi
     if [ ! -d "$ORACLE_HOME" ] ; then echo "ORACLE_HOME does NOT exist, exiting  ...";echo;echo; return 2 ; fi
@@ -272,6 +280,8 @@ if [ "$USER" != "root" ]; then
       "$ORACLE_HOME/bin/${FUNCNAME[0]}" $*
     fi
     }
+  export -f adrci
+
   function asmcmd() {
     if [   -z "$ORACLE_HOME" ] ; then echo "ORACLE_HOME is not set, exiting ...";echo;echo; return 1 ; fi
     if [ ! -d "$ORACLE_HOME" ] ; then echo "ORACLE_HOME does NOT exist, exiting  ...";echo;echo; return 2 ; fi
@@ -294,6 +304,8 @@ if [ "$USER" != "root" ]; then
     export ORACLE_PATH=$ORG_ORACLE_PATH
     export ORG_ORACLE_PATH=
     }
+  export -f asmcmd
+
   function dgmgrl() {
     if [   -z "$ORACLE_HOME" ] ; then echo "ORACLE_HOME is not set, exiting ...";echo;echo; return 1 ; fi
     if [ ! -d "$ORACLE_HOME" ] ; then echo "ORACLE_HOME does NOT exist, exiting  ...";echo;echo; return 2 ; fi
@@ -304,6 +316,7 @@ if [ "$USER" != "root" ]; then
       "$ORACLE_HOME/bin/${FUNCNAME[0]}" $*
     fi
     }
+  export -f dgmgrl
 
   # 'where is alert'
   function wia () {
@@ -313,6 +326,7 @@ if [ "$USER" != "root" ]; then
       echo $(/bin/ls -1t $(locate alert_${ORACLE_SID}|egrep "/alert.${ORACLE_SID}.log$")|head -1)
     fi 
     }
+  export -f wia
 
   alias  oh='if [ -z "$ORACLE_HOME" ] || [ ! -d "$ORACLE_HOME" ]; then echo ORACLE_HOME not set or non-existent, exiting ...;echo;echo;else cd $ORACLE_HOME ; pwd ; echo ; fi'
   alias soh='echo;echo ORACLE_HOME = $ORACLE_HOME ; echo '
@@ -353,17 +367,9 @@ if [ "$USER" != "root" ]; then
     echo "var - show ORACLE specific environment variables"
     echo
     }
-  export -f lsnrs
-  export -f dba
-  export -f asm
-  export -f impdp
-  export -f expdp
-  export -f asmcmd
-  export -f dgmgrl
-  export -f wia
   export -f help-oracle
 
-fi    # end of condition: [ "$USER" != "root" ]
+fi    # end of condition: [[ "$USER" =~ ^(.*grid|grid.*|.*ora|ora*.)$ ]]
 
 function hg() { if [ $# -gt 0 ]; then (history | grep -i $* ) ; else history ;fi }
 export -f hg
