@@ -1,3 +1,4 @@
+# v. 3.23- 2023.06.19 - help-boxes is now a function instead of an alias
 # v. 3.22- 2023.06.16 - bugfix release: USER detection changed to [[ "$USER" =~ (.*grid$|^grid.*|.*ora$|^ora*.) ]]
 # v. 3.21- 2023.06.16 - some tweaks for oracle/grid users, exports moved directly under the respective function
 # v. 3.20- 2023.06.15 - help-find is now a function instead of alias
@@ -572,7 +573,21 @@ alias help-sshfs="echo ; echo sshfs -o Compression=no -o ServerAliveCountMax=2 -
 alias help-rsync="echo ; echo rsync -a -v --inplace --no-compress --stats --progress --info=progress1 --partial --remove-source-files -e \'ssh -T -p 4444 -o Compression=no -x \' SOURCE DEST  ; echo"
 alias help-sshfs="echo ; echo sshfs -o Compression=no -o ServerAliveCountMax=2 -o ServerAliveInterval=15 root@hostname:/directory /mnt/sshfs-tmp ; echo"
 alias help-vi="echo ; echo 'vi +/{pat} +[num]' ; echo "
-alias help-boxes="echo ; echo boxes -s WxH -a l/c/r ; echo"
+function help-boxes() {
+  echo ; 
+  echo "boxes -l | less                           # list available box designs w/ samples"
+  echo "boxes -s WxH -a l/c/r -d ada-box / caml / ada-cmt / shell / simple / stone"
+  echo ; 
+  if [ ! $(type -tPf boxes) -v >/dev/null 2>&1 ]; then
+    echo "(PGM) boxes is not installed so I will not print any samples:-(" 
+    return 1
+  fi
+  for p in ada-box caml ada-cmt shell simple stone; do 
+    echo ; echo boxes -a c -d $p | boxes -a c -d $p 2>/dev/null
+  done
+  echo
+  }
+export -f help-boxes
 
 function help-find() {
   echo;
