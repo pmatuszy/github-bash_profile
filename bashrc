@@ -1,3 +1,4 @@
+# v. 3.22- 2023.06.16 - bugfix release: USER detection changed to [[ "$USER" =~ (.*grid$|^grid.*|.*ora$|^ora*.) ]]
 # v. 3.21- 2023.06.16 - some tweaks for oracle/grid users, exports moved directly under the respective function
 # v. 3.20- 2023.06.15 - help-find is now a function instead of alias
 # v. 3.19- 2023.06.15 - changed help-disk alias, bugfix: htop is now a function instead of alias
@@ -183,7 +184,7 @@ fi
 
 alias pgm='if [ -d $HOME/pgm ]; then cd $HOME/pgm; ls -l ; echo ; else mkdir ${profile_location_dir} 2>/dev/null;cd ${profile_location_dir}; ls -l ; fi'
 
-if [[ "$USER" =~ ^(.*grid|grid.*|.*ora|ora*.)$ ]]; then
+if [[ "$USER" =~ (.*grid|grid.*|.*ora|ora*.) ]]; then
   export NLS_DATE_FORMAT='yyyy.mm.dd hh24:mi:ss'
 
   function lsnrs() {
@@ -369,7 +370,7 @@ if [[ "$USER" =~ ^(.*grid|grid.*|.*ora|ora*.)$ ]]; then
     }
   export -f help-oracle
 
-fi    # end of condition: [[ "$USER" =~ ^(.*grid|grid.*|.*ora|ora*.)$ ]]
+fi    # end of condition: [[ "$USER" =~ (.*grid$|^grid.*|.*ora$|^ora*.) ]]
 
 function hg() { if [ $# -gt 0 ]; then (history | grep -i $* ) ; else history ;fi }
 export -f hg
