@@ -1,3 +1,5 @@
+# v. 3.24- 2023.06.20 - help-date is now a function instead of an alias, new functions: locate, help-locate,ssh
+#                       added complete bash calls, code cleanup (export -f are now under respecting function)
 # v. 3.23- 2023.06.19 - help-boxes is now a function instead of an alias
 # v. 3.22- 2023.06.16 - bugfix release: USER detection changed to [[ "$USER" =~ (.*grid$|^grid.*|.*ora$|^ora*.) ]]
 # v. 3.21- 2023.06.16 - some tweaks for oracle/grid users, exports moved directly under the respective function
@@ -398,6 +400,47 @@ function htop() {
   }
 export -f htop
 
+function help-locate() {
+  echo
+  echo "-b, --basename      match only the base name of path names"
+  echo "-c, --count         only print number of found entries"
+  echo "-e, --existing      only print entries for currently existing files"
+  echo "-i, --ignore-case   ignore case distinctions when matching patterns"
+  echo "-S, --statistics    don't search for entries, print statistics about each used database"
+  echo ; echo "e.g."
+  echo "locate -b log_*xml"
+  echo "locate   *log_*xml  # by default we match dirname AND basename so * at the beginning"
+  echo "locate -eb log_*xml # only EXISTING files matching basename only"
+  echo ""
+  echo "UDPATE DATABASE (usually in /var/lib/mlocate/mlocate.db):"
+  echo "~~~~~~~~~~~~~~~~"
+  echo "updatedb # as root only, as it needs to update some files not writable by common soldiers"
+  echo "config file: /etc/updatedb.conf"
+  echo
+  }
+export -f help-locate
+
+function locate(){
+  if [[ $# -gt 0 ]]; then
+    $(type -fP locate) -i $*
+  else
+    $(type -fP locate) -i $*
+  fi
+  }
+export -f locate
+
+function ssh(){
+  echo "---- (PGM) ssh is a function ----"
+  if [ $(type -fP boxes) >/dev/null 2>/dev/null ];then
+     echo ; echo "ssh to $1" | $(type -fP boxes) -a c -d stone ; echo
+  fi 
+  $(type -fP ssh) -t $* "bash --rcfile /root/pgm/bashrc -i "
+  if [ $(type -fP boxes) >/dev/null 2>/dev/null ];then
+     echo ; echo "ssh to $1 TERMINATED" | $(type -fP boxes) -a c -d stone;echo
+  fi 
+  }
+export -f ssh
+
 function df(){
   echo ; echo "---- (PGM) df is a function ----" 
   ## all arguments starting with '-' we treat and df switches
@@ -519,7 +562,7 @@ function ds () {
     du -hs $* | sort -h
   fi
   }
-export ds
+export -f ds
 
 function ver() {
   clear;echo '### .pgm-boundle-version ###';
@@ -533,7 +576,16 @@ function ver() {
   cat ${profile_location_dir}/bashrc|head -7|grep '^#';echo;
   echo '### BASH_PROFILE ###';cat ${profile_location_dir}/bash_profile|head -7|grep '^#'
   }
-export ver
+export -f ver
+
+function help-date(){
+  echo ; 
+  echo "date '+%Y.%m.%d %H:%M:%S'  # e.g. $(date '+%Y.%m.%d %H:%M:%S')"
+  echo "date '+%Y.%m.%d_%H%M%S'    # e.g. $(date '+%Y.%m.%d_%H%M%S')"
+  echo "date '+%Y%m%d_%H%M%S'      # e.g. $(date '+%Y%m%d_%H%M%S')"
+  echo
+  }
+export -f help-date
 
 alias unwrap='HISTFILE=/dev/null;if [ "$profile_location_dir" == "" ]; then echo "profile_location_dir is not set, exiting..." ;else cd $profile_location_dir;vi a;uudecode a && bzip2 -d profile.tar.bz2 && tar xvf profile.tar && (ls -l bash*; ./test.sh ; ls -l bash*);fi'
 
@@ -565,9 +617,10 @@ function vi() {
     "$(type -fP vi)" $*
   fi
   }
+export -f vi
+
 alias vim='vi $* '
 
-alias help-date="echo ; echo date \'+%Y.%m.%d %H:%M:%S\' ; echo"
 alias help-dd="echo ; echo dd bs=50M if= of= status=progress conv=fdatasync  oflag=direct ; echo"
 alias help-sshfs="echo ; echo sshfs -o Compression=no -o ServerAliveCountMax=2 -o ServerAliveInterval=15 user@hostname:/directory /mnt/ ; echo"
 alias help-rsync="echo ; echo rsync -a -v --inplace --no-compress --stats --progress --info=progress1 --partial --remove-source-files -e \'ssh -T -p 4444 -o Compression=no -x \' SOURCE DEST  ; echo"
@@ -643,6 +696,16 @@ if [ ! $(type -fP aptitude) ];then
 else
   export -f aptitude-all
 fi
+
+if [ "${HOSTFILE:-PGM_NOT_SET}" != "PGM_NOT_SET" ];then
+  export HOSTFILE="${profile_location_dir}/hosts"
+fi
+
+# complete bash command section START
+complete -W "bs= if= of= status=progress conv=fdatasync oflag=direct" dd
+complete -W "-a -v --inplace --no-compress --stats --progress --info=progress1 --partial --remove-source-files ...(PGM_more_with_help-rsync)..." rsync 
+complete -A hostname -o default curl dig host netcat ping telnet ssh scp sftp rlogin traceroute nslookup
+# complete bash command section END
 
 boldon="`tty -s && /usr/bin/tput smso`"
 boldoff="`tty -s && /usr/bin/tput rmso`"
@@ -746,17 +809,6 @@ bash_prompt_command() {
 }
 export -f bash_prompt_command   # In Bash you can export function definitions to other shell scripts that your script calls
 export PROMPT_COMMAND=bash_prompt_command
-
-export -f hg
-export -f df
-export -f screen
-export -f ds
-export -f ver
-export -f vi
-
-export -f df
-export -f dfs
-export -f dsl
 
 # After each command, append to the history file and reread it
 #PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND$'\n'}history -a; history -c; history -r"
