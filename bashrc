@@ -1,3 +1,4 @@
+# v. 3.25- 2023.06.20 - bugfix: ssh function changed to go
 # v. 3.24- 2023.06.20 - help-date is now a function instead of an alias, new functions: locate, help-locate,ssh
 #                       added complete bash calls, code cleanup (export -f are now under respecting function)
 # v. 3.23- 2023.06.19 - help-boxes is now a function instead of an alias
@@ -383,7 +384,7 @@ if [ $(type -fP prstat) ];then
 fi
 
 function env(){
-  echo ; echo "---- (PGM) env is a function ----" ; echo 
+  echo ; echo "---- (PGM) $FUNCNAME is a function ----" ; echo 
   $(type -fP env) | sed '/BASH_FUNC_/,/^}$/d' | sed '/^$/d'|sort|uniq # get rid of function and display ony environment variables
   echo
   }
@@ -429,8 +430,11 @@ function locate(){
   }
 export -f locate
 
-function ssh(){
-  echo "---- (PGM) ssh is a function ----"
+function go(){
+  if (( $# == 0 ));then
+    echo ; echo "you need to supply the hostname..."; echo ; return 1
+  fi
+  echo "---- (PGM) $FUNCNAME is a function ----"
   if [ $(type -fP boxes) >/dev/null 2>/dev/null ];then
      echo ; echo "ssh to $1" | $(type -fP boxes) -a c -d stone ; echo
   fi 
@@ -439,10 +443,10 @@ function ssh(){
      echo ; echo "ssh to $1 TERMINATED" | $(type -fP boxes) -a c -d stone;echo
   fi 
   }
-export -f ssh
+export -f go
 
 function df(){
-  echo ; echo "---- (PGM) df is a function ----" 
+  echo ; echo "---- (PGM) $FUNCNAME is a function ----" 
   ## all arguments starting with '-' we treat and df switches
   df_args=""
   ## all arguments starting with NO '-' we pass to grep
@@ -704,7 +708,11 @@ fi
 # complete bash command section START
 complete -W "bs= if= of= status=progress conv=fdatasync oflag=direct" dd
 complete -W "-a -v --inplace --no-compress --stats --progress --info=progress1 --partial --remove-source-files ...(PGM_more_with_help-rsync)..." rsync 
-complete -A hostname -o default curl dig host netcat ping telnet ssh scp sftp rlogin traceroute nslookup
+complete -A hostname -o default curl dig host netcat ping telnet ssh scp sftp rlogin traceroute nslookup go
+complete -W '--basename --count --existing --ignore-case --statistics' locate
+complete -W '-xautofs -xdev -maxdepth -type -mmin -mtime -size -exec' find 
+complete -A signal kill 
+
 # complete bash command section END
 
 boldon="`tty -s && /usr/bin/tput smso`"
