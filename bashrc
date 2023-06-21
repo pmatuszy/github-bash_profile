@@ -732,6 +732,7 @@ complete -A user      su
 complete -A group     newgrp groupdel groupmod
 complete -f -X '!*.zip' unzip
 complete -o default -F bash_complete_go curl dig host netcat ping telnet ssh scp sftp rlogin traceroute nslookup go
+complete -W "batch"   aptitude-all
 
 # complete bash command section END
 
