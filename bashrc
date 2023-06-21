@@ -1,3 +1,5 @@
+# v. 3.26- 2023.06.21 - bugfix: fixed HOSTFILE set, env enhanced with a parameter which is passed to grep -i 
+#                       added more complete bash commands
 # v. 3.25- 2023.06.20 - bugfix: ssh function changed to go
 # v. 3.24- 2023.06.20 - help-date is now a function instead of an alias, new functions: locate, help-locate,ssh
 #                       added complete bash calls, code cleanup (export -f are now under respecting function)
@@ -376,7 +378,13 @@ if [[ "$USER" =~ (.*grid|grid.*|.*ora|ora*.) ]]; then
 
 fi    # end of condition: [[ "$USER" =~ (.*grid$|^grid.*|.*ora$|^ora*.) ]]
 
-function hg() { if [ $# -gt 0 ]; then (history | grep -i $* ) ; else history ;fi }
+function hg() { 
+  if [ $# -gt 0 ]; then 
+    (history | grep -i -- $* ) 
+  else 
+    history
+  fi 
+  }
 export -f hg
 
 if [ $(type -fP prstat) ];then
@@ -384,8 +392,12 @@ if [ $(type -fP prstat) ];then
 fi
 
 function env(){
-  echo ; echo "---- (PGM) $FUNCNAME is a function ----" ; echo 
-  $(type -fP env) | sed '/BASH_FUNC_/,/^}$/d' | sed '/^$/d'|sort|uniq # get rid of function and display ony environment variables
+  echo ; echo "---- (PGM) $FUNCNAME is a function ----" ; echo
+  if (( $# == 0 ));then
+    $(type -fP env) | sed '/BASH_FUNC_/,/^}$/d' | sed '/^$/d'|sort|uniq # get rid of function and display ony environment variables
+  else
+    $(type -fP env) | sed '/BASH_FUNC_/,/^}$/d' | sed '/^$/d'|sort|uniq | grep -i -- "$1"
+  fi
   echo
   }
 export -f env
@@ -701,19 +713,43 @@ else
   export -f aptitude-all
 fi
 
-if [ "${HOSTFILE:-PGM_NOT_SET}" != "PGM_NOT_SET" ];then
+if [ "${HOSTFILE:-PGM_NOT_SET}" = "PGM_NOT_SET" ] && [ -f "${profile_location_dir}/hosts" ];then
   export HOSTFILE="${profile_location_dir}/hosts"
 fi
 
 # complete bash command section START
 complete -W "bs= if= of= status=progress conv=fdatasync oflag=direct" dd
 complete -W "-a -v --inplace --no-compress --stats --progress --info=progress1 --partial --remove-source-files ...(PGM_more_with_help-rsync)..." rsync 
-complete -A hostname -o default curl dig host netcat ping telnet ssh scp sftp rlogin traceroute nslookup go
 complete -W '--basename --count --existing --ignore-case --statistics' locate
 complete -W '-xautofs -xdev -maxdepth -type -mmin -mtime -size -exec' find 
-complete -A signal kill 
+complete -A signal    kill 
+complete -A directory cd mkdir rmdir
+complete -A alias     unalias
+complete -A variable  unset 
+complete -A shopt     shopt
+complete -A helptopic help
+complete -A user      su
+complete -A group     newgrp groupdel groupmod
+complete -f -X '!*.zip' unzip
+complete -o default -F bash_complete_go curl dig host netcat ping telnet ssh scp sftp rlogin traceroute nslookup go
 
 # complete bash command section END
+
+function bash_complete_go() {
+  COMPREPLY=()
+  if [ "${HOSTFILE:-PGM_NOT_SET}" = "PGM_NOT_SET" ] || [ ! -f "${HOSTFILE}" ]; then
+    export COMPREPLY=("HOSTFILE_${profile_location_dir}/hosts_is_NOT_set")
+    return 1
+  fi
+  export cur="${COMP_WORDS[COMP_CWORD]}"
+  if [ "$cur" = "" ];then
+    COMPREPLY=($(cat $HOSTFILE | egrep -v '^. #|^#|^ *$'|sort))
+  else
+    COMPREPLY=($(cat $HOSTFILE | egrep -v '^. #|^#|^ *$' | sort | grep -- $cur))
+  fi
+  }
+export -f bash_complete_go
+
 
 boldon="`tty -s && /usr/bin/tput smso`"
 boldoff="`tty -s && /usr/bin/tput rmso`"
