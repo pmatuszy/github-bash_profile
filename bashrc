@@ -1,3 +1,4 @@
+# v. 3.27- 2023.06.21 - bugfix: removed scp from bash complete, added empty SYSTEMD_PAGER, small modification to a function go
 # v. 3.26- 2023.06.21 - bugfix: fixed HOSTFILE set, env enhanced with a parameter which is passed to grep -i 
 #                       added more complete bash commands
 # v. 3.25- 2023.06.20 - bugfix: ssh function changed to go
@@ -449,11 +450,11 @@ function go(){
   echo "---- (PGM) $FUNCNAME is a function ----"
   if [ $(type -fP boxes) >/dev/null 2>/dev/null ];then
      echo ; echo "ssh to $1" | $(type -fP boxes) -a c -d stone ; echo
-  fi 
-  $(type -fP ssh) -t $* "bash --rcfile /root/pgm/bashrc -i "
+  fi
+  $(type -fP ssh) -t $* 'bash --rcfile $HOME/pgm/bashrc -i '
   if [ $(type -fP boxes) >/dev/null 2>/dev/null ];then
      echo ; echo "ssh to $1 TERMINATED" | $(type -fP boxes) -a c -d stone;echo
-  fi 
+  fi
   }
 export -f go
 
@@ -731,7 +732,7 @@ complete -A helptopic help
 complete -A user      su
 complete -A group     newgrp groupdel groupmod
 complete -f -X '!*.zip' unzip
-complete -o default -F bash_complete_go curl dig host netcat ping telnet ssh scp sftp rlogin traceroute nslookup go
+complete -o default -F bash_complete_go curl dig host netcat ping telnet ssh sftp rlogin traceroute nslookup go
 complete -W "batch"   aptitude-all
 
 # complete bash command section END
@@ -866,6 +867,8 @@ export LC_COLLATE=en_US.UTF-8
 export LANG=en_US.utf8           # by pass i mc sie ladnie wyswietlaly
 export LANGUAGE=en_US:en
 export LC_CTYPE=en_US.UTF-8
+export SYSTEMD_PAGER=""          # Setting this to an empty string or the value "cat" is equivalent to passing --no-pager
+
 
 if (( `cat /proc/cpuinfo |grep -i Raspberry |wc -l` != 0 )); then
 #  echo "bashrc: platforma Raspberry" 
