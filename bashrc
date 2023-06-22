@@ -1,3 +1,12 @@
+# v. 3.28- 2023.06.22 - bugfix: function go calls bash_profile and not bashrc (as some aliases and env variables were not available)
+# v. 3.27- 2023.06.21 - bugfix: removed scp from bash complete, added empty SYSTEMD_PAGER, small modification to a function go
+# v. 3.26- 2023.06.21 - bugfix: fixed HOSTFILE set, env enhanced with a parameter which is passed to grep -i 
+#                       added more complete bash commands
+# v. 3.25- 2023.06.20 - bugfix: ssh function changed to go
+# v. 3.24- 2023.06.20 - help-date is now a function instead of an alias, new functions: locate, help-locate,ssh
+#                       added complete bash calls, code cleanup (export -f are now under respecting function)
+# v. 3.23- 2023.06.19 - help-boxes is now a function instead of an alias
+# v. 3.22- 2023.06.16 - bugfix release: USER detection changed to [[ "$USER" =~ (.*grid$|^grid.*|.*ora$|^ora*.) ]]
 # v. 3.21- 2023.06.16 - some tweaks for oracle/grid users, exports moved directly under the respective function
 # v. 3.20- 2023.06.15 - help-find is now a function instead of alias
 # v. 3.19- 2023.06.15 - changed help-disk alias, bugfix: htop is now a function instead of alias
@@ -183,7 +192,7 @@ fi
 
 alias pgm='if [ -d $HOME/pgm ]; then cd $HOME/pgm; ls -l ; echo ; else mkdir ${profile_location_dir} 2>/dev/null;cd ${profile_location_dir}; ls -l ; fi'
 
-if [[ "$USER" =~ ^(.*grid|grid.*|.*ora|ora*.)$ ]]; then
+if [[ "$USER" =~ (.*grid|grid.*|.*ora|ora*.) ]]; then
   export NLS_DATE_FORMAT='yyyy.mm.dd hh24:mi:ss'
 
   function lsnrs() {
@@ -369,9 +378,15 @@ if [[ "$USER" =~ ^(.*grid|grid.*|.*ora|ora*.)$ ]]; then
     }
   export -f help-oracle
 
-fi    # end of condition: [[ "$USER" =~ ^(.*grid|grid.*|.*ora|ora*.)$ ]]
+fi    # end of condition: [[ "$USER" =~ (.*grid$|^grid.*|.*ora$|^ora*.) ]]
 
-function hg() { if [ $# -gt 0 ]; then (history | grep -i $* ) ; else history ;fi }
+function hg() { 
+  if [ $# -gt 0 ]; then 
+    (history | grep -i -- $* ) 
+  else 
+    history
+  fi 
+  }
 export -f hg
 
 if [ $(type -fP prstat) ];then
@@ -379,8 +394,12 @@ if [ $(type -fP prstat) ];then
 fi
 
 function env(){
-  echo ; echo "---- (PGM) env is a function ----" ; echo 
-  $(type -fP env) | sed '/BASH_FUNC_/,/^}$/d' | sed '/^$/d'|sort|uniq # get rid of function and display ony environment variables
+  echo ; echo "---- (PGM) $FUNCNAME is a function ----" ; echo
+  if (( $# == 0 ));then
+    $(type -fP env) | sed '/BASH_FUNC_/,/^}$/d' | sed '/^$/d'|sort|uniq # get rid of function and display ony environment variables
+  else
+    $(type -fP env) | sed '/BASH_FUNC_/,/^}$/d' | sed '/^$/d'|sort|uniq | grep -i -- "$1"
+  fi
   echo
   }
 export -f env
@@ -396,8 +415,52 @@ function htop() {
   }
 export -f htop
 
+function help-locate() {
+  echo
+  echo "-b, --basename      match only the base name of path names"
+  echo "-c, --count         only print number of found entries"
+  echo "-e, --existing      only print entries for currently existing files"
+  echo "-i, --ignore-case   ignore case distinctions when matching patterns"
+  echo "-S, --statistics    don't search for entries, print statistics about each used database"
+  echo ; echo "e.g."
+  echo "locate -b log_*xml"
+  echo "locate   *log_*xml  # by default we match dirname AND basename so * at the beginning"
+  echo "locate -eb log_*xml # only EXISTING files matching basename only"
+  echo ""
+  echo "UDPATE DATABASE (usually in /var/lib/mlocate/mlocate.db):"
+  echo "~~~~~~~~~~~~~~~~"
+  echo "updatedb # as root only, as it needs to update some files not writable by common soldiers"
+  echo "config file: /etc/updatedb.conf"
+  echo
+  }
+export -f help-locate
+
+function locate(){
+  if [[ $# -gt 0 ]]; then
+    $(type -fP locate) -i $*
+  else
+    $(type -fP locate) -i $*
+  fi
+  }
+export -f locate
+
+function go(){
+  if (( $# == 0 ));then
+    echo ; echo "you need to supply the hostname..."; echo ; return 1
+  fi
+  echo "---- (PGM) $FUNCNAME is a function ----"
+  if [ $(type -fP boxes) >/dev/null 2>/dev/null ];then
+     echo ; echo "ssh to $1" | $(type -fP boxes) -a c -d stone ; echo
+  fi
+  $(type -fP ssh) -t $* 'bash --rcfile $HOME/pgm/bash_profile -i '
+  if [ $(type -fP boxes) >/dev/null 2>/dev/null ];then
+     echo ; echo "ssh to $1 TERMINATED" | $(type -fP boxes) -a c -d stone;echo
+  fi
+  }
+export -f go
+
 function df(){
-  echo ; echo "---- (PGM) df is a function ----" 
+  echo ; echo "---- (PGM) $FUNCNAME is a function ----" 
   ## all arguments starting with '-' we treat and df switches
   df_args=""
   ## all arguments starting with NO '-' we pass to grep
@@ -517,7 +580,7 @@ function ds () {
     du -hs $* | sort -h
   fi
   }
-export ds
+export -f ds
 
 function ver() {
   clear;echo '### .pgm-boundle-version ###';
@@ -531,7 +594,16 @@ function ver() {
   cat ${profile_location_dir}/bashrc|head -7|grep '^#';echo;
   echo '### BASH_PROFILE ###';cat ${profile_location_dir}/bash_profile|head -7|grep '^#'
   }
-export ver
+export -f ver
+
+function help-date(){
+  echo ; 
+  echo "date '+%Y.%m.%d %H:%M:%S'  # e.g. $(date '+%Y.%m.%d %H:%M:%S')"
+  echo "date '+%Y.%m.%d_%H%M%S'    # e.g. $(date '+%Y.%m.%d_%H%M%S')"
+  echo "date '+%Y%m%d_%H%M%S'      # e.g. $(date '+%Y%m%d_%H%M%S')"
+  echo
+  }
+export -f help-date
 
 alias unwrap='HISTFILE=/dev/null;if [ "$profile_location_dir" == "" ]; then echo "profile_location_dir is not set, exiting..." ;else cd $profile_location_dir;vi a;uudecode a && bzip2 -d profile.tar.bz2 && tar xvf profile.tar && (ls -l bash*; ./test.sh ; ls -l bash*);fi'
 
@@ -563,15 +635,30 @@ function vi() {
     "$(type -fP vi)" $*
   fi
   }
+export -f vi
+
 alias vim='vi $* '
 
-alias help-date="echo ; echo date \'+%Y.%m.%d %H:%M:%S\' ; echo"
 alias help-dd="echo ; echo dd bs=50M if= of= status=progress conv=fdatasync  oflag=direct ; echo"
 alias help-sshfs="echo ; echo sshfs -o Compression=no -o ServerAliveCountMax=2 -o ServerAliveInterval=15 user@hostname:/directory /mnt/ ; echo"
 alias help-rsync="echo ; echo rsync -a -v --inplace --no-compress --stats --progress --info=progress1 --partial --remove-source-files -e \'ssh -T -p 4444 -o Compression=no -x \' SOURCE DEST  ; echo"
 alias help-sshfs="echo ; echo sshfs -o Compression=no -o ServerAliveCountMax=2 -o ServerAliveInterval=15 root@hostname:/directory /mnt/sshfs-tmp ; echo"
 alias help-vi="echo ; echo 'vi +/{pat} +[num]' ; echo "
-alias help-boxes="echo ; echo boxes -s WxH -a l/c/r ; echo"
+function help-boxes() {
+  echo ; 
+  echo "boxes -l | less                           # list available box designs w/ samples"
+  echo "boxes -s WxH -a l/c/r -d ada-box / caml / ada-cmt / shell / simple / stone"
+  echo ; 
+  if [ ! $(type -tPf boxes) -v >/dev/null 2>&1 ]; then
+    echo "(PGM) boxes is not installed so I will not print any samples:-(" 
+    return 1
+  fi
+  for p in ada-box caml ada-cmt shell simple stone; do 
+    echo ; echo boxes -a c -d $p | boxes -a c -d $p 2>/dev/null
+  done
+  echo
+  }
+export -f help-boxes
 
 function help-find() {
   echo;
@@ -627,6 +714,45 @@ if [ ! $(type -fP aptitude) ];then
 else
   export -f aptitude-all
 fi
+
+if [ "${HOSTFILE:-PGM_NOT_SET}" = "PGM_NOT_SET" ] && [ -f "${profile_location_dir}/hosts" ];then
+  export HOSTFILE="${profile_location_dir}/hosts"
+fi
+
+# complete bash command section START
+complete -W "bs= if= of= status=progress conv=fdatasync oflag=direct" dd
+complete -W "-a -v --inplace --no-compress --stats --progress --info=progress1 --partial --remove-source-files ...(PGM_more_with_help-rsync)..." rsync 
+complete -W '--basename --count --existing --ignore-case --statistics' locate
+complete -W '-xautofs -xdev -maxdepth -type -mmin -mtime -size -exec' find 
+complete -A signal    kill 
+complete -A directory cd mkdir rmdir
+complete -A alias     unalias
+complete -A variable  unset 
+complete -A shopt     shopt
+complete -A helptopic help
+complete -A user      su
+complete -A group     newgrp groupdel groupmod
+complete -f -X '!*.zip' unzip
+complete -o default -F bash_complete_go curl dig host netcat ping telnet ssh sftp rlogin traceroute nslookup go
+complete -W "batch"   aptitude-all
+
+# complete bash command section END
+
+function bash_complete_go() {
+  COMPREPLY=()
+  if [ "${HOSTFILE:-PGM_NOT_SET}" = "PGM_NOT_SET" ] || [ ! -f "${HOSTFILE}" ]; then
+    export COMPREPLY=("HOSTFILE_${profile_location_dir}/hosts_is_NOT_set")
+    return 1
+  fi
+  export cur="${COMP_WORDS[COMP_CWORD]}"
+  if [ "$cur" = "" ];then
+    COMPREPLY=($(cat $HOSTFILE | egrep -v '^. #|^#|^ *$'|sort))
+  else
+    COMPREPLY=($(cat $HOSTFILE | egrep -v '^. #|^#|^ *$' | sort | grep -- $cur))
+  fi
+  }
+export -f bash_complete_go
+
 
 boldon="`tty -s && /usr/bin/tput smso`"
 boldoff="`tty -s && /usr/bin/tput rmso`"
@@ -731,17 +857,6 @@ bash_prompt_command() {
 export -f bash_prompt_command   # In Bash you can export function definitions to other shell scripts that your script calls
 export PROMPT_COMMAND=bash_prompt_command
 
-export -f hg
-export -f df
-export -f screen
-export -f ds
-export -f ver
-export -f vi
-
-export -f df
-export -f dfs
-export -f dsl
-
 # After each command, append to the history file and reread it
 #PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND$'\n'}history -a; history -c; history -r"
 PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND$'\n'}"
@@ -753,6 +868,8 @@ export LC_COLLATE=en_US.UTF-8
 export LANG=en_US.utf8           # by pass i mc sie ladnie wyswietlaly
 export LANGUAGE=en_US:en
 export LC_CTYPE=en_US.UTF-8
+export SYSTEMD_PAGER=""          # Setting this to an empty string or the value "cat" is equivalent to passing --no-pager
+
 
 if (( `cat /proc/cpuinfo |grep -i Raspberry |wc -l` != 0 )); then
 #  echo "bashrc: platforma Raspberry" 
