@@ -1,3 +1,4 @@
+# v. 3.28- 2023.06.22 - bugfix: function go calls bash_profile and not bashrc (as some aliases and env variables were not available)
 # v. 3.27- 2023.06.21 - bugfix: removed scp from bash complete, added empty SYSTEMD_PAGER, small modification to a function go
 # v. 3.26- 2023.06.21 - bugfix: fixed HOSTFILE set, env enhanced with a parameter which is passed to grep -i 
 #                       added more complete bash commands
@@ -451,7 +452,7 @@ function go(){
   if [ $(type -fP boxes) >/dev/null 2>/dev/null ];then
      echo ; echo "ssh to $1" | $(type -fP boxes) -a c -d stone ; echo
   fi
-  $(type -fP ssh) -t $* 'bash --rcfile $HOME/pgm/bashrc -i '
+  $(type -fP ssh) -t $* 'bash --rcfile $HOME/pgm/bash_profile -i '
   if [ $(type -fP boxes) >/dev/null 2>/dev/null ];then
      echo ; echo "ssh to $1 TERMINATED" | $(type -fP boxes) -a c -d stone;echo
   fi
