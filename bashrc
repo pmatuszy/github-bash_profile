@@ -1,3 +1,4 @@
+# v. 3.29- 2023.06.23 - function go doesn't split words on '@' sign
 # v. 3.28- 2023.06.22 - bugfix: function go calls bash_profile and not bashrc (as some aliases and env variables were not available)
 # v. 3.27- 2023.06.21 - bugfix: removed scp from bash complete, added empty SYSTEMD_PAGER, small modification to a function go
 # v. 3.26- 2023.06.21 - bugfix: fixed HOSTFILE set, env enhanced with a parameter which is passed to grep -i 
@@ -744,11 +745,19 @@ function bash_complete_go() {
     export COMPREPLY=("HOSTFILE_${profile_location_dir}/hosts_is_NOT_set")
     return 1
   fi
-  export cur="${COMP_WORDS[COMP_CWORD]}"
-  if [ "$cur" = "" ];then
-    COMPREPLY=($(cat $HOSTFILE | egrep -v '^. #|^#|^ *$'|sort))
+  # below is the hack so we do not treat @ as a word separator (e.g. for enries like postgres@hostname)
+  if [ -f /usr/share/bash-completion/bash_completion ];then
+    . /usr/share/bash-completion/bash_completion
+    _get_comp_words_by_ref -n @ cur
   else
-    COMPREPLY=($(cat $HOSTFILE | egrep -v '^. #|^#|^ *$' | sort | grep -- $cur))
+    export cur="${COMP_WORDS[COMP_CWORD]}"
+  fi
+  if [ "$cur" = "" ];then
+    COMPREPLY=($(cat $HOSTFILE | egrep -v '^ *#|^#|^ *$'|sort))
+  else
+    if (( $COMP_CWORD == 1 ));then 
+      COMPREPLY=($(cat $HOSTFILE | egrep -v '^ *#|^#|^ *$' | sort | grep -- "$cur"))
+    fi
   fi
   }
 export -f bash_complete_go
