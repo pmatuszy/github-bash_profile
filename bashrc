@@ -1,3 +1,4 @@
+# v. 3.30- 2023.06.28 - help-rsync is now a function and not an alias, new alias less with ignore case syntax
 # v. 3.29- 2023.06.23 - function go doesn't split words on '@' sign
 # v. 3.28- 2023.06.22 - bugfix: function go calls bash_profile and not bashrc (as some aliases and env variables were not available)
 # v. 3.27- 2023.06.21 - bugfix: removed scp from bash complete, added empty SYSTEMD_PAGER, small modification to a function go
@@ -639,12 +640,34 @@ function vi() {
 export -f vi
 
 alias vim='vi $* '
+alias less='$(type -fP less) --IGNORE-CASE '
 
 alias help-dd="echo ; echo dd bs=50M if= of= status=progress conv=fdatasync  oflag=direct ; echo"
 alias help-sshfs="echo ; echo sshfs -o Compression=no -o ServerAliveCountMax=2 -o ServerAliveInterval=15 user@hostname:/directory /mnt/ ; echo"
-alias help-rsync="echo ; echo rsync -a -v --inplace --no-compress --stats --progress --info=progress1 --partial --remove-source-files -e \'ssh -T -p 4444 -o Compression=no -x \' SOURCE DEST  ; echo"
 alias help-sshfs="echo ; echo sshfs -o Compression=no -o ServerAliveCountMax=2 -o ServerAliveInterval=15 root@hostname:/directory /mnt/sshfs-tmp ; echo"
 alias help-vi="echo ; echo 'vi +/{pat} +[num]' ; echo "
+
+function help-rsync() {
+  echo ;
+  echo "rsync -a -v --inplace --no-compress --stats --progress --info=progress1 --partial --remove-source-files –no-inc-recursive --dry-run "
+  echo "      -e 'ssh -T -p 4444 -o Compression=no -x ' SOURCE DEST"
+  echo ;
+  echo "  A trailing slash on the source changes this behavior to avoid creating an additional directory level at the destination."
+  echo "  You can think of a trailing / on a source as meaning 'copy the contents of this directory' as opposed to 'copy the directory by name'"
+  echo "  but in both cases the attributes of the containing directory are transferred to the containing directory on the destination. "
+  echo "  In other words, each of the following commands copies the files in the same way, including their setting of the attributes of /dest/foo:"
+  echo "    rsync -av /src/foo /dest"
+  echo "    rsync -av /src/foo/ /dest/foo"
+  echo ;
+  echo "--no-inc-recursive option (or its shorter --no-i-r alias) to disable incremental recursion."
+  echo "  disables incremental recursion, forcing rsync to do a complete scan of of all directories before starting the file transfer. "
+  echo "  This is needed to get an accurate progress report, otherwise rsync doesn’t know how much work is left."
+  echo ;
+  echo "--dry-run "
+  echo ;
+  }
+export -f help-rsync
+
 function help-boxes() {
   echo ; 
   echo "boxes -l | less                           # list available box designs w/ samples"
@@ -735,7 +758,7 @@ complete -A user      su
 complete -A group     newgrp groupdel groupmod
 complete -f -X '!*.zip' unzip
 complete -o default -F bash_complete_go curl dig host netcat ping telnet ssh sftp rlogin traceroute nslookup go
-complete -W "batch"   aptitude-all
+complete -W "batch"   aptitude-all gitpu gitpd gitbd gitbu
 
 # complete bash command section END
 
