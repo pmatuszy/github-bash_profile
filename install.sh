@@ -83,7 +83,7 @@ ln -s $profile_location_dir/bash_profile $profile_location_dir/.bash_profile
 ln -s $profile_location_dir/bashrc $profile_location_dir/.bashrc
 
 pushd .
-cd ${profile_location_dir}
+cd "${profile_location_dir}"
 
 cat bash_profile |sed "s@^export profile_location_dir=.*@export profile_location_dir=$profile_location_dir@" > a
 mv a bash_profile
@@ -98,8 +98,9 @@ if [ -f "${profile_location_dir}/.pgm-boundle-version" ];then
   rm "${profile_location_dir}/.pgm-boundle-version"
 fi
 
-cp .vimrc ${profile_location_dir}
-cp .screenrc ${profile_location_dir}
+cp .vimrc    "${profile_location_dir}"
+cp .screenrc "${profile_location_dir}"
+cp .inputrc  "${profile_location_dir}"
 
 chmod 711 $HOME
 
