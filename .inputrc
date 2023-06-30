@@ -1,0 +1,27 @@
+$include  /etc/inputrc
+
+
+#This alters the default behavior of the completion functions.
+# If set to ‘on’, words which have more than one possible completion cause the matches to be listed immediately instead of ringing the bell.
+# The default value is ‘off’.
+set show-all-if-ambiguous on
+
+# If set to ‘on’, a character denoting a file’s type is appended to the filename when listing possible completions. The default is ‘off’.
+set visible-stats on
+
+# This line sets auto completion to ignore cases.
+set completion-ignore-case On
+set colored-stats off
+
+# When set to a value greater than zero, common prefixes longer than this value are replaced with an ellipsis when displaying possible completions.
+set completion-prefix-display-length 3
+set completion-query-items 300
+
+# Make sure we don't output everything on the 1 line
+set horizontal-scroll-mode Off
+
+# none, visible or audible
+set bell-style none
+
+# When set to ‘on’, Readline will try to enable the application keypad when it is called. Some systems need this to enable the arrow keys. The default is ‘off’.
+set enable-keypad on

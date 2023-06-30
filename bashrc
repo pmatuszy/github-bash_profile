@@ -1,3 +1,4 @@
+# v. 3.31- 2023.06.30 - added support for a custom .inputrc file 
 # v. 3.30- 2023.06.28 - help-rsync is now a function and not an alias, new alias less with ignore case syntax
 # v. 3.29- 2023.06.23 - function go doesn't split words on '@' sign
 # v. 3.28- 2023.06.22 - bugfix: function go calls bash_profile and not bashrc (as some aliases and env variables were not available)
@@ -902,6 +903,12 @@ export LANGUAGE=en_US:en
 export LC_CTYPE=en_US.UTF-8
 export SYSTEMD_PAGER=""          # Setting this to an empty string or the value "cat" is equivalent to passing --no-pager
 
+INPUTRC="${INPUTRC:-}"
+if [ -f "${profile_location_dir}"/.inputrc ];then
+  export INPUTRC="${profile_location_dir}"/.inputrc
+else
+  unset INPUTRC
+fi
 
 if (( `cat /proc/cpuinfo |grep -i Raspberry |wc -l` != 0 )); then
 #  echo "bashrc: platforma Raspberry" 
