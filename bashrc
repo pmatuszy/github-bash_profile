@@ -1,3 +1,4 @@
+# v. 3.32- 2023.07.14 - bugfix: htop function. If htop is not installed it was not working well
 # v. 3.31- 2023.06.30 - added support for a custom .inputrc file 
 # v. 3.30- 2023.06.28 - help-rsync is now a function and not an alias, new alias less with ignore case syntax
 # v. 3.29- 2023.06.23 - function go doesn't split words on '@' sign
@@ -408,8 +409,8 @@ function env(){
 export -f env
 
 function htop() {
-  $(type -tPf htop) --version >/dev/null 2>&1 || ( echo "(PGM) htop is not installed :-(" ; exit 1 )
-  $(type -Pf htop) --help | grep -q -- "--no-color" >/dev/null 2>&1 
+  $(type -tPf htop) --version >/dev/null 2>&1 ||  echo "(PGM) htop is not installed :-(" && return 1 
+  $(type -Pf htop) --help | grep -q -- "--no-color" >/dev/null 2>&1
   if (( $? > 0 ));then
     $(type -Pf htop) $*
   else
