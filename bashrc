@@ -1,3 +1,4 @@
+# v. 3.33- 2023.07.18 - help-rsync improved
 # v. 3.32- 2023.07.14 - bugfix: htop function. If htop is not installed it was not working well
 # v. 3.31- 2023.06.30 - added support for a custom .inputrc file 
 # v. 3.30- 2023.06.28 - help-rsync is now a function and not an alias, new alias less with ignore case syntax
@@ -651,7 +652,7 @@ alias help-vi="echo ; echo 'vi +/{pat} +[num]' ; echo "
 
 function help-rsync() {
   echo ;
-  echo "rsync -a -v --inplace --no-compress --stats --progress --info=progress1 --partial --remove-source-files -–no-inc-recursive --dry-run "
+  echo "rsync -a -v --inplace --bwlimit= --no-compress --stats --progress --info=progress1 --partial --remove-source-files -–no-inc-recursive --dry-run "
   echo "      -e 'ssh -T -p 4444 -o Compression=no -x ' SOURCE DEST"
   echo ;
   echo "  A trailing slash on the source changes this behavior to avoid creating an additional directory level at the destination."
@@ -666,6 +667,26 @@ function help-rsync() {
   echo "  This is needed to get an accurate progress report, otherwise rsync doesn’t know how much work is left."
   echo ;
   echo "--dry-run "
+  echo ; 
+  echo "--bwlimit=RATE"
+  echo "  This option allows you to specify the maximum transfer rate for the data sent over the socket, specified in units per second. The RATE value can be "
+  echo "  suffixed with a string to indicate a size multiplier, and may be a fractional value (e.g. --bwlimit=1.5m)."
+  echo
+  echo "  Units: "
+  echo "  ~~~~~~"
+  echo "      no suffix - units of 1024 bytes (as if "K" or "KiB" had been appended)"
+  echo "              0 - no limit"
+  echo "      The first letter of a units string can be B, K, M, G, T, P"
+  echo "       . "ib" ==> units are multiples of 1024"
+  echo "      two-letter suffix that ends with a "B" (e.g. "kb") then you get units that are multiples of 1000."
+  echo "  "
+  echo "  For backward-compatibility reasons, the rate limit will be rounded to the nearest KiB unit, so no rate smaller than 1024 bytes per second is possible."
+  echo "  Rsync writes data over the socket in blocks, and this option both limits the size of the blocks that rsync writes, and tries to keep "
+  echo "  the average transfer rate at the requested limit. Some burstiness may be seen where rsync writes out a block of data and then sleeps to bring "
+  echo "  the average rate into compliance."
+  echo "  Due to the internal buffering of data, the --progress option may not be an accurate reflection on how fast the data is being sent."
+  echo "  This is because some files can show up as being rapidly sent when the data is quickly buffered, while other can show up as very slow when the flushing"
+  echo "  of the output buffer occurs."
   echo ;
   }
 export -f help-rsync
