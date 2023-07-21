@@ -410,7 +410,7 @@ function env(){
 export -f env
 
 function htop() {
-  $(type -tPf htop) --version >/dev/null 2>&1 ||  echo "(PGM) htop is not installed :-(" && return 1 
+  $(type -tPf htop) --version >/dev/null 2>&1 ||  echo "(PGM) htop is not installed :-(" || return 1 
   $(type -Pf htop) --help | grep -q -- "--no-color" >/dev/null 2>&1
   if (( $? > 0 ));then
     $(type -Pf htop) $*
