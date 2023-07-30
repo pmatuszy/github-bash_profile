@@ -467,7 +467,7 @@ export -f go
 
 function help-regex() {
   echo ;
-  echo " (cmd) |sed 's|\(.*failure.*\)|\1      < ----- ! ! ! ! ! ! ! FAILURE ! ! ! ! ! ! !|g'
+  echo " (cmd) |sed 's|\(.*failure.*\)|\1      < ----- ! ! ! ! ! ! ! FAILURE ! ! ! ! ! ! !|g'"
   echo ;
   }
 export -f help-regex
