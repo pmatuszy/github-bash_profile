@@ -1,3 +1,4 @@
+# v. 3.34- 2023.07.25 - added help-regex function
 # v. 3.33- 2023.07.18 - help-rsync improved
 # v. 3.32- 2023.07.14 - bugfix: htop function. If htop is not installed it was not working well
 # v. 3.31- 2023.06.30 - added support for a custom .inputrc file 
@@ -463,6 +464,13 @@ function go(){
   fi
   }
 export -f go
+
+function help-regex() {
+  echo ;
+  echo " (cmd) |sed 's|\(.*failure.*\)|\1      < ----- ! ! ! ! ! ! ! FAILURE ! ! ! ! ! ! !|g'"
+  echo ;
+  }
+export -f help-regex
 
 function df(){
   echo ; echo "---- (PGM) $FUNCNAME is a function ----" 
