@@ -776,9 +776,9 @@ fi
 
 # complete bash command section START
 complete -W "bs= if= of= status=progress conv=fdatasync oflag=direct" dd
-complete -W "-a -v --inplace --no-compress --stats --progress --info=progress1 --partial --remove-source-files ...(PGM_more_with_help-rsync)..." rsync 
+complete -f -W "-a -v --inplace --no-compress --stats --progress --info=progress1 --partial --remove-source-files ...(PGM_more_with_help-rsync)..." rsync 
 complete -W '--basename --count --existing --ignore-case --statistics' locate
-complete -W '-xautofs -xdev -maxdepth -type -mmin -mtime -size -exec' find 
+complete -f -W '-xautofs -xdev -maxdepth -type -mmin -mtime -size -exec' find 
 complete -A signal    kill 
 complete -A directory cd mkdir rmdir
 complete -A alias     unalias
