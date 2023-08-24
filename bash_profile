@@ -1,3 +1,4 @@
+# v. 2.18- 2023.08.23 - SOCGEN - better detection
 # v. 2.17- 2023.06.14 - better USER detection and setting some ORA* env variables only for oracle and grid users
 # v. 2.16- 2023.06.09 - bugfix: if gdb is not present it won't be executed
 # v. 2.14- 2023.06.01 - cosmetic changes to setting profile_location_dir 
@@ -55,11 +56,11 @@ KGP=0
 UBS=0
 SOCGEN=0
 
-cat /etc/hosts|grep -qi jpmchase                                   && JPMORGAN=1
-[ -f /root/bin/smart-indicators.sh ]                               && MATUSZYK=1
-cat /etc/hosts|grep -qi 'gov.pl'                                   && KGP=1
-cat /etc/chrony.conf /etc/resolv.conf 2>/dev/null |grep -qi ubs    && UBS=1
-cat /etc/chrony.conf /etc/resolv.conf 2>/dev/null |grep -qi socgen && SOCGEN=1
+cat /etc/hosts|grep -qi jpmchase                                                 && JPMORGAN=1
+[ -f /root/bin/smart-indicators.sh ]                                             && MATUSZYK=1
+cat /etc/hosts|grep -qi 'gov.pl'                                                 && KGP=1
+cat /etc/chrony.conf /etc/resolv.conf 2>/dev/null |grep -qi ubs                  && UBS=1
+cat /etc/chrony.conf /etc/resolv.conf 2>/dev/null |grep -qiE 'socgen|sgpb.local' && SOCGEN=1
 
 if [ $SOCGEN == 1 ]; then
   export MRL_PUTTY_PS1=     # unset MRL_PUTTY_PS1 as it corrupts terminal colors...

@@ -1,3 +1,4 @@
+# v. 3.35- 2023.08.02 - bugfix: function locate doesn't work with --ignore-case option on Ubuntu, bugfix: htop function
 # v. 3.34- 2023.07.25 - added help-regex function
 # v. 3.33- 2023.07.18 - help-rsync improved
 # v. 3.32- 2023.07.14 - bugfix: htop function. If htop is not installed it was not working well
@@ -412,7 +413,7 @@ export -f env
 
 function htop() {
   $(type -tPf htop) --version >/dev/null 2>&1 ||  echo "(PGM) htop is not installed :-(" || return 1 
-  $(type -Pf htop) --help | grep -q -- "--no-color" >/dev/null 2>&1
+  $(type -Pf htop) --help 2> /dev/null | grep -q -- "--no-color" >/dev/null 2>&1
   if (( $? > 0 ));then
     $(type -Pf htop) $*
   else
@@ -442,10 +443,12 @@ function help-locate() {
 export -f help-locate
 
 function locate(){
-  if [[ $# -gt 0 ]]; then
-    $(type -fP locate) -i $*
+  # check if --ignore-case is a valid option (it is NOT on Ubuntu but is on RedHat)
+  $(type -Pf locate) --help | grep -q -- "--ignore-case" >/dev/null 2>&1
+  if (( $? > 0 ));then
+    $(type -Pf locate) $*
   else
-    $(type -fP locate) -i $*
+    $(type -Pf locate) --ignore-case $*
   fi
   }
 export -f locate
@@ -776,9 +779,9 @@ fi
 
 # complete bash command section START
 complete -W "bs= if= of= status=progress conv=fdatasync oflag=direct" dd
-complete -f -W "-a -v --inplace --no-compress --stats --progress --info=progress1 --partial --remove-source-files ...(PGM_more_with_help-rsync)..." rsync 
+complete -f -W '-a -v --inplace --no-compress --stats --progress --info=progress1 --partial --remove-source-files ...(PGM_more_with_help-rsync)...' rsync
 complete -W '--basename --count --existing --ignore-case --statistics' locate
-complete -f -W '-xautofs -xdev -maxdepth -type -mmin -mtime -size -exec' find 
+complete -f -W '-xautofs-xdev-maxdepth-type-mmin-mtime-size-exec__(find_options)' find
 complete -A signal    kill 
 complete -A directory cd mkdir rmdir
 complete -A alias     unalias
