@@ -663,7 +663,7 @@ alias help-vi="echo ; echo 'vi +/{pat} +[num]' ; echo "
 
 function help-rsync() {
   echo ;
-  echo "rsync -a -v --inplace --bwlimit= --no-compress --stats --progress --info=progress1 --partial --remove-source-files -–no-inc-recursive --dry-run "
+  echo "rsync -a -v --inplace --bwlimit= --no-compress --stats --progress --info=progress1 --partial --remove-source-files --no-inc-recursive --dry-run "
   echo "      -e 'ssh -T -p 4444 -o Compression=no -x ' SOURCE DEST"
   echo ;
   echo "  A trailing slash on the source changes this behavior to avoid creating an additional directory level at the destination."
