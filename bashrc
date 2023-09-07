@@ -743,14 +743,15 @@ export -f help-kitty
 
 if [ $MATUSZYK == 1 ]; then
   # github aliases
-  alias gitpd="${profile_location_dir}/github-bash_profile/git-pull.sh ; cd ${profile_location_dir}/github-bash_profile"
-  alias gitpdb="${profile_location_dir}/github-bash_profile/git-pull.sh batch"
-  alias gitpu="${profile_location_dir}/github-bash_profile/git-push.sh"
-  alias gitpub="${profile_location_dir}/github-bash_profile/git-push.sh batch"
-  alias gitbd="${profile_location_dir}/github-bin/git-pull.sh ; cd ${profile_location_dir}/github-bin"
-  alias gitbdb="${profile_location_dir}/github-bin/git-pull.sh batch"
-  alias gitbu="${profile_location_dir}/github-bin/git-push.sh"
-  alias gitbub="${profile_location_dir}/github-bin/git-push.sh batch"
+  alias gitpd="${profile_location_dir}/github-bash_profile/git-pull.sh        ; cd ${profile_location_dir}/github-bash_profile"
+  alias gitpdb="${profile_location_dir}/github-bash_profile/git-pull.sh batch ; cd ${profile_location_dir}/github-bash_profile"
+  alias gitpu="${profile_location_dir}/github-bash_profile/git-push.sh        ; cd ${profile_location_dir}/github-bash_profile"
+  alias gitpub="${profile_location_dir}/github-bash_profile/git-push.sh batch ; cd ${profile_location_dir}/github-bash_profile"
+
+  alias gitbd="${profile_location_dir}/github-bin/git-pull.sh i               ; cd ${profile_location_dir}/github-bin"
+  alias gitbdb="${profile_location_dir}/github-bin/git-pull.sh batch          ; cd ${profile_location_dir}/github-bin"
+  alias gitbu="${profile_location_dir}/github-bin/git-push.sh                 ; cd ${profile_location_dir}/github-bin"
+  alias gitbub="${profile_location_dir}/github-bin/git-push.sh batch          ; cd ${profile_location_dir}/github-bin"
 fi
 
 function aptitude-all() {
