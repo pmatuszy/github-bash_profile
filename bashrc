@@ -1,4 +1,4 @@
-# v. 3.36- 2023.09.07 - gitbd and gitpd changed (cd at the end), wia improved
+# v. 3.36- 2023.09.07 - git* changed (cd at the end), wia improved
 # v. 3.35- 2023.08.02 - bugfix: function locate doesn't work with --ignore-case option on Ubuntu, bugfix: htop function
 # v. 3.34- 2023.07.25 - added help-regex function
 # v. 3.33- 2023.07.18 - help-rsync improved
