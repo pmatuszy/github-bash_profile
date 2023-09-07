@@ -1,3 +1,4 @@
+# v. 3.36- 2023.09.07 - gitbd and gitpd changed (cd at the end), wia improved
 # v. 3.35- 2023.08.02 - bugfix: function locate doesn't work with --ignore-case option on Ubuntu, bugfix: htop function
 # v. 3.34- 2023.07.25 - added help-regex function
 # v. 3.33- 2023.07.18 - help-rsync improved
@@ -339,8 +340,13 @@ if [[ "$USER" =~ (.*grid|grid.*|.*ora|ora*.) ]]; then
     if [ "$ORACLE_SID" == "" ];then
       echo "ORACLE_SID is not set"
     else
-      echo $(/bin/ls -1t $(locate alert_${ORACLE_SID}|egrep "/alert.${ORACLE_SID}.log$")|head -1)
-    fi 
+      # there can be more than 1 file, we take the latest one
+      # /bin/ls as ls is the alias and we don't want to use it
+      /bin/ls -1t $(locate -e */alert_${ORACLE_SID}*\.log) | head -1  
+      if (( $? != 0 ));then   
+         echo "(PGM) Cannot find alert log for the current instance (using locate command)"
+      fi
+    fi
     }
   export -f wia
 
@@ -737,11 +743,11 @@ export -f help-kitty
 
 if [ $MATUSZYK == 1 ]; then
   # github aliases
-  alias gitpd="${profile_location_dir}/github-bash_profile/git-pull.sh"
+  alias gitpd="${profile_location_dir}/github-bash_profile/git-pull.sh ; cd ${profile_location_dir}/github-bash_profile"
   alias gitpdb="${profile_location_dir}/github-bash_profile/git-pull.sh batch"
   alias gitpu="${profile_location_dir}/github-bash_profile/git-push.sh"
   alias gitpub="${profile_location_dir}/github-bash_profile/git-push.sh batch"
-  alias gitbd="${profile_location_dir}/github-bin/git-pull.sh"
+  alias gitbd="${profile_location_dir}/github-bin/git-pull.sh ; cd ${profile_location_dir}/github-bin"
   alias gitbdb="${profile_location_dir}/github-bin/git-pull.sh batch"
   alias gitbu="${profile_location_dir}/github-bin/git-push.sh"
   alias gitbub="${profile_location_dir}/github-bin/git-push.sh batch"
