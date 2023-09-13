@@ -1,3 +1,4 @@
+# v. 2.19- 2023.09.13 - bugfix in check for $USER patterns
 # v. 2.18- 2023.08.23 - SOCGEN - better detection
 # v. 2.17- 2023.06.14 - better USER detection and setting some ORA* env variables only for oracle and grid users
 # v. 2.16- 2023.06.09 - bugfix: if gdb is not present it won't be executed
@@ -137,7 +138,7 @@ stty erase '^?'
 stty kill '^U'
 stty intr '^C'
 
-if [[ "$USER" =~ ^(.*grid|grid.*)$ ]]; then
+if [[ "$USER" =~ (.*grid$|^grid.*) ]]; then
   # ustawianie ORA_CRS_HOME - poczatek
   if [[ "`ps -ef | grep crsd.bin|grep -v grep|wc -l`" == 1 ]]; then
     export ORA_CRS_HOME=`ps -ef | grep crsd.bin|grep -v grep |sed 's/\/bin\/crsd.bin.*//g'|grep root|sed 's/.* \//\//g'`
@@ -145,7 +146,8 @@ if [[ "$USER" =~ ^(.*grid|grid.*)$ ]]; then
   # ustawianie ORA_CRS_HOME - koniec
   export CRS_HOME=${ORA_CRS_HOME:-}
 fi
-if [[ "$USER" =~ ^(.*grid|grid.*|.*ora|ora*.)$ ]]; then
+
+if [[ "$USER" =~ (.*grid$|^grid.*|.*ora$|^ora*.) ]]; then
   if [ $SHELL = "/bin/ksh" ]; then
         ulimit -u 16384
         ulimit -n 65536

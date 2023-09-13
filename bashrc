@@ -1,3 +1,4 @@
+# v. 3.37- 2023.09.13 - added help-ssh function, small changes to go function
 # v. 3.36- 2023.09.07 - git* changed (cd at the end), wia improved
 # v. 3.35- 2023.08.02 - bugfix: function locate doesn't work with --ignore-case option on Ubuntu, bugfix: htop function
 # v. 3.34- 2023.07.25 - added help-regex function
@@ -460,6 +461,7 @@ function locate(){
 export -f locate
 
 function go(){
+  ssh_options="-o ServerAliveInterval=2 -o ConnectTimeout=2 -o TCPKeepAlive=yes -o Compression=no"
   if (( $# == 0 ));then
     echo ; echo "you need to supply the hostname..."; echo ; return 1
   fi
@@ -467,7 +469,14 @@ function go(){
   if [ $(type -fP boxes) >/dev/null 2>/dev/null ];then
      echo ; echo "ssh to $1" | $(type -fP boxes) -a c -d stone ; echo
   fi
-  $(type -fP ssh) -t $* 'bash --rcfile $HOME/pgm/bash_profile -i '
+  if (( $# == 1 ));then
+    $(type -fP ssh) ${ssh_options} -t $1 'bash --rcfile $HOME/pgm/bash_profile -i '
+  fi
+
+  if (( $# > 1 ));then
+    # "${@:2}" is all arguments from 2nd to the end
+    $(type -fP ssh) ${ssh_options} -t $* 
+  fi
   if [ $(type -fP boxes) >/dev/null 2>/dev/null ];then
      echo ; echo "ssh to $1 TERMINATED" | $(type -fP boxes) -a c -d stone;echo
   fi
@@ -666,6 +675,21 @@ alias help-dd="echo ; echo dd bs=50M if= of= status=progress conv=fdatasync  ofl
 alias help-sshfs="echo ; echo sshfs -o Compression=no -o ServerAliveCountMax=2 -o ServerAliveInterval=15 user@hostname:/directory /mnt/ ; echo"
 alias help-sshfs="echo ; echo sshfs -o Compression=no -o ServerAliveCountMax=2 -o ServerAliveInterval=15 root@hostname:/directory /mnt/sshfs-tmp ; echo"
 alias help-vi="echo ; echo 'vi +/{pat} +[num]' ; echo "
+
+function help-ssh() {
+  echo;
+  echo '-o ServerAliveInterval=2 -o ConnectTimeout=2 -o TCPKeepAlive=yes -o Compression=no'
+  echo ;
+  echo 'ssh -L 123:localhost:456 -N -f -l root@somewhere.com'
+  echo '       ^^^           ^^^'
+  echo '       local port    remote port'
+  echo '-L: Forward the port to the destination device.'
+  echo '     In this case, it is a direct mapping of 123 to 456'
+  echo '-N: Only forward ports and do not execute commands.'
+  echo '-f: Put SSH in the background after the connection is established (freeing the command prompt).'
+  echo;
+  }
+export -f help-ssh
 
 function help-rsync() {
   echo ;
