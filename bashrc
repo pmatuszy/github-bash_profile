@@ -672,7 +672,6 @@ alias vim='vi $* '
 alias less='$(type -fP less) --IGNORE-CASE '
 
 alias help-dd="echo ; echo dd bs=50M if= of= status=progress conv=fdatasync  oflag=direct ; echo"
-alias help-sshfs="echo ; echo sshfs -o Compression=no -o ServerAliveCountMax=2 -o ServerAliveInterval=15 user@hostname:/directory /mnt/ ; echo"
 alias help-sshfs="echo ; echo sshfs -o Compression=no -o ServerAliveCountMax=2 -o ServerAliveInterval=15 root@hostname:/directory /mnt/sshfs-tmp ; echo"
 alias help-vi="echo ; echo 'vi +/{pat} +[num]' ; echo "
 
