@@ -980,7 +980,7 @@ if (( `cat /proc/cpuinfo |grep -i Raspberry |wc -l` != 0 )); then
     if [ -d "/encrypted/$USER/XDG_DATA_HOME" ];then
       export XDG_DATA_HOME="/encrypted/$USER/XDG_DATA_HOME"
     else
-      echo "(PGM) XDG_DATA_HOME is not set in $0"
+      echo "(PGM) XDG_DATA_HOME is not set in bashrc"
     fi
   else
     echo "bashrc: /encrypted nie jest zamontowany - BLAD"
