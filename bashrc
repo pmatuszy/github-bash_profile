@@ -977,7 +977,11 @@ if (( `cat /proc/cpuinfo |grep -i Raspberry |wc -l` != 0 )); then
 #  echo "bashrc: platforma Raspberry" 
   if [ ! `mountpoint -q /encrypted` ];then
     mkdir -p /encrypted/$USER/XDG_DATA_HOME
-    export XDG_DATA_HOME=/encrypted/$USER/XDG_DATA_HOME
+    if [ -d "${/encrypted/$USER/XDG_DATA_HOME}" ];then
+      export XDG_DATA_HOME=/encrypted/$USER/XDG_DATA_HOME
+    else
+      echo "(PGM) XDG_DATA_HOME is not set in $0"
+    fi
   else
     echo "bashrc: /encrypted nie jest zamontowany - BLAD"
   fi 
