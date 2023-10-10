@@ -636,6 +636,14 @@ function help-date(){
   }
 export -f help-date
 
+function help-sed(){
+  echo ;
+  echo "sed -n '/DATA BEGIN/, /DATA END/p'                                   # Printing the Data Blocks Including Both Boundaries"
+  echo "sed -n '/DATA BEGIN/, /DATA END/{ /DATA BEGIN/! { /DATA END/! p } }' # Printing the Data Blocks Excluding Both Boundaries"
+  echo;
+  }
+export -f help-sed
+
 alias unwrap='HISTFILE=/dev/null;if [ "$profile_location_dir" == "" ]; then echo "profile_location_dir is not set, exiting..." ;else cd $profile_location_dir;vi a;uudecode a && bzip2 -d profile.tar.bz2 && tar xvf profile.tar && (ls -l bash*; ./test.sh ; ls -l bash*);fi'
 
 # even though pmon and lsnr are Oracle-related aliases but it is very useful to have it even in e.g. root environement
