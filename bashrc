@@ -976,7 +976,7 @@ fi
 if (( `cat /proc/cpuinfo |grep -i Raspberry |wc -l` != 0 )); then
 #  echo "bashrc: platforma Raspberry" 
   if [ ! `mountpoint -q /encrypted` ];then
-    mkdir -p "/encrypted/$USER/XDG_DATA_HOME"
+    mkdir -p "/encrypted/$USER/XDG_DATA_HOME" 2>/dev/null
     if [ -d "/encrypted/$USER/XDG_DATA_HOME" ];then
       export XDG_DATA_HOME="/encrypted/$USER/XDG_DATA_HOME"
     else
