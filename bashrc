@@ -1,3 +1,4 @@
+# v. 3.38- 2023.10.10 - added help-sed
 # v. 3.37- 2023.09.13 - added help-ssh function, small changes to go function
 # v. 3.36- 2023.09.07 - git* changed (cd at the end), wia improved
 # v. 3.35- 2023.08.02 - bugfix: function locate doesn't work with --ignore-case option on Ubuntu, bugfix: htop function
