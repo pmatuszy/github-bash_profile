@@ -1,3 +1,4 @@
+# v. 3.40- 2023.10.12 - added help-screen
 # v. 3.39- 2023.10.12 - bugfix in locate function (check if the command is there before invoking it)
 # v. 3.38- 2023.10.10 - added help-sed
 # v. 3.37- 2023.09.13 - added help-ssh function, small changes to go function
@@ -450,6 +451,39 @@ function help-locate() {
   echo
   }
 export -f help-locate
+
+function help-screen() {
+  echo 
+  echo ' Key	            Action	                                    Notes                                                      '
+  echo '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  '         
+  echo 'Ctrl+a c	         new window	                                                                                       '
+  echo 'Ctrl+a n	         next window	                                                                                       '
+  echo 'Ctrl+a p	         previous window                                                                                       '
+  echo 'Ctrl+a "	         select window from list	                                                                       '
+  echo 'Ctrl+a Ctrl+a	   previous window viewed	                                                                               '
+  echo ' 	 	                                                                                                               '
+  echo 'Ctrl+a S	         split terminal horizontally into regions	   Ctrl+a c to create new window there                 '
+  echo 'Ctrl+a |	         split terminal vertically into regions	      Requires screen >= 4.1                                   '
+  echo 'Ctrl+a :resize	   resize region	                                                                                       '
+  echo '                                                                                                                               '
+  echo 'Ctrl+a :fit	                                                                                                               '
+  echo 'Ctrl+a F          fit screen size to new terminal size	                                                                       '
+  echo '                                                                                                                               '
+  echo 'Ctrl+a :remove	   remove region                                                                                               '
+  echo 'Ctrl+a X                                                                                                                       '
+  echo '                                                                                                                               '
+  echo 'Ctrl+a tab	      Move to next region	                                                                               '
+  echo ' 	 	                                                                                                               '
+  echo 'Ctrl+a d	         detach screen from terminal	               Start screen with -r option to reattach                 '
+  echo 'Ctrl+a A	         set window title	                                                                               '
+  echo 'Ctrl+a x	         lock session	                              Enter user password to unlock                            '
+  echo 'Ctrl+a [	         enter scrollback/copy mode	                  Enter to start and end copy region. Ctrl+a ] to leave this mode '
+  echo 'Ctrl+a ]	         paste buffer	                              Supports pasting between windows                         '
+  echo 'Ctrl+a >	         write paste buffer to file	                  useful for copying between screens                   '
+  echo 'Ctrl+a <	         read paste buffer from file	               useful for pasting between screens                      '
+  echo 
+  }
+export -f help-screen
 
 function locate(){
   type -Pf locate >/dev/null 2>&1
