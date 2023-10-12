@@ -451,6 +451,14 @@ function help-locate() {
 export -f help-locate
 
 function locate(){
+  $(type -Pf locate) >/dev/null 2>&1
+  if (( $? > 0 ));then
+    echo
+    echo "(PGM) locate is NOT found (maybe is not installed?)"
+    echo "(PGM) try:"
+    echo "      apt install locate" ; echo
+  fi
+
   # check if --ignore-case is a valid option (it is NOT on Ubuntu but is on RedHat)
   $(type -Pf locate) --help | grep -q -- "--ignore-case" >/dev/null 2>&1
   if (( $? > 0 ));then
