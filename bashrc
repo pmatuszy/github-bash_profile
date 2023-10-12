@@ -452,7 +452,7 @@ function help-locate() {
 export -f help-locate
 
 function locate(){
-  $(type -Pf locate) >/dev/null 2>&1
+  type -Pf locate >/dev/null 2>&1
   if (( $? > 0 ));then
     echo
     echo "(PGM) locate is NOT found (maybe is not installed?)"
