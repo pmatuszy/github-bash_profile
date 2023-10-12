@@ -1,3 +1,4 @@
+# v. 3.39- 2023.10.12 - bugfix in locate function (check if the command is there before invoking it)
 # v. 3.38- 2023.10.10 - added help-sed
 # v. 3.37- 2023.09.13 - added help-ssh function, small changes to go function
 # v. 3.36- 2023.09.07 - git* changed (cd at the end), wia improved
@@ -456,7 +457,8 @@ function locate(){
     echo
     echo "(PGM) locate is NOT found (maybe is not installed?)"
     echo "(PGM) try:"
-    echo "      apt install locate" ; echo
+    echo "      apt install locate" 
+    echo "      updatedb" ; echo
     return 1
   fi
 
