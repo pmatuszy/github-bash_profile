@@ -457,6 +457,7 @@ function locate(){
     echo "(PGM) locate is NOT found (maybe is not installed?)"
     echo "(PGM) try:"
     echo "      apt install locate" ; echo
+    return 1
   fi
 
   # check if --ignore-case is a valid option (it is NOT on Ubuntu but is on RedHat)
