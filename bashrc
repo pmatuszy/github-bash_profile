@@ -1,3 +1,4 @@
+# v. 3.41- 2023.11.17 - changed go function, added ulimit -c, and shopt checkwinsize
 # v. 3.40- 2023.10.12 - added help-screen
 # v. 3.39- 2023.10.12 - bugfix in locate function (check if the command is there before invoking it)
 # v. 3.38- 2023.10.10 - added help-sed
@@ -861,6 +862,10 @@ if [ "${HOSTFILE:-PGM_NOT_SET}" = "PGM_NOT_SET" ] && [ -f "${profile_location_di
   export HOSTFILE="${profile_location_dir}/hosts"
 fi
 
+if [ "${HOSTALIASES:-PGM_NOT_SET}" = "PGM_NOT_SET" ] && [ -f "${profile_location_dir}/hosts-aliases-only" ];then
+  export HOSTALIASES="${profile_location_dir}/hosts-aliases-only"
+fi
+
 # complete bash command section START
 complete -W "bs= if= of= status=progress conv=fdatasync oflag=direct" dd
 complete -f -W '-a -v --inplace --no-compress --stats --progress --info=progress1 --partial --remove-source-files ...(PGM_more_with_help-rsync)...' rsync
@@ -881,27 +886,27 @@ complete -W "batch"   aptitude-all gitpu gitpd gitbd gitbu
 # complete bash command section END
 
 function bash_complete_go() {
-  COMPREPLY=()
-  if [ "${HOSTFILE:-PGM_NOT_SET}" = "PGM_NOT_SET" ] || [ ! -f "${HOSTFILE}" ]; then
-    export COMPREPLY=("HOSTFILE_${profile_location_dir}/hosts_is_NOT_set")
-    return 1
+COMPREPLY=()
+if [ "${HOSTFILE:-PGM_NOT_SET}" = "PGM_NOT_SET" ] || [ ! -f "${HOSTFILE}" ]; then
+  export COMPREPLY=("HOSTFILE_${profile_location_dir}/hosts_is_NOT_set")
+  return 1
+fi
+# below is the hack so we do not treat @ as a word separator (e.g. for enries like postgres@hostname)
+if [ -f /usr/share/bash-completion/bash_completion ];then
+  . /usr/share/bash-completion/bash_completion
+  _get_comp_words_by_ref -n @ cur
+else
+  export cur="${COMP_WORDS[COMP_CWORD]}"
+fi
+if [ "$cur" = "" ];then
+  COMPREPLY=($(cat ${HOSTFILE} ${HOSTALIASES} | egrep -v '^ *#|^#|^ *$'|sort|uniq))
+else
+  if (( $COMP_CWORD == 1 ));then
+    COMPREPLY=($(cat ${HOSTFILE} ${HOSTALIASES} | egrep -v '^ *#|^#|^ *$' | sort | uniq| grep -- "$cur"))
   fi
-  # below is the hack so we do not treat @ as a word separator (e.g. for enries like postgres@hostname)
-  if [ -f /usr/share/bash-completion/bash_completion ];then
-    . /usr/share/bash-completion/bash_completion
-    _get_comp_words_by_ref -n @ cur
-  else
-    export cur="${COMP_WORDS[COMP_CWORD]}"
-  fi
-  if [ "$cur" = "" ];then
-    COMPREPLY=($(cat $HOSTFILE | egrep -v '^ *#|^#|^ *$'|sort))
-  else
-    if (( $COMP_CWORD == 1 ));then 
-      COMPREPLY=($(cat $HOSTFILE | egrep -v '^ *#|^#|^ *$' | sort | grep -- "$cur"))
-    fi
-  fi
-  }
-export -f bash_complete_go
+fi
+}
+export -f bash_complete_goexport -f bash_complete_go
 
 
 boldon="`tty -s && /usr/bin/tput smso`"
@@ -910,8 +915,13 @@ shopt -s histappend                 # Make Bash append rather than overwrite the
 shopt -s cdspell                        #Bash will cope with each component of the typed path having one
                                     # missing character, one extra character, or a pair of characters
                                     # transposed:
+shopt -s checkwinsize               # bash checks the window size after each command and, if necessary,
+                                    # updates the values of LINES and COLUMNS.
 
-export IGNOREEOF=1                      # Ctrl+D conveniently exits Bash
+ulimit -c 0                         # prevent core dumps which can leak sensitive information
+
+
+export IGNOREEOF=1                  # Ctrl+D conveniently exits Bash
                                     # Sometimes too conveniently
                                     # Specify that it must be pressed twice to exit:
 
