@@ -1,4 +1,4 @@
-# v. 3.41- 2023.11.17 - changed go function, added ulimit -c, and shopt checkwinsize
+# v. 3.41- 2023.11.17 - changed go function, added ulimit -c, and shopt checkwinsize, added /service/bin to SOCGEN profile
 # v. 3.40- 2023.10.12 - added help-screen
 # v. 3.39- 2023.10.12 - bugfix in locate function (check if the command is there before invoking it)
 # v. 3.38- 2023.10.10 - added help-sed
@@ -168,6 +168,7 @@ if [ $SOCGEN == 1 ]; then
   [ $(type -fP gdb) ] && gdb -ex 'call (int) unbind_variable("TMOUT")' --pid=$$ --batch 2>&1 > /dev/null
   export TMOUT=0            # to disable auto-logout set the TMOUT to zero or unset it 
   export profile_location_dir=$HOME/pgm
+  export PATH=${PATH}:/service/bin
 fi
 
 if [ $KGP == 1 ]; then
