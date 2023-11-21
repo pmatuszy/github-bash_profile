@@ -907,8 +907,7 @@ else
   fi
 fi
 }
-export -f bash_complete_goexport -f bash_complete_go
-
+export -f bash_complete_go
 
 boldon="`tty -s && /usr/bin/tput smso`"
 boldoff="`tty -s && /usr/bin/tput rmso`"
