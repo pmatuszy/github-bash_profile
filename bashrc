@@ -1,3 +1,4 @@
+# v. 3.42- 2023.12.04 - added NCURSES_NO_UTF8_ACS=1 to have dialog boxes properly displayed (frames)
 # v. 3.41- 2023.11.17 - changed go function, added ulimit -c, and shopt checkwinsize, added /service/bin to SOCGEN profile
 # v. 3.40- 2023.10.12 - added help-screen
 # v. 3.39- 2023.10.12 - bugfix in locate function (check if the command is there before invoking it)
