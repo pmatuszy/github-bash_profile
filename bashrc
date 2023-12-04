@@ -1030,6 +1030,7 @@ export LANG=en_US.utf8           # by pass i mc sie ladnie wyswietlaly
 export LANGUAGE=en_US:en
 export LC_CTYPE=en_US.UTF-8
 export SYSTEMD_PAGER=""          # Setting this to an empty string or the value "cat" is equivalent to passing --no-pager
+export NCURSES_NO_UTF8_ACS=1     # to have dialog boxes properly displayed (frames)
 
 INPUTRC="${INPUTRC:-}"
 if [ -f "${profile_location_dir}"/.inputrc ];then
