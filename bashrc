@@ -1,3 +1,4 @@
+# v. 3.43- 2023.12.05 - bugfix: export -f dba was missing
 # v. 3.42- 2023.12.04 - added NCURSES_NO_UTF8_ACS=1 to have dialog boxes properly displayed (frames)
 # v. 3.41- 2023.11.17 - changed go function, added ulimit -c, and shopt checkwinsize, added /service/bin to SOCGEN profile
 # v. 3.40- 2023.10.12 - added help-screen
@@ -253,6 +254,7 @@ if [[ "$USER" =~ (.*grid|grid.*|.*ora|ora*.) ]]; then
         "$ORACLE_HOME/bin/sqlplus" "/ as sysdba" $*
       fi
       }
+  export -f dba
   
   function asm() {
     if [   -z "$ORACLE_HOME" ] ; then echo "ORACLE_HOME is not set, exiting ...";echo;echo; return 1 ; fi
