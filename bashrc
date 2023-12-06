@@ -1,3 +1,4 @@
+# v. 3.44- 2023.12.06 - added function god
 # v. 3.43- 2023.12.05 - bugfix: export -f dba was missing
 # v. 3.42- 2023.12.04 - added NCURSES_NO_UTF8_ACS=1 to have dialog boxes properly displayed (frames)
 # v. 3.41- 2023.11.17 - changed go function, added ulimit -c, and shopt checkwinsize, added /service/bin to SOCGEN profile
@@ -533,6 +534,30 @@ function go(){
   fi
   }
 export -f go
+
+function god() {
+  export INPUT="$HOME/pgm/hosts $HOME/pgm/hosts-aliases-only"
+  export filter=""
+
+  if (( $# > 0 ));then
+     filter="$1"
+  fi
+
+  let i=0 # define counting variable
+  export W=() # define working array
+  while read -r hostname; do # process file by file
+    let i=$i+1
+    W+=("$hostname")
+  done < <( cat $INPUT | egrep -v '^ *$|^ *#' |grep "$filter" |sed 's/ *$//g' | sort | uniq)
+
+  FILE=$(dialog --stdout --no-items --title "List of hosts in $INPUT file" --menu "Chose one" 44 75 34 "${W[@]}" ) # show dialog and store output
+
+  clear
+  if [ $? -eq 0 ]; then # Exit with OK
+    go $FILE
+  fi
+}
+export -f god
 
 function help-regex() {
   echo ;
