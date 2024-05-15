@@ -439,7 +439,6 @@ if [[ "$USER" =~ (.*grid|grid.*|.*ora|ora*.) ]]; then
     }
   export -f soh
   ##########################################################################
-  alias  ob=''
   function ob() {
     echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
     if [ -z "${ORACLE_BASE}" ] || [ ! -d "${ORACLE_BASE}" ]; then
@@ -453,7 +452,6 @@ if [[ "$USER" =~ (.*grid|grid.*|.*ora|ora*.) ]]; then
     }
   export -f ob
   ##########################################################################
-  alias sob=''
   function sob() {
     echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
     echo "ORACLE_BASE = ${ORACLE_BASE}"
@@ -461,7 +459,6 @@ if [[ "$USER" =~ (.*grid|grid.*|.*ora|ora*.) ]]; then
     }
   export -f sob
   ##########################################################################
-  alias dbs=''
   function dbs() {
     echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
     if [ -z "${ORACLE_HOME}" ] || [ ! -d "${ORACLE_HOME}" ]; then
