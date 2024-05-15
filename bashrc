@@ -210,19 +210,18 @@ fi
 
 ##########################################################################
 function pgm() {
-echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
-if [ -d "${HOME}/pgm" ]; then
-cd "${HOME}/pgm";
-ls -l ; echo
-else
-mkdir "${profile_location_dir}" 2>/dev/null
-cd "${profile_location_dir}"
-ls -l
-fi
+  echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
+  if [ -d "${HOME}/pgm" ]; then
+    cd "${HOME}/pgm";
+    ls -l ; echo
+  else
+    mkdir "${profile_location_dir}" 2>/dev/null
+    cd "${profile_location_dir}"
+    ls -l
+  fi
 }
 export -f pgm
 ##########################################################################
-
 if [[ "$USER" =~ (.*grid|grid.*|.*ora|ora*.) ]]; then
   export NLS_DATE_FORMAT='yyyy.mm.dd hh24:mi:ss'
 
@@ -244,69 +243,61 @@ if [[ "$USER" =~ (.*grid|grid.*|.*ora|ora*.) ]]; then
    fi;
   }
   export -f lsnrs
-
   ##########################################################################
-  alias valert=""
   function valert() {
-  echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
-  if [ "$ORACLE_SID" == "" ]; then
-  echo "ORACLE_SID is not set"
-  else
-  adrci exec="set base ${ORACLE_BASE};set homepath $(adrci exec="set base ${ORACLE_BASE};show homes"|egrep "rdbms|asm"|grep -i "/${ORACLE_SID}$");show alert"
-  fi
+    echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
+    if [ "$ORACLE_SID" == "" ]; then
+      echo "ORACLE_SID is not set"
+    else
+      adrci exec="set base ${ORACLE_BASE};set homepath $(adrci exec="set base ${ORACLE_BASE};show homes"|egrep "rdbms|asm"|grep -i "/${ORACLE_SID}$");show alert"
+    fi
   }
   export -f valert
   ##########################################################################
-  alias talert=""
   function talert() {
-  echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
-  if [ "$ORACLE_SID" == "" ]; then
-  echo "ORACLE_SID is not set";
-  else
-  adrci exec="set base ${ORACLE_BASE};set homepath $(adrci exec="set base ${ORACLE_BASE};show homes"|egrep "rdbms|asm"|grep -i "/${ORACLE_SID}$");show alert -tail 500 -f"
-  fi
+    echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
+    if [ "$ORACLE_SID" == "" ]; then
+      echo "ORACLE_SID is not set";
+    else
+      adrci exec="set base ${ORACLE_BASE};set homepath $(adrci exec="set base ${ORACLE_BASE};show homes"|egrep "rdbms|asm"|grep -i "/${ORACLE_SID}$");show alert -tail 500 -f"
+    fi
   }
   export -f talert
   ##########################################################################
-  alias va="valert"
   function va() {
-  echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
-  valert
+    echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
+    valert
   }
   export -f va
   ##########################################################################
-  alias ta=""
   function ta() {
-  echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
-  talert
+    echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
+    talert
   }
   export -f ta
   ##########################################################################
-  alias tha=''
   function tha() {
-  # abbreviation from 'tail home alert
-  echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
-  if [ -e "$HOME/pgm/alert_${ORACLE_SID}.log" ]; then
-  tail -n 1000 -f "${HOME}/pgm/alert_${ORACLE_SID}.log";
-  else
-  echo "file ${HOME}/pgm/alert_${ORACLE_SID}.log does not exist" ; echo
-  fi
-  }
+    # abbreviation from 'tail home alert
+    echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
+    if [ -e "$HOME/pgm/alert_${ORACLE_SID}.log" ]; then
+      tail -n 1000 -f "${HOME}/pgm/alert_${ORACLE_SID}.log";
+    else
+      echo "file ${HOME}/pgm/alert_${ORACLE_SID}.log does not exist" ; echo
+    fi
+    }
   export -f tha
   ##########################################################################
-  alias cha=''
   function cha() {
-  # abbreviateion from 'cat home alert
-  echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
-  if [ -e "$HOME/pgm/alert_${ORACLE_SID}.log" ]; then
-  tail -n 1000 "$HOME/pgm/alert_${ORACLE_SID}.log" | less +G
-  else
-  echo "file ${HOME}/pgm/alert_${ORACLE_SID}.log does not exist" ; echo
-  fi
-  }
+    # abbreviateion from 'cat home alert
+    echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
+    if [ -e "$HOME/pgm/alert_${ORACLE_SID}.log" ]; then
+      tail -n 1000 "$HOME/pgm/alert_${ORACLE_SID}.log" | less +G
+    else
+      echo "file ${HOME}/pgm/alert_${ORACLE_SID}.log does not exist" ; echo
+    fi
+    }
   export -f cha
   ##########################################################################
-
   # to find the names of the defined function use:
   # declare -F      - summary
   # declare -f      - all functions with definition
@@ -325,7 +316,7 @@ if [[ "$USER" =~ (.*grid|grid.*|.*ora|ora*.) ]]; then
       fi
       }
   export -f dba
-  
+  ##########################################################################  
   function asm() {
     if [   -z "$ORACLE_HOME" ] ; then echo "ORACLE_HOME is not set, exiting ...";echo;echo; return 1 ; fi
     if [ ! -d "$ORACLE_HOME" ] ; then echo "ORACLE_HOME does NOT exist, exiting  ...";echo;echo; return 2 ; fi
@@ -341,7 +332,7 @@ if [[ "$USER" =~ (.*grid|grid.*|.*ora|ora*.) ]]; then
     fi
     }
   export -f asm
-
+  ##########################################################################
   function impdp() {
     if [   -z "$ORACLE_HOME" ] ; then echo "ORACLE_HOME is not set, exiting ...";echo;echo; return 1 ; fi
     if [ ! -d "$ORACLE_HOME" ] ; then echo "ORACLE_HOME does NOT exist, exiting  ...";echo;echo; return 2 ; fi
@@ -365,7 +356,7 @@ if [[ "$USER" =~ (.*grid|grid.*|.*ora|ora*.) ]]; then
     fi
     }
   export -f expdp
-
+  ##########################################################################
   function adrci() {
     if [   -z "$ORACLE_HOME" ] ; then echo "ORACLE_HOME is not set, exiting ...";echo;echo; return 1 ; fi
     if [ ! -d "$ORACLE_HOME" ] ; then echo "ORACLE_HOME does NOT exist, exiting  ...";echo;echo; return 2 ; fi
@@ -401,7 +392,7 @@ if [[ "$USER" =~ (.*grid|grid.*|.*ora|ora*.) ]]; then
     export ORG_ORACLE_PATH=
     }
   export -f asmcmd
-
+  ##########################################################################
   function dgmgrl() {
     if [   -z "$ORACLE_HOME" ] ; then echo "ORACLE_HOME is not set, exiting ...";echo;echo; return 1 ; fi
     if [ ! -d "$ORACLE_HOME" ] ; then echo "ORACLE_HOME does NOT exist, exiting  ...";echo;echo; return 2 ; fi
@@ -430,129 +421,120 @@ if [[ "$USER" =~ (.*grid|grid.*|.*ora|ora*.) ]]; then
   export -f wia
   ##########################################################################
   function oh() {
-  echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
-  if [ -z "${ORACLE_HOME}" ] || [ ! -d "${ORACLE_HOME}" ]; then
-  echo "ORACLE_HOME not set or non-existent, exiting ..."; echo
-  else
-  cd "${ORACLE_HOME}"
-  pwd
-  fi
-  echo
-  }
+    echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
+    if [ -z "${ORACLE_HOME}" ] || [ ! -d "${ORACLE_HOME}" ]; then
+      echo "ORACLE_HOME not set or non-existent, exiting ..."; echo
+    else
+      cd "${ORACLE_HOME}"
+      pwd
+    fi
+    echo
+    }
   export -f oh
   ##########################################################################
-  alias soh=''
   function soh() {
-  echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
-  echo "ORACLE_HOME = ${ORACLE_HOME}"
-  echo
-  }
+    echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
+    echo "ORACLE_HOME = ${ORACLE_HOME}"
+    echo
+    }
   export -f soh
   ##########################################################################
   alias  ob=''
   function ob() {
-  echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
-  if [ -z "${ORACLE_BASE}" ] || [ ! -d "${ORACLE_BASE}" ]; then
-  echo ORACLE_BASE not set or non-existent, exiting ...
-  echo
-  else
-  cd "${ORACLE_BASE}"
-  pwd
-  fi
-  echo
-  }
+    echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
+    if [ -z "${ORACLE_BASE}" ] || [ ! -d "${ORACLE_BASE}" ]; then
+      echo "ORACLE_BASE not set or non-existent, exiting ..."
+      echo
+    else
+      cd "${ORACLE_BASE}"
+      pwd
+    fi
+    echo
+    }
   export -f ob
   ##########################################################################
   alias sob=''
   function sob() {
-  echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
-  echo "ORACLE_BASE = ${ORACLE_BASE}"
-  echo
-  }
+    echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
+    echo "ORACLE_BASE = ${ORACLE_BASE}"
+    echo
+    }
   export -f sob
   ##########################################################################
   alias dbs=''
   function dbs() {
-  echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
-  if [ -z "${ORACLE_HOME}" ] || [ ! -d "${ORACLE_HOME}" ]; then
-  echo "ORACLE_HOME not set or non-existent, exiting ..."
+    echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
+    if [ -z "${ORACLE_HOME}" ] || [ ! -d "${ORACLE_HOME}" ]; then
+      echo "ORACLE_HOME not set or non-existent, exiting ..."
+      echo
+    else
+      cd "${ORACLE_HOME}/dbs"
+      pwd
+      ls -l
+    fi
   echo
-  else
-  cd "${ORACLE_HOME}/dbs"
-  pwd
-  ls -l
-  fi
-  echo
-  }
+    }
   export -f dbs
   ##########################################################################
-  alias tns=''
   function tns() {
-  echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
-  if [ -z "${ORACLE_HOME}" ] || [ ! -d "${ORACLE_HOME}" ]; then
-  echo "ORACLE_HOME not set or non-existent, exiting ..."
-  echo
-  else
-  cd "${TNS_ADMIN:-$ORACLE_HOME/network/admin}"
-  pwd
-  ls -l
-  fi
-  echo
-  }
+    echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
+    if [ -z "${ORACLE_HOME}" ] || [ ! -d "${ORACLE_HOME}" ]; then
+      echo "ORACLE_HOME not set or non-existent, exiting ..."
+      echo
+    else
+      cd "${TNS_ADMIN:-$ORACLE_HOME/network/admin}"
+      pwd
+      ls -l
+    fi
+    echo
+    }
   export -f tns
   ##########################################################################
-  alias po=''
   function po() {
-  echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
-  . pickora $*
-  }
+    echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
+    . pickora $*
+    }
   export -f po
   ##########################################################################
-  alias var=''
   function var() {
-  echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
-  env|egrep "ORA|TNS_ADMIN|SQLPATH|NLS_|TWO_TASK"|sort
-  echo
-  }
+    echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
+    env|egrep "ORA|TNS_ADMIN|SQLPATH|NLS_|TWO_TASK"|sort
+    echo
+    }
   export -f var
   ##########################################################################
-  alias dgsp=''
   function dgsp() {
-  echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
-  echo show database verbose echo show configuration|dgmgrl -silent / | grep "Primary database" | sed "s/ - Primary database//" |dgmgrl -silent /|less
-  }
+    echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
+    echo show database verbose echo show configuration|dgmgrl -silent / | grep "Primary database" | sed "s/ - Primary database//" |dgmgrl -silent /|less
+    }
   export -f dgsp
   ##########################################################################
-  alias dgss=''
   function dgss() {
-  echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
-  echo show database verbose echo show configuration|dgmgrl -silent / | grep "standby database" | sed "s/ - Physical standby database//" |dgmgrl -silent /|less
-  echo
-  }
+    echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
+    echo show database verbose echo show configuration|dgmgrl -silent / | grep "standby database" | sed "s/ - Physical standby database//" |dgmgrl -silent /|less
+    echo
+    }
   export -f dgss
   ##########################################################################
-  alias dgsc=''
   function dgsc() {
-  echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
-  echo show configuration |dgmgrl -silent /
-  echo
-  }
+    echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
+    echo show configuration |dgmgrl -silent /
+    echo
+    }
   export -f dgsc
   ##########################################################################
-  alias dgscv=''
   function dgscv() {
-  echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
-  echo show configuration verbose|dgmgrl -silent /
-  echo
-  }
+    echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
+    echo show configuration verbose|dgmgrl -silent /
+    echo
+    }
   export -f dgscv
   ##########################################################################
-  alias dgscl=''
   function dgscl() {
-  echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
-  echo show configuration lag|dgmgrl -silent /
-  echo
-  }
+    echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
+    echo show configuration lag|dgmgrl -silent /
+    echo
+    }
   export -f dgscl
   ##########################################################################
   function help-oracle() {
