@@ -285,7 +285,8 @@ if [[ "$USER" =~ (.*grid|grid.*|.*ora|ora*.) ]]; then
   alias tha=''
   function tha() {
   # abbreviation from 'tail home alert
-  echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echoif [ -e "$HOME/pgm/alert_${ORACLE_SID}.log" ]; then
+  echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
+  if [ -e "$HOME/pgm/alert_${ORACLE_SID}.log" ]; then
   tail -n 1000 -f "${HOME}/pgm/alert_${ORACLE_SID}.log";
   else
   echo "file ${HOME}/pgm/alert_${ORACLE_SID}.log does not exist" ; echo
