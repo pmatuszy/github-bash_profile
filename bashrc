@@ -1,3 +1,4 @@
+# v. 3.46- 2024.05.16 - rest of aliases are converted to functions, a lot of cosmetic changes (e.g. replace `...` with $( ...) syntax)
 # v. 3.45- 2024.05.15 - aliased change to functions as aliases are not inherited by subshells
 # v. 3.44- 2023.12.06 - added function god
 # v. 3.43- 2023.12.05 - bugfix: export -f dba was missing
@@ -114,7 +115,7 @@
 # v. 1.5 - 2008.07.14 - added hg alias - use with !NNN where NNN is the outpt from hg alias
 # v. 1.4 - 2008.04.16 - changed host && directory colors,added unwrap alias
 # v. 1.3 - 2008.04.10 - changed paul alias
-# v. 1.2 - 2008.04.09 - pwdmaxlen increased from 25 ==> 35, $HOME is NO longer replaced with ~
+# v. 1.2 - 2008.04.09 - pwdmaxlen increased from 25 ==> 35, ${HOME} is NO longer replaced with ~
 # v. 1.1 - 2008.04.07 - added 'ver' alias
 # v. 1.0 - 2008.04.02
 #
@@ -171,15 +172,15 @@ if [ $SOCGEN == 1 ]; then
   # below is  making TMOUT which is may be set read-only to read-write
   [ $(type -fP gdb) ] && gdb -ex 'call (int) unbind_variable("TMOUT")' --pid=$$ --batch 2>&1 > /dev/null
   export TMOUT=0            # to disable auto-logout set the TMOUT to zero or unset it 
-  export profile_location_dir=$HOME/pgm
-  export PATH=${PATH}:/service/bin
+  export profile_location_dir="${HOME}/pgm"
+  export PATH="${PATH}:/service/bin"
 fi
 
 if [ $KGP == 1 ]; then
   if [ "$USER" == "root" ]; then
     export profile_location_dir=/root/pgm
   else
-    export profile_location_dir=$HOME/pgm
+    export profile_location_dir="${HOME}/pgm"
   fi
 fi
 
@@ -187,18 +188,18 @@ if [ $MATUSZYK == 1 ]; then
   if [ "$USER" == "root" ]; then
     export profile_location_dir=/root
   else
-    export profile_location_dir=$HOME
+    export profile_location_dir="${HOME}"
   fi
 fi
 
 if [ $JPMORGAN == 1 ]; then
-  alias global="cd /orcl/app/oracle/admin"
+  function global() { cd /orcl/app/oracle/admin ; } ; export -f global
   if [ "$USER" == "oracle" ]; then
     export profile_location_dir=/export/home/r062068
   else
-    export profile_location_dir=$HOME
+    export profile_location_dir="${HOME}"
   fi
-fi          
+fi
 
 if [ $UBS == 1 ]; then
   export PBSETUTMP=no
@@ -226,21 +227,23 @@ if [[ "$USER" =~ (.*grid|grid.*|.*ora|ora*.) ]]; then
   export NLS_DATE_FORMAT='yyyy.mm.dd hh24:mi:ss'
 
   function lsnrs() {
-   if [ "$1" == "" ]; then echo "ERROR dude - specify listener name or part of it"
-   else
-     for p in `lsnr | sed 's/^.*tnslsnr //g'|awk '{print $1}'|grep -v '//g'|grep -i $1`; do
-       org_ORACLE_HOME=$ORACLE_HOME
-       org_PATH="$PATH"
-       export ORACLE_HOME=`lsnr|grep $p | sed 's/tnslsnr .*/tnslsnr /g' |sed 's/^.* \//\//g'|grep -v sed|sed 's/\/bin\/tnslsnr //g'`
-       echo $ORACLE_HOME
-       PATH=$ORACLE_HOME/bin
-       $ORACLE_HOME/bin/lsnrctl services $p;
-       export ORACLE_HOME=$org_ORACLE_HOME
-       export PATH=$org_PATH
-       export org_ORACLE_HOME=
-       export org_PATH=
-     done
-   fi;
+    echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
+    if [ "$1" == "" ]; then 
+      echo "ERROR dude - specify listener name or part of it"
+    else
+      for p in $(lsnr | sed 's/^.*tnslsnr //g'|awk '{print $1}'|grep -v '//g'|grep -i $1); do
+        org_ORACLE_HOME=$ORACLE_HOME
+        org_PATH="$PATH"
+        export ORACLE_HOME=$(lsnr|grep $p | sed 's/tnslsnr .*/tnslsnr /g' |sed 's/^.* \//\//g'|grep -v sed|sed 's/\/bin\/tnslsnr //g')
+        echo $ORACLE_HOME
+        PATH=$ORACLE_HOME/bin
+        $ORACLE_HOME/bin/lsnrctl services $p;
+        export ORACLE_HOME=$org_ORACLE_HOME
+        export PATH=$org_PATH
+        export org_ORACLE_HOME=
+        export org_PATH=
+      done
+    fi;
   }
   export -f lsnrs
   ##########################################################################
@@ -279,7 +282,7 @@ if [[ "$USER" =~ (.*grid|grid.*|.*ora|ora*.) ]]; then
   function tha() {
     # abbreviation from 'tail home alert
     echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
-    if [ -e "$HOME/pgm/alert_${ORACLE_SID}.log" ]; then
+    if [ -e "${HOME}/pgm/alert_${ORACLE_SID}.log" ]; then
       tail -n 1000 -f "${HOME}/pgm/alert_${ORACLE_SID}.log";
     else
       echo "file ${HOME}/pgm/alert_${ORACLE_SID}.log does not exist" ; echo
@@ -290,8 +293,8 @@ if [[ "$USER" =~ (.*grid|grid.*|.*ora|ora*.) ]]; then
   function cha() {
     # abbreviateion from 'cat home alert
     echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
-    if [ -e "$HOME/pgm/alert_${ORACLE_SID}.log" ]; then
-      tail -n 1000 "$HOME/pgm/alert_${ORACLE_SID}.log" | less +G
+    if [ -e "${HOME}/pgm/alert_${ORACLE_SID}.log" ]; then
+      tail -n 1000 "${HOME}/pgm/alert_${ORACLE_SID}.log" | less +G
     else
       echo "file ${HOME}/pgm/alert_${ORACLE_SID}.log does not exist" ; echo
     fi
@@ -303,26 +306,28 @@ if [[ "$USER" =~ (.*grid|grid.*|.*ora|ora*.) ]]; then
   # declare -f      - all functions with definition
   # declare -F dba  - show definition of dba function
   function dba() {
-      if [   -z "$ORACLE_HOME" ] ; then echo "ORACLE_HOME is not set, exiting ...";echo;echo; return 1 ; fi
-      if [ ! -d "$ORACLE_HOME" ] ; then echo "ORACLE_HOME does NOT exist, exiting  ...";echo;echo; return 2 ; fi
-      if [ ! -f "$ORACLE_HOME/bin/sqlplus" ] ; then echo "$ORACLE_HOME/bin/${FUNCNAME[0]}" does NOT exist, exiting ...;echo;echo; return 3 ; fi
-      if [ `uname -a|grep -i Linux|wc -l` -eq 1 ]; then
-         printf '\e[8;71;175t'
-      fi
-      if [ -f "${profile_location_dir}/bin/rlwrap" ]; then
-            "${profile_location_dir}/bin/rlwrap" -p"1;34" -c -f "${profile_location_dir}/bin/wynik.txt" -r -b "(){}[],+^='@$" "$ORACLE_HOME/bin/sqlplus" "/ as sysdba" $*
-      else
-        "$ORACLE_HOME/bin/sqlplus" "/ as sysdba" $*
-      fi
-      }
+    echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
+    if [   -z "$ORACLE_HOME" ] ; then echo "ORACLE_HOME is not set, exiting ...";echo;echo; return 1 ; fi
+    if [ ! -d "$ORACLE_HOME" ] ; then echo "ORACLE_HOME does NOT exist, exiting  ...";echo;echo; return 2 ; fi
+    if [ ! -f "$ORACLE_HOME/bin/sqlplus" ] ; then echo "$ORACLE_HOME/bin/${FUNCNAME[0]}" does NOT exist, exiting ...;echo;echo; return 3 ; fi
+    if [ $(uname -a|grep -i Linux|wc -l) -eq 1 ]; then
+       printf '\e[8;71;175t'
+    fi
+    if [ -f "${profile_location_dir}/bin/rlwrap" ]; then
+          "${profile_location_dir}/bin/rlwrap" -p"1;34" -c -f "${profile_location_dir}/bin/wynik.txt" -r -b "(){}[],+^='@$" "$ORACLE_HOME/bin/sqlplus" "/ as sysdba" $*
+    else
+      "$ORACLE_HOME/bin/sqlplus" "/ as sysdba" $*
+    fi
+    }
   export -f dba
   ##########################################################################  
   function asm() {
+    echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
     if [   -z "$ORACLE_HOME" ] ; then echo "ORACLE_HOME is not set, exiting ...";echo;echo; return 1 ; fi
     if [ ! -d "$ORACLE_HOME" ] ; then echo "ORACLE_HOME does NOT exist, exiting  ...";echo;echo; return 2 ; fi
     if [ ! -f "$ORACLE_HOME/bin/sqlplus" ] ; then echo "$ORACLE_HOME/bin/sqlplus" does NOT exist, exiting ...;echo;echo; return 3 ; fi
     # let's try resize the terminal to 175x71 on linux systems (so login.sql will be seen nicely)
-    if [ `uname -a|grep -i Linux|wc -l` -eq 1 ]; then
+    if [ $(uname -a|grep -i Linux|wc -l) -eq 1 ]; then
        printf '\e[8;71;181t'
     fi
     if [ -f "${profile_location_dir}/bin/rlwrap" ]; then
@@ -334,6 +339,7 @@ if [[ "$USER" =~ (.*grid|grid.*|.*ora|ora*.) ]]; then
   export -f asm
   ##########################################################################
   function impdp() {
+    echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
     if [   -z "$ORACLE_HOME" ] ; then echo "ORACLE_HOME is not set, exiting ...";echo;echo; return 1 ; fi
     if [ ! -d "$ORACLE_HOME" ] ; then echo "ORACLE_HOME does NOT exist, exiting  ...";echo;echo; return 2 ; fi
     if [ ! -f "$ORACLE_HOME/bin/${FUNCNAME[0]}" ] ; then echo "$ORACLE_HOME/bin/${FUNCNAME[0]}" does NOT exist, exiting ...;echo;echo; return 3 ; fi
@@ -346,6 +352,7 @@ if [[ "$USER" =~ (.*grid|grid.*|.*ora|ora*.) ]]; then
   export -f impdp
 
   function expdp() {
+    echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
     if [   -z "$ORACLE_HOME" ] ; then echo "ORACLE_HOME is not set, exiting ...";echo;echo; return 1 ; fi
     if [ ! -d "$ORACLE_HOME" ] ; then echo "ORACLE_HOME does NOT exist, exiting  ...";echo;echo; return 2 ; fi
     if [ ! -f "$ORACLE_HOME/bin/${FUNCNAME[0]}" ] ; then echo "$ORACLE_HOME/bin/${FUNCNAME[0]}" does NOT exist, exiting ...;echo;echo; return 3 ; fi
@@ -358,6 +365,7 @@ if [[ "$USER" =~ (.*grid|grid.*|.*ora|ora*.) ]]; then
   export -f expdp
   ##########################################################################
   function adrci() {
+    echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
     if [   -z "$ORACLE_HOME" ] ; then echo "ORACLE_HOME is not set, exiting ...";echo;echo; return 1 ; fi
     if [ ! -d "$ORACLE_HOME" ] ; then echo "ORACLE_HOME does NOT exist, exiting  ...";echo;echo; return 2 ; fi
     if [ ! -f "$ORACLE_HOME/bin/${FUNCNAME[0]}" ] ; then echo "$ORACLE_HOME/bin/${FUNCNAME[0]}" does NOT exist, exiting ...;echo;echo; return 3 ; fi
@@ -370,6 +378,7 @@ if [[ "$USER" =~ (.*grid|grid.*|.*ora|ora*.) ]]; then
   export -f adrci
 
   function asmcmd() {
+    echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
     if [   -z "$ORACLE_HOME" ] ; then echo "ORACLE_HOME is not set, exiting ...";echo;echo; return 1 ; fi
     if [ ! -d "$ORACLE_HOME" ] ; then echo "ORACLE_HOME does NOT exist, exiting  ...";echo;echo; return 2 ; fi
     if [ ! -f "$ORACLE_HOME/bin/${FUNCNAME[0]}" ] ; then echo "$ORACLE_HOME/bin/${FUNCNAME[0]}" does NOT exist, exiting ...;echo;echo; return 3 ; fi
@@ -394,6 +403,7 @@ if [[ "$USER" =~ (.*grid|grid.*|.*ora|ora*.) ]]; then
   export -f asmcmd
   ##########################################################################
   function dgmgrl() {
+    echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
     if [   -z "$ORACLE_HOME" ] ; then echo "ORACLE_HOME is not set, exiting ...";echo;echo; return 1 ; fi
     if [ ! -d "$ORACLE_HOME" ] ; then echo "ORACLE_HOME does NOT exist, exiting  ...";echo;echo; return 2 ; fi
     if [ ! -f "$ORACLE_HOME/bin/${FUNCNAME[0]}" ] ; then echo "$ORACLE_HOME/bin/${FUNCNAME[0]}" does NOT exist, exiting ...;echo;echo; return 3 ; fi
@@ -407,6 +417,7 @@ if [[ "$USER" =~ (.*grid|grid.*|.*ora|ora*.) ]]; then
 
   # 'where is alert'
   function wia () {
+    echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
     if [ "$ORACLE_SID" == "" ];then
       echo "ORACLE_SID is not set"
     else
@@ -503,6 +514,7 @@ if [[ "$USER" =~ (.*grid|grid.*|.*ora|ora*.) ]]; then
   function dgsp() {
     echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
     echo show database verbose echo show configuration|dgmgrl -silent / | grep "Primary database" | sed "s/ - Primary database//" |dgmgrl -silent /|less
+    echo
     }
   export -f dgsp
   ##########################################################################
@@ -535,7 +547,7 @@ if [[ "$USER" =~ (.*grid|grid.*|.*ora|ora*.) ]]; then
   export -f dgscl
   ##########################################################################
   function help-oracle() {
-    echo
+    echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
     echo "~~~ Data Guard ~~~"
     echo "dgsc  - DG show configuration"
     echo "dgscv - DG show configuration verbose"
@@ -564,6 +576,7 @@ if [[ "$USER" =~ (.*grid|grid.*|.*ora|ora*.) ]]; then
 fi    # end of condition: [[ "$USER" =~ (.*grid$|^grid.*|.*ora$|^ora*.) ]]
 
 function hg() { 
+  echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
   if [ $# -gt 0 ]; then 
     (history | grep -i -- $* ) 
   else 
@@ -573,7 +586,7 @@ function hg() {
 export -f hg
 
 if [ $(type -fP prstat) ];then
-  alias prstat='prstat 1 '
+  function prstat() { $(type -fP prstat) 1 $* ; }
 fi
 
 function env(){
@@ -588,6 +601,7 @@ function env(){
 export -f env
 
 function htop() {
+  echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
   $(type -tPf htop) --version >/dev/null 2>&1 ||  echo "(PGM) htop is not installed :-(" || return 1 
   $(type -Pf htop) --help 2> /dev/null | grep -q -- "--no-color" >/dev/null 2>&1
   if (( $? > 0 ));then
@@ -599,7 +613,7 @@ function htop() {
 export -f htop
 
 function help-locate() {
-  echo
+  echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
   echo "-b, --basename      match only the base name of path names"
   echo "-c, --count         only print number of found entries"
   echo "-e, --existing      only print entries for currently existing files"
@@ -619,7 +633,7 @@ function help-locate() {
 export -f help-locate
 
 function help-screen() {
-  echo 
+  echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
   echo ' Key	          Action	                             Notes                                                      '
   echo '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  '         
   echo 'Ctrl+a c	  new window	                                                                                       '
@@ -652,6 +666,7 @@ function help-screen() {
 export -f help-screen
 
 function locate(){
+  echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
   type -Pf locate >/dev/null 2>&1
   if (( $? > 0 ));then
     echo
@@ -673,6 +688,7 @@ function locate(){
 export -f locate
 
 function go(){
+  echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
   ssh_options="-o ServerAliveInterval=2 -o ConnectTimeout=2 -o TCPKeepAlive=yes -o Compression=no"
   if (( $# == 0 ));then
     echo ; echo "you need to supply the hostname..."; echo ; return 1
@@ -682,7 +698,7 @@ function go(){
      echo ; echo "ssh to $1" | $(type -fP boxes) -a c -d stone ; echo
   fi
   if (( $# == 1 ));then
-    $(type -fP ssh) ${ssh_options} -t $1 'bash --rcfile $HOME/pgm/bash_profile -i '
+    $(type -fP ssh) ${ssh_options} -t $1 'bash --rcfile ${HOME}/pgm/bash_profile -i '
   fi
 
   if (( $# > 1 ));then
@@ -696,7 +712,8 @@ function go(){
 export -f go
 
 function god() {
-  export INPUT="$HOME/pgm/hosts $HOME/pgm/hosts-aliases-only"
+  echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
+  export INPUT="${HOME}/pgm/hosts ${HOME}/pgm/hosts-aliases-only"
   export filter=""
 
   if (( $# > 0 ));then
@@ -720,7 +737,7 @@ function god() {
 export -f god
 
 function help-regex() {
-  echo ;
+  echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
   echo " (cmd) |sed 's|\(.*failure.*\)|\1      < ----- ! ! ! ! ! ! ! FAILURE ! ! ! ! ! ! !|g'"
   echo ;
   }
@@ -791,28 +808,13 @@ function df(){
   }
 export -f df
 
-function dfh() {
-  df -h $*
-  }
-export -f dfh
-
-function dfm() {
-  df -m $*
-  }
-export -f dfm
-
-function dfs() {
-  df --sync $*
-  }
-export -f dfs
-
-function dsl() {
-  ds --one-file-system *
-  }
-export -f dsl
+function dfh() { df -h $* ; }               ; export -f dfh
+function dfm() { df -m $* ; }               ; export -f dfm
+function dfs() { df --sync $* ; }           ; export -f dfs
+function dsl() { ds --one-file-system * ; } ; export -f dsl
 
 function help-disk() {
-  echo
+  echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
   echo "/***********************/"
   echo "/*      du | sort      */"
   echo "/***********************/"
@@ -831,6 +833,7 @@ function help-disk() {
 export -f help-disk
 
 function screen() {
+  echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
   if [ -f "$profile_location_dir/.screenrc" ]; then
     "$(type -fP screen)" -c "$profile_location_dir/.screenrc" -ln -h 599999 -T xterm $*
   else
@@ -840,7 +843,8 @@ function screen() {
 export -f screen
 
 # show disk usage and sorts the output according to the size
-function ds () {         
+function ds () {   
+  echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo      
   if [ $# -eq 0 ]; then
     du -hs * | sort -h
   else
@@ -850,6 +854,7 @@ function ds () {
 export -f ds
 
 function ver() {
+  echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
   clear;echo '### .pgm-boundle-version ###';
   if [ -f "${profile_location_dir}"/.pgm-boundle-version ];then
     cat "${profile_location_dir}"/.pgm-boundle-version|head -7 
@@ -858,13 +863,13 @@ function ver() {
   fi
   echo;echo;
   echo '### BASHRC ###';
-  cat ${profile_location_dir}/bashrc|head -7|grep '^#';echo;
-  echo '### BASH_PROFILE ###';cat ${profile_location_dir}/bash_profile|head -7|grep '^#'
+  cat "${profile_location_dir}/bashrc" | head -7 | grep '^#' ; echo
+  echo '### BASH_PROFILE ###';cat "${profile_location_dir}/bash_profile" | head -7 | grep '^#'
   }
 export -f ver
 
 function help-date(){
-  echo ; 
+  echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
   echo "date '+%Y.%m.%d %H:%M:%S'  # e.g. $(date '+%Y.%m.%d %H:%M:%S')"
   echo "date '+%Y.%m.%d_%H%M%S'    # e.g. $(date '+%Y.%m.%d_%H%M%S')"
   echo "date '+%Y%m%d_%H%M%S'      # e.g. $(date '+%Y%m%d_%H%M%S')"
@@ -873,37 +878,55 @@ function help-date(){
 export -f help-date
 
 function help-sed(){
-  echo ;
+  echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
   echo "sed -n '/DATA BEGIN/, /DATA END/p'                                   # Printing the Data Blocks Including Both Boundaries"
   echo "sed -n '/DATA BEGIN/, /DATA END/{ /DATA BEGIN/! { /DATA END/! p } }' # Printing the Data Blocks Excluding Both Boundaries"
   echo;
   }
 export -f help-sed
 
-alias unwrap='HISTFILE=/dev/null;if [ "$profile_location_dir" == "" ]; then echo "profile_location_dir is not set, exiting..." ;else cd $profile_location_dir;vi a;uudecode a && bzip2 -d profile.tar.bz2 && tar xvf profile.tar && (ls -l bash*; ./test.sh ; ls -l bash*);fi'
+function unwrap() {
+  echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
+  HISTFILE=/dev/null;
+  if [ "${profile_location_dir}" == "" ]; then 
+    echo "profile_location_dir is not set, exiting..." ;
+  else 
+    cd "${profile_location_dir}";
+    vi a
+    uudecode a && bzip2 -d profile.tar.bz2 && tar xvf profile.tar && (ls -l bash*; ./test.sh ; ls -l bash*)
+  fi
+  }
+export -f unwrap
 
 # even though pmon and lsnr are Oracle-related aliases but it is very useful to have it even in e.g. root environement
 # why? to check if we can shut down / restart the server and if any Oracle instaces / listeners are running
-alias pmon="ps -ef|grep pmon|egrep 'ora_pmon|asm_pmon'|grep -v grep|sed 's/.* ..._pmon_//'|grep -v '//'|sort|uniq"
-alias lsnr='ps -ef|grep lsnr|grep -v grep'
+function pmon() {
+  echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
+  ps -ef|grep pmon|egrep 'ora_pmon|asm_pmon'|grep -v grep|sed 's/.* ..._pmon_//'|grep -v '//'|sort|uniq 
+  }
+export -f pmon
 
-alias dis='echo your display is set to $DISPLAY'
-alias dssh="export DISPLAY=:10;dis"
-# alias dip="export DISPLAY=`who am i| awk '{print $6}'| tr -d '()'`:0;if [ "$DISPLAY" == ":0" ]; then DISPLAY=`who am i| awk '{print $5}'| tr -d '()'`:0;fi;dis"
+function lsnr() { ps -ef|grep lsnr|grep -v grep ; }          ; export -f lsnr
 
-if [ `uname -s` == 'HP-UX' ]; then
-   alias dip="export DISPLAY=`who am i -R | awk '{print $6}'| tr -d '()'`:0;dis"
+function dis()  { echo "your display is set to $DISPLAY" ; } ; export -f dis
+function dssh() { export DISPLAY=:10 ; dis ; }               ; export -f dssh
+
+if [ $(uname -s) == 'HP-UX' ]; then
+   function dip() { export DISPLAY=$(who am i -R | awk '{print $6}'| tr -d '()'):0; dis ; }
 else
-   alias dip="export DISPLAY=`who am i| awk '{print $6}'| tr -d '()'`:0;dis"
+   function dip() { export DISPLAY=$(who am i| awk '{print $6}'| tr -d '()'):0 ; dis ; }
+fi
+export -f dip
+
+if [ $(uname -s) == 'Linux' ]; then
+   function ls() { /bin/ls --full-time  --color=none $* ; } ; export -f ls
 fi
 
-if [ `uname -s` == 'Linux' ]; then
-   alias ls="ls --full-time  --color=none"
-fi
+function ll() { ls -la $* ; } ; export -f ll
+function  l() { ls -la $* ; } ; export -f l
 
-alias ll="ls -la "
-alias  l="ls -la "
 function vi() {
+  echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
   if [ -f "$profile_location_dir/.vimrc" ]; then
     "$(type -fP vi)" -u "$profile_location_dir/.vimrc" $*
   else
@@ -912,15 +935,15 @@ function vi() {
   }
 export -f vi
 
-alias vim='vi $* '
-alias less='$(type -fP less) --IGNORE-CASE '
+function vim() { vi $* ; } ; export -f vim
+function less() { $(type -fP less) --IGNORE-CASE $* ; } ; export -f less
 
-alias help-dd="echo ; echo dd bs=50M if= of= status=progress conv=fdatasync  oflag=direct ; echo"
-alias help-sshfs="echo ; echo sshfs -o Compression=no -o ServerAliveCountMax=2 -o ServerAliveInterval=15 root@hostname:/directory /mnt/sshfs-tmp ; echo"
-alias help-vi="echo ; echo 'vi +/{pat} +[num]' ; echo "
+function help-dd()    { echo ; echo dd bs=50M if= of= status=progress conv=fdatasync  oflag=direct ; echo ; } ; export -f help-dd
+function help-sshfs() { echo ; echo sshfs -o Compression=no -o ServerAliveCountMax=2 -o ServerAliveInterval=15 root@hostname:/directory /mnt/sshfs-tmp ; echo;} ; export -f help-sshfs
+function help-vi()    { echo ; echo 'vi +/{pat} +[num]' ; echo ; } ; export -f help-vi
 
 function help-ssh() {
-  echo;
+  echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
   echo '-o ServerAliveInterval=2 -o ConnectTimeout=2 -o TCPKeepAlive=yes -o Compression=no'
   echo ;
   echo 'ssh -L 123:localhost:456 -N -f -l root@somewhere.com'
@@ -935,7 +958,7 @@ function help-ssh() {
 export -f help-ssh
 
 function help-rsync() {
-  echo ;
+  echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
   echo "rsync -a -v --inplace --bwlimit= --no-compress --stats --progress --info=progress1 --partial --remove-source-files --no-inc-recursive --dry-run "
   echo "      -e 'ssh -T -p 4444 -o Compression=no -x ' SOURCE DEST"
   echo ;
@@ -976,7 +999,7 @@ function help-rsync() {
 export -f help-rsync
 
 function help-boxes() {
-  echo ; 
+  echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
   echo "boxes -l | less                           # list available box designs w/ samples"
   echo "boxes -s WxH -a l/c/r -d ada-box / caml / ada-cmt / shell / simple / stone"
   echo ; 
@@ -992,7 +1015,7 @@ function help-boxes() {
 export -f help-boxes
 
 function help-find() {
-  echo;
+  echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
   echo 'find PATH -xautofs -xdev -maxdepth 1 \( -name \*trm -o -name \*trc \) -type f -mmin +7 -mtime +5 -size +50M -exec CMD {} \;'
   echo '         -maxdepth 1 - will search only CURRENT catalog'
   echo '         -maxdepth 0 will not search. It will only try to match among the file/directory names that you have provided as arguments in find'
@@ -1004,24 +1027,26 @@ export -f help-find
 
 function help-kitty(){
   # trick with $ at the beginning - "ksh, bash, and zsh only, does not expand variables"
+  echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo  
   echo $'sudo su - oracle --session-command=\'/bin/bash --login --rcfile /tools/oracle/pgm/bashrc /tools/oracle/pgm/bash_profile\''
   }
 export -f help-kitty
 
 if [ $MATUSZYK == 1 ]; then
   # github aliases
-  alias gitpd="${profile_location_dir}/github-bash_profile/git-pull.sh        ; cd ${profile_location_dir}/github-bash_profile"
-  alias gitpdb="${profile_location_dir}/github-bash_profile/git-pull.sh batch ; cd ${profile_location_dir}/github-bash_profile"
-  alias gitpu="${profile_location_dir}/github-bash_profile/git-push.sh        ; cd ${profile_location_dir}/github-bash_profile"
-  alias gitpub="${profile_location_dir}/github-bash_profile/git-push.sh batch ; cd ${profile_location_dir}/github-bash_profile"
+  function gitpd()  { "${profile_location_dir}/github-bash_profile/git-pull.sh"       ; cd "${profile_location_dir}/github-bash_profile}"; } ; export -f gitpd
+  function gitpdb() { "${profile_location_dir}/github-bash_profile/git-pull.sh" batch ; cd "${profile_location_dir}/github-bash_profile}"; } ; export -f gitpdb
+  function gitpu()  { "${profile_location_dir}/github-bash_profile/git-push.sh"       ; cd "${profile_location_dir}/github-bash_profile}"; } ; export -f gitpu
+  function gitpub() { "${profile_location_dir}/github-bash_profile/git-push.sh" batch ; cd "${profile_location_dir}/github-bash_profile}"; } ; export -f gitpub
 
-  alias gitbd="${profile_location_dir}/github-bin/git-pull.sh i               ; cd ${profile_location_dir}/github-bin"
-  alias gitbdb="${profile_location_dir}/github-bin/git-pull.sh batch          ; cd ${profile_location_dir}/github-bin"
-  alias gitbu="${profile_location_dir}/github-bin/git-push.sh                 ; cd ${profile_location_dir}/github-bin"
-  alias gitbub="${profile_location_dir}/github-bin/git-push.sh batch          ; cd ${profile_location_dir}/github-bin"
+  function gitbd()  { "${profile_location_dir}/github-bin/git-pull.sh"                ; cd "${profile_location_dir}/github-bin}"; } ; export -f gitbd
+  function gitbdb() { "${profile_location_dir}/github-bin/git-pull.sh" batch          ; cd "${profile_location_dir}/github-bin}"; } ; export -f gitbdb
+  function gitbu()  { "${profile_location_dir}/github-bin/git-push.sh"                ; cd "${profile_location_dir}/github-bin}"; } ; export -f gitbu
+  function gitbub() { "${profile_location_dir}/github-bin/git-push.sh" batch          ; cd "${profile_location_dir}/github-bin}"; } ; export -f gitbub
 fi
 
 function aptitude-all() {
+  echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
   assume_yes=""
   if (( $# != 0 )) && [ "${1-nonbatch}" == "batch" ]; then
     echo ; echo "(PGM) enabling batch mode (no questions asked)"
@@ -1037,8 +1062,8 @@ function aptitude-all() {
   boxes <<< "aptitude -q ${assume_yes} autoclean";
   aptitude -q ${assume_yes} autoclean ;
   
-  if [ -x $HOME/bin/sprawdz-ile-apt-list--upgradable.sh ]; then 
-    $HOME/bin/sprawdz-ile-apt-list--upgradable.sh
+  if [ -x ${HOME}/bin/sprawdz-ile-apt-list--upgradable.sh ]; then 
+    ${HOME}/bin/sprawdz-ile-apt-list--upgradable.sh
   fi
   }
 if [ ! $(type -fP aptitude) ];then
@@ -1071,34 +1096,33 @@ complete -A group     newgrp groupdel groupmod
 complete -f -X '!*.zip' unzip
 complete -o default -F bash_complete_go curl dig host netcat ping telnet ssh sftp rlogin traceroute nslookup go
 complete -W "batch"   aptitude-all gitpu gitpd gitbd gitbu
-
 # complete bash command section END
 
 function bash_complete_go() {
-COMPREPLY=()
-if [ "${HOSTFILE:-PGM_NOT_SET}" = "PGM_NOT_SET" ] || [ ! -f "${HOSTFILE}" ]; then
-  export COMPREPLY=("HOSTFILE_${profile_location_dir}/hosts_is_NOT_set")
-  return 1
-fi
-# below is the hack so we do not treat @ as a word separator (e.g. for enries like postgres@hostname)
-if [ -f /usr/share/bash-completion/bash_completion ];then
-  . /usr/share/bash-completion/bash_completion
-  _get_comp_words_by_ref -n @ cur
-else
-  export cur="${COMP_WORDS[COMP_CWORD]}"
-fi
-if [ "$cur" = "" ];then
-  COMPREPLY=($(cat ${HOSTFILE} ${HOSTALIASES} | egrep -v '^ *#|^#|^ *$'|sort|uniq))
-else
-  if (( $COMP_CWORD == 1 ));then
-    COMPREPLY=($(cat ${HOSTFILE} ${HOSTALIASES} | egrep -v '^ *#|^#|^ *$' | sort | uniq| grep -- "$cur"))
+  COMPREPLY=()
+  if [ "${HOSTFILE:-PGM_NOT_SET}" = "PGM_NOT_SET" ] || [ ! -f "${HOSTFILE}" ]; then
+    export COMPREPLY=("HOSTFILE_${profile_location_dir}/hosts_is_NOT_set")
+    return 1
   fi
-fi
+  # below is the hack so we do not treat @ as a word separator (e.g. for enries like postgres@hostname)
+  if [ -f /usr/share/bash-completion/bash_completion ];then
+    . /usr/share/bash-completion/bash_completion
+    _get_comp_words_by_ref -n @ cur
+  else
+    export cur="${COMP_WORDS[COMP_CWORD]}"
+  fi
+  if [ "$cur" = "" ];then
+    COMPREPLY=($(cat ${HOSTFILE} ${HOSTALIASES} | egrep -v '^ *#|^#|^ *$'|sort|uniq))
+  else
+    if (( $COMP_CWORD == 1 ));then
+      COMPREPLY=($(cat ${HOSTFILE} ${HOSTALIASES} | egrep -v '^ *#|^#|^ *$' | sort | uniq| grep -- "$cur"))
+    fi
+  fi
 }
 export -f bash_complete_go
 
-boldon="`tty -s && /usr/bin/tput smso`"
-boldoff="`tty -s && /usr/bin/tput rmso`"
+boldon="$(tty -s && /usr/bin/tput smso)"
+boldoff="$(tty -s && /usr/bin/tput rmso)"
 shopt -s histappend                 # Make Bash append rather than overwrite the history on disk
 shopt -s cdspell                        #Bash will cope with each component of the typed path having one
                                     # missing character, one extra character, or a pair of characters
@@ -1123,84 +1147,84 @@ export IGNOREEOF=1                  # Ctrl+D conveniently exits Bash
 # /usr/share/big_dir_name -> ../share/big_dir_name if pwdmaxlen=20
 ##################################################
 bash_prompt_command() {
-    # How many characters of the $PWD should be kept
-    local pwdmaxlen=60
-    # Indicate that there has been dir truncation
-    local trunc_symbol=".."
-    local dir=${PWD##*/}
-    pwdmaxlen=$(( ( pwdmaxlen < ${#dir} ) ? ${#dir} : pwdmaxlen ))
-    # uncomment if you want to replace $HOME with ~
-    # NEW_PWD=${PWD/#$HOME/~}
-    NEW_PWD=${PWD}
-    local pwdoffset=$(( ${#NEW_PWD} - pwdmaxlen ))
-    if [ ${pwdoffset} -gt "0" ]; then
-      NEW_PWD=${NEW_PWD:$pwdoffset:$pwdmaxlen}
-      NEW_PWD=${trunc_symbol}/${NEW_PWD#*/}
-    fi
+  # How many characters of the $PWD should be kept
+  local pwdmaxlen=60
+  # Indicate that there has been dir truncation
+  local trunc_symbol=".."
+  local dir=${PWD##*/}
+  pwdmaxlen=$(( ( pwdmaxlen < ${#dir} ) ? ${#dir} : pwdmaxlen ))
+  # uncomment if you want to replace ${HOME} with ~
+  # NEW_PWD=${PWD/#$HOME/~}
+  NEW_PWD=${PWD}
+  local pwdoffset=$(( ${#NEW_PWD} - pwdmaxlen ))
+  if [ ${pwdoffset} -gt "0" ]; then
+    NEW_PWD=${NEW_PWD:$pwdoffset:$pwdmaxlen}
+    NEW_PWD=${trunc_symbol}/${NEW_PWD#*/}
+  fi
 
-    local NONE='\[\033[0m\]'    # unsets color to term's fg color
+  local NONE='\[\033[0m\]'    # unsets color to term's fg color
 
-    # regular colors
-    local K='\[\033[0;30m\]'    # black
-    local R='\[\033[0;31m\]'    # red
-    local G='\[\033[0;32m\]'    # green
-    local Y='\[\033[0;33m\]'    # yellow
-    local B='\[\033[0;34m\]'    # blue
-    local M='\[\033[0;35m\]'    # magenta
-    local C='\[\033[0;36m\]'    # cyan
-    local W='\[\033[0;37m\]'    # white
+  # regular colors
+  local K='\[\033[0;30m\]'    # black
+  local R='\[\033[0;31m\]'    # red
+  local G='\[\033[0;32m\]'    # green
+  local Y='\[\033[0;33m\]'    # yellow
+  local B='\[\033[0;34m\]'    # blue
+  local M='\[\033[0;35m\]'    # magenta
+  local C='\[\033[0;36m\]'    # cyan
+  local W='\[\033[0;37m\]'    # white
 
-    # empahsized (bolded) colors
-    local EMK='\[\033[1;30m\]'
-    local EMR='\[\033[1;31m\]'
-    local EMG='\[\033[1;32m\]'
-    local EMY='\[\033[1;33m\]'
-    local EMB='\[\033[1;34m\]'
-    local EMM='\[\033[1;35m\]'
-    local EMC='\[\033[1;36m\]'
-    local EMW='\[\033[1;37m\]'
+  # empahsized (bolded) colors
+  local EMK='\[\033[1;30m\]'
+  local EMR='\[\033[1;31m\]'
+  local EMG='\[\033[1;32m\]'
+  local EMY='\[\033[1;33m\]'
+  local EMB='\[\033[1;34m\]'
+  local EMM='\[\033[1;35m\]'
+  local EMC='\[\033[1;36m\]'
+  local EMW='\[\033[1;37m\]'
 
-    # background colors
-    local BGK='\[\033[40m\]'
-    local BGR='\[\033[41m\]'
-    local BGG='\[\033[42m\]'
-    local BGY='\[\033[43m\]'
-    local BGB='\[\033[44m\]'
-    local BGM='\[\033[45m\]'
-    local BGC='\[\033[46m\]'
-    local BGW='\[\033[47m\]'
-    local UC=$C                 # user's color
-    [ $UID -eq "0" ] && UC=$R   # root's color
+  # background colors
+  local BGK='\[\033[40m\]'
+  local BGR='\[\033[41m\]'
+  local BGG='\[\033[42m\]'
+  local BGY='\[\033[43m\]'
+  local BGB='\[\033[44m\]'
+  local BGM='\[\033[45m\]'
+  local BGC='\[\033[46m\]'
+  local BGW='\[\033[47m\]'
+  local UC=$C                 # user's color
+  [ $UID -eq "0" ] && UC=$R   # root's color
 
-    #if [ -z $ORACLE_SID ]
-    if [ $ORACLE_SID ]; then
-      PS1="${B}${BGY}${ORACLE_SID}${EMK}${BGK}${UC}"
-    else
-      PS1=""
-    fi
+  #if [ -z $ORACLE_SID ]
+  if [ $ORACLE_SID ]; then
+    PS1="${B}${BGY}${ORACLE_SID}${EMK}${BGK}${UC}"
+  else
+    PS1=""
+  fi
 
-    SCREEN_RUNNING=""
-    if [ $WINDOW ]; then
-      SCREEN_RUNNING="SCREEN-$WINDOW"
-      PS1="${PS1} ${B}${BGR}${SCREEN_RUNNING}${EMK}${BGK}${UC} "
-    fi
+  SCREEN_RUNNING=""
+  if [ $WINDOW ]; then
+    SCREEN_RUNNING="SCREEN-$WINDOW"
+    PS1="${PS1} ${B}${BGR}${SCREEN_RUNNING}${EMK}${BGK}${UC} "
+  fi
 
-    # firstly let's check if hostname gives us FQDN
-    if [ ! `hostname|grep '\.' > /dev/null` ]; then
-      # hostname gives us FQDN
-      host=`hostname`
-    elif [ ! `cat /etc/resolv.conf |grep search|awk '{print $2}'` ]; then
-      host=`hostname`.`cat /etc/resolv.conf |grep search|awk '{print $2}'`
-    else
-      host=`hostname`
-    fi
-    export PS1="`date '+%Y.%m.%d %H:%M:%S'` [ \u${W}@${C}`echo $host`:${W}${EMC}`pwd` ] ${EMK}\n${PS1} \\$ ${NONE}"
-    if [ $ORACLE_SID ]; then
-      echo -ne "\033]0; ORACLE_SID = \"${ORACLE_SID}\" ${LOGNAME}@`echo $host` `pwd`\007"
-    else
-      echo -ne "\033]0; ${LOGNAME}@`echo $host` `pwd`\007"
-    fi
-    history -a                          # Whenever displaying the prompt, write the previous line to disk
+  # firstly let's check if hostname gives us FQDN
+  if [ ! $(hostname|grep '\.' > /dev/null) ]; then
+    # hostname gives us FQDN
+    host=$(hostname)
+  elif [ ! $(cat /etc/resolv.conf |grep search|awk '{print $2}') ]; then
+    host=$(hostname).$(cat /etc/resolv.conf |grep search|awk '{print $2}')
+  else
+    host=$(hostname)
+  fi
+  export PS1="$(date '+%Y.%m.%d %H:%M:%S') [ \u${W}@${C}$(echo $host):${W}${EMC}$(pwd) ] ${EMK}\n${PS1} \\$ ${NONE}"
+  if [ $ORACLE_SID ]; then
+    echo -ne "\033]0; ORACLE_SID = \"${ORACLE_SID}\" ${LOGNAME}@$(echo $host) $(pwd)\007"
+  else
+    echo -ne "\033]0; ${LOGNAME}@$(echo $host) $(pwd)\007"
+  fi
+  history -a                          # Whenever displaying the prompt, write the previous line to disk
 }
 export -f bash_prompt_command   # In Bash you can export function definitions to other shell scripts that your script calls
 export PROMPT_COMMAND=bash_prompt_command
@@ -1226,9 +1250,9 @@ else
   unset INPUTRC
 fi
 
-if (( `cat /proc/cpuinfo |grep -i Raspberry |wc -l` != 0 )); then
+if (( $(cat /proc/cpuinfo |grep -i Raspberry |wc -l) != 0 )); then
 #  echo "bashrc: platforma Raspberry" 
-  if [ ! `mountpoint -q /encrypted` ];then
+  if [ ! $(mountpoint -q /encrypted) ];then
     mkdir -p "/encrypted/$USER/XDG_DATA_HOME" 2>/dev/null
     if [ -d "/encrypted/$USER/XDG_DATA_HOME" ];then
       export XDG_DATA_HOME="/encrypted/$USER/XDG_DATA_HOME"
@@ -1241,6 +1265,6 @@ if (( `cat /proc/cpuinfo |grep -i Raspberry |wc -l` != 0 )); then
 fi
 
 if [[ $- == *i* ]]; then
-    bind 'set enable-bracketed-paste off'
+  bind 'set enable-bracketed-paste off'
 fi
 
