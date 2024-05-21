@@ -1,3 +1,4 @@
+# v. 3.47- 2024.05.16 - bugfix edition: checking if dialog utility is installed in god function, htop function bugfix
 # v. 3.46- 2024.05.16 - rest of aliases are converted to functions, a lot of cosmetic changes (e.g. replace `...` with $( ...) syntax)
 # v. 3.45- 2024.05.15 - aliased change to functions as aliases are not inherited by subshells
 # v. 3.44- 2023.12.06 - added function god
@@ -602,7 +603,7 @@ export -f env
 
 function htop() {
   echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
-  $(type -tPf htop) --version >/dev/null 2>&1 ||  echo "(PGM) htop is not installed :-(" || return 1 
+  $(type -tPf htop) --version >/dev/null 2>&1 ||  { echo "(PGM) htop is not installed :-(" ; echo ; return 1 ; }
   $(type -Pf htop) --help 2> /dev/null | grep -q -- "--no-color" >/dev/null 2>&1
   if (( $? > 0 ));then
     $(type -Pf htop) $*
@@ -713,6 +714,7 @@ export -f go
 
 function god() {
   echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
+  $(type -fP dialog) --help >/dev/null 2>&1 ||  { echo "(PGM) dialog is not installed :-(" ; echo ;  return 1 ; }
   export INPUT="${HOME}/pgm/hosts ${HOME}/pgm/hosts-aliases-only"
   export filter=""
 
@@ -971,7 +973,7 @@ function help-rsync() {
   echo ;
   echo "--no-inc-recursive option (or its shorter --no-i-r alias) to disable incremental recursion."
   echo "  disables incremental recursion, forcing rsync to do a complete scan of of all directories before starting the file transfer. "
-  echo "  This is needed to get an accurate progress report, otherwise rsync doesn’t know how much work is left."
+  echo "  This is needed to get an accurate progress report, otherwise rsync doesn.t know how much work is left."
   echo ;
   echo "--dry-run "
   echo ; 
