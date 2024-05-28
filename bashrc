@@ -1205,17 +1205,17 @@ export -f help-kitty
 ##########################################################################
 if [ "${MATUSZYK}" == 1 ]; then
   # github aliases
-  dir_name="${profile_location_dir}/github-bash_profile"
-  eval function gitpd()  { "${dir_name}/git-pull.sh"       ; cd "${dir_name}"; } ; export -f gitpd
-  eval function gitpdb() { "${dir_name}/git-pull.sh" batch ; cd "${dir_name}"; } ; export -f gitpdb
-  eval function gitpu()  { "${dir_name}/git-push.sh"       ; cd "${dir_name}"; } ; export -f gitpu
-  eval function gitpub() { "${dir_name}/git-push.sh" batch ; cd "${dir_name}"; } ; export -f gitpub
+  dir_profile="${profile_location_dir}/github-bash_profile"
+  function gitpd()  { "${profile_location_dir}/github-bash_profile/github-bash_profile}/git-pull.sh" ; cd "${profile_location_dir}/github-bash_profile"; } ; export -f gitpd
+  function gitpdb() { "${profile_location_dir}/github-bash_profile/git-pull.sh" batch                ; cd "${profile_location_dir}/github-bash_profile"; } ; export -f gitpdb
+  function gitpu()  { "${profile_location_dir}/github-bash_profile/git-push.sh"                      ; cd "${profile_location_dir}/github-bash_profile"; } ; export -f gitpu
+  function gitpub() { "${profile_location_dir}/github-bash_profile/git-push.sh" batch                ; cd "${profile_location_dir}/github-bash_profile"; } ; export -f gitpub
 
   dir_name="${profile_location_dir}/github-bin"
-  eval function gitbd()  { "${dir_name}/git-pull.sh"       ; cd "${dir_name}"; } ; export -f gitbd
-  eval function gitbdb() { "${dir_name}/git-pull.sh" batch ; cd "${dir_name}"; } ; export -f gitbdb
-  eval function gitbu()  { "${dir_name}/git-push.sh"       ; cd "${dir_name}"; } ; export -f gitbu
-  eval function gitbub() { "${dir_name}/git-push.sh" batch ; cd "${dir_name}"; } ; export -f gitbub
+  function gitbd()  { "${profile_location_dir}/github-bin/git-pull.sh"       ; cd "${profile_location_dir}/github-bin"; } ; export -f gitbd
+  function gitbdb() { "${profile_location_dir}/github-bin/git-pull.sh" batch ; cd "${profile_location_dir}/github-bin"; } ; export -f gitbdb
+  function gitbu()  { "${profile_location_dir}/github-bin/git-push.sh"       ; cd "${profile_location_dir}/github-bin"; } ; export -f gitbu
+  function gitbub() { "${profile_location_dir}/github-bin/git-push.sh" batch ; cd "${profile_location_dir}/github-bin"; } ; export -f gitbub
 fi
 ##########################################################################
 function aptitude-all() {
