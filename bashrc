@@ -1,3 +1,4 @@
+# v. 3.52- 2024.06.04 - bugfix in god function
 # v. 3.51- 2024.05.28 - code beautify, enabled shopt autocd, enhanced bash_complete_go function, added rman function to use rlwrap
 # v. 3.50- 2024.05.27 - code beautify, bugfix in go function, enhanced god function, functions: adrci, asmcmd, impdp, expdp modified to use rlwrap
 # v. 3.49- 2024.05.22 - code beautify
@@ -868,7 +869,7 @@ export -f go
 ##########################################################################
 function god() {
   echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
-  "$(type -fP dialog)" --help >/dev/null 2>&1 ||  { echo "(PGM) dialog is not installed :-(" ; echo ;  return 1 ; }
+  $(type -fP dialog) --help >/dev/null 2>&1 ||  { echo "(PGM) dialog is not installed :-(" ; echo ;  return 1 ; }
   export INPUT="${HOME}/pgm/hosts ${HOME}/pgm/hosts-aliases-only"
   export filter=""
 
@@ -876,25 +877,19 @@ function god() {
      filter="$1"
   fi
 
-  let i=0 # define counting variable
-  export W=() # define working array
+  export W=('') # define working array
   while read -r hostname; do # process file by file
-    let i=${i}+1
     W+=("${hostname}")
-  done < <( cat "${INPUT}" | egrep -v '^ *$|^ *#' |grep -i "${filter}" |sed 's/ *$//g' | sort | uniq)
-
-  if (( "${#W[*]}" == 0 )); then
-    echo "(PGM) no such user/host (or even the part of the name) found... exiting..."; echo
-    return 2
+  done < <( cat ${INPUT} | egrep -v '^ *$|^ *#|^$' |grep -i "${filter}" |sed 's/ *$//g' | tr '[A-Z]' '[a-z]' | sort | uniq)
+  if (( ${#W[@]} == 1 ));then 
+    echo "(PGM) host not found - try again..." ; echo ; return 2
   fi
-  if (( "${#W[*]}" > 1 )); then
-    # show dialog and store output
-    FILE=$($(type -fP dialog) --stdout --no-items --title "List of hosts in ${INPUT} file" --menu "Chose one" 44 75 34 "${W[@]}" ) 
-    if [ $? -eq 0 ]; then # Exit with OK
-      go "${FILE}"
-    fi
-  else
-    go "${W}"
+  unset 'W[0]'   # hack as there is always space at the beginning, so we have to remove it
+
+  FILE=$(dialog --stdout --no-items --title "List of hosts in ${INPUT} file" --menu "Chose one" 44 75 34 "${W[@]}" ) # show dialog and store output
+
+  if [ $? -eq 0 ]; then # Exit with OK
+    go ${FILE}
   fi
 }
 export -f god
