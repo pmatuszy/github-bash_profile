@@ -91,7 +91,7 @@ col global_name new_value gname justify center
 col bytes/1024/1024 format 999g999 justify center
 col bytes/1024/1024/1024 format 999g999 justify center
 col "BYTES(M)" format 999G999D0 justify center
-col bytes format 999G999G999G999G99
+col bytes format 999G999G999G999G999
 col controlfile format a80 justify center
 col datafile format a40 justify center
 col density format 999G999G999D999999 justify center
@@ -157,7 +157,7 @@ col force_logging format a8 heading 'Force|Logging' justify center
 col open_mode format a10 heading 'Open|Mode' justify center
 
 col dbid format 9999999999 justify center
-col scn format 99999999 justify center
+col scn format 999G999G999G999G999 justify center
 col platform_name format a33  justify center
 
 -- nicer looking output (PGM)
