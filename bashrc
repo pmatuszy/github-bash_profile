@@ -1,3 +1,4 @@
+# v. 3.53- 2024.12.11 - modified sob function
 # v. 3.52- 2024.06.04 - bugfix in god function
 # v. 3.51- 2024.05.28 - code beautify, enabled shopt autocd, enhanced bash_complete_go function, added rman function to use rlwrap
 # v. 3.50- 2024.05.27 - code beautify, bugfix in go function, enhanced god function, functions: adrci, asmcmd, impdp, expdp modified to use rlwrap
@@ -622,9 +623,15 @@ if [[ "${USER}" =~ (.*grid|grid.*|.*ora|ora*.) ]]; then
   ##########################################################################
   function sob() {
     echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
-    echo "ORACLE_BASE = ${ORACLE_BASE}"
+    echo "\$ORACLE_BASE                              = ${ORACLE_BASE}"
+    if [ -x $ORACLE_HOME/bin/orabase ];then
+      echo "\$ORACLE_HOME/bin/orabase (output)         = "$($ORACLE_HOME/bin/orabase)
+    fi
+    if [ -f $ORACLE_HOME/install/orabasetab ];then
+      echo "\$ORACLE_HOME/install/orabasetab (in file) = "$(cat $ORACLE_HOME/install/orabasetab| grep -v ' *#' | cut -d: -f2,2)
+    fi
     echo
-    }
+  }
   export -f sob
   ##########################################################################
   function dbs() {
