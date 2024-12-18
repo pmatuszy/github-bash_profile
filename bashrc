@@ -1,3 +1,4 @@
+# v. 3.54- 2024.12.18 - added more info to help-find function
 # v. 3.53- 2024.12.11 - modified sob function
 # v. 3.52- 2024.06.04 - bugfix in god function
 # v. 3.51- 2024.05.28 - code beautify, enabled shopt autocd, enhanced bash_complete_go function, added rman function to use rlwrap
