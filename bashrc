@@ -1190,6 +1190,7 @@ export -f help-boxes
 function help-find() {
   echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
   echo 'find PATH -xautofs -xdev -maxdepth 1 \( -name \*trm -o -name \*trc \) -type f -mmin +7 -mtime +5 -size +50M -exec CMD {} \;'
+  echo '-size 430c - exactly 430 bytes (The c suffix specifies size in bytes.)'
   echo '         -maxdepth 1 - will search only CURRENT catalog'
   echo '         -maxdepth 0 will not search. It will only try to match among the file/directory names that you have provided as arguments in find'
   echo '            find /etc -maxdepth 0 -name passwd # will NOT find the file'
