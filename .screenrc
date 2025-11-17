@@ -15,6 +15,10 @@ screen -t "vnstat -l" 1 vnstat -l
 screen -t iostat 3 iostat --no-color 1
 #screen -t "bmon -p eth0" 4 bmon -p eth0
 
+screen -t "dmesg-tail.sh"           4 /bin/bash -c  /root/bin/dmesg-tail.sh
+screen -t "journal-tail.sh"         5 /bin/bash -c  /root/bin/journal-tail.sh
+
+
 bindkey -k F2 next
 bindkey -k F1 prev
 
