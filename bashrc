@@ -1091,7 +1091,7 @@ fi
 export -f dip
 ##########################################################################
 if [ "$(uname -s)" == 'Linux' ]; then
-   function ls() { /bin/ls --full-time  --color=none -- $* ; } ; export -f ls
+   function ls() { /bin/ls --full-time  --color=none $* ; } ; export -f ls
 fi
 ##########################################################################
 function ll() { ls $* ; } ; export -f ll
