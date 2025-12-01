@@ -1,3 +1,4 @@
+# v. 3.55- 2025.12.01 - bugfix for l, ll, ls functions - added --
 # v. 3.54- 2025.12.01 - bugfix for ds function - added --
 # v. 3.54- 2024.12.18 - added more info to help-find function
 # v. 3.53- 2024.12.11 - modified sob function
@@ -1090,12 +1091,12 @@ fi
 export -f dip
 ##########################################################################
 if [ "$(uname -s)" == 'Linux' ]; then
-   function ls() { /bin/ls --full-time  --color=none $* ; } ; export -f ls
+   function ls() { /bin/ls --full-time  --color=none -- $* ; } ; export -f ls
 fi
 ##########################################################################
-function ll() { ls -la $* ; } ; export -f ll
+function ll() { ls -la -- $* ; } ; export -f ll
 ##########################################################################
-function  l() { ls -la $* ; } ; export -f l
+function  l() { ls -la -- $* ; } ; export -f l
 ##########################################################################
 function vi() {
   echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
@@ -1107,7 +1108,7 @@ function vi() {
   }
 export -f vi
 ##########################################################################
-function vim() { vi $* ; } ; export -f vim
+function vim() { vi -- $* ; } ; export -f vim
 ##########################################################################
 function less() { "$(type -fP less)" --IGNORE-CASE $* ; } ; export -f less
 ##########################################################################
