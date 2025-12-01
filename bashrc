@@ -1,3 +1,4 @@
+# v. 3.54- 2025.12.01 - bugfix for ds function - added --
 # v. 3.54- 2024.12.18 - added more info to help-find function
 # v. 3.53- 2024.12.11 - modified sob function
 # v. 3.52- 2024.06.04 - bugfix in god function
@@ -1015,9 +1016,9 @@ function ds () {
 # show disk usage and sorts the output according to the size
   echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo      
   if [ $# -eq 0 ]; then
-    du -hs * | sort -h
+    du -hs -- * | sort -h
   else
-    du -hs $* | sort -h
+    du -hs -- $* | sort -h
   fi
   }
 export -f ds

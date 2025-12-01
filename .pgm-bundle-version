@@ -1,3 +1,4 @@
+# v. 1.38- 2025.12.01 - bugfix for bashrc (ds function)
 # v. 1.37- 2023.06.01 - cosmetic changes to setting profile_location_dir  in bashrc and bash_profile
 # v. 1.36- 2023.05.24 - a lot of changes in bashrc and bash_profile
 # v. 1.35- 2023.05.24 - changed bashrc: bugfix for SOCGEN customizations
