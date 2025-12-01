@@ -1094,9 +1094,9 @@ if [ "$(uname -s)" == 'Linux' ]; then
    function ls() { /bin/ls --full-time  --color=none -- $* ; } ; export -f ls
 fi
 ##########################################################################
-function ll() { ls -la -- $* ; } ; export -f ll
+function ll() { ls -la $* ; } ; export -f ll
 ##########################################################################
-function  l() { ls -la -- $* ; } ; export -f l
+function  l() { ls -la $* ; } ; export -f l
 ##########################################################################
 function vi() {
   echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
