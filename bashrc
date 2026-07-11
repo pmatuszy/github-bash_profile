@@ -1,3 +1,4 @@
+# v. 3.56- 2026.07.11 - replaced $* with "$@"
 # v. 3.55- 2025.12.01 - bugfix for l, ll, ls functions - added --
 # v. 3.54- 2025.12.01 - bugfix for ds function - added --
 # v. 3.54- 2024.12.18 - added more info to help-find function
@@ -338,12 +339,12 @@ if [[ "${USER}" =~ (.*grid|grid.*|.*ora|ora*.) ]]; then
 
     if [ -f "${profile_location_dir}/bin/rlwrap" ] || [ "$(type -fP rlwrap)" ];  then
       if [ -f "${profile_location_dir}/bin/wynik.txt" ]; then 
-        "$(type -fP rlwrap)" -p"1;34" -c -f "${profile_location_dir}/bin/wynik.txt" -r -b "(){}[],+^='@$" "${utility_bin}" "/ as sysdba" $*
+        "$(type -fP rlwrap)" -p"1;34" -c -f "${profile_location_dir}/bin/wynik.txt" -r -b "(){}[],+^='@$" "${utility_bin}" "/ as sysdba" "$@"
       else
-        "$(type -fP rlwrap)" -p"1;34" -c                                            -r -b "(){}[],+^='@$" "${utility_bin}" "/ as sysdba" $*
+        "$(type -fP rlwrap)" -p"1;34" -c                                            -r -b "(){}[],+^='@$" "${utility_bin}" "/ as sysdba" "$@"
       fi
     else
-      "${utility_bin}" "/ as sysdba" $*
+      "${utility_bin}" "/ as sysdba" "$@"
     fi
     unset utility_bin
     }
@@ -372,12 +373,12 @@ if [[ "${USER}" =~ (.*grid|grid.*|.*ora|ora*.) ]]; then
     fi
     if [ -f "${profile_location_dir}/bin/rlwrap" ] || [ "$(type -fP rlwrap)" ];  then
       if [ -f "${profile_location_dir}/bin/wynik.txt" ]; then 
-        "$(type -fP rlwrap)" -p"1;34" -c -f "${profile_location_dir}/bin/wynik.txt" -r -b "(){}[],+^='@$" "${utility_bin}" "/ as sysasm" $*
+        "$(type -fP rlwrap)" -p"1;34" -c -f "${profile_location_dir}/bin/wynik.txt" -r -b "(){}[],+^='@$" "${utility_bin}" "/ as sysasm" "$@"
       else
-        "$(type -fP rlwrap)" -p"1;34" -c                                            -r -b "(){}[],+^='@$" "${utility_bin}" "/ as sysasm" $*
+        "$(type -fP rlwrap)" -p"1;34" -c                                            -r -b "(){}[],+^='@$" "${utility_bin}" "/ as sysasm" "$@"
       fi
     else
-      "${utility_bin}" $*
+      "${utility_bin}" "$@"
     fi
     unset utility_bin
     }
@@ -402,12 +403,12 @@ if [[ "${USER}" =~ (.*grid|grid.*|.*ora|ora*.) ]]; then
 
     if [ -f "${profile_location_dir}/bin/rlwrap" ] || [ "$(type -fP rlwrap)" ];  then
       if [ -f "${profile_location_dir}/bin/wynik.txt" ]; then 
-        "$(type -fP rlwrap)" -p"7;37" -c -f "${profile_location_dir}/bin/wynik.txt" -r -b "(){}[],+^='@$" "${utility_bin}" $*
+        "$(type -fP rlwrap)" -p"7;37" -c -f "${profile_location_dir}/bin/wynik.txt" -r -b "(){}[],+^='@$" "${utility_bin}" "$@"
       else
-        "$(type -fP rlwrap)" -p"7;37" -c                                            -r -b "(){}[],+^='@$" "${utility_bin}" $*
+        "$(type -fP rlwrap)" -p"7;37" -c                                            -r -b "(){}[],+^='@$" "${utility_bin}" "$@"
       fi
     else
-      "${utility_bin}" $*
+      "${utility_bin}" "$@"
     fi
     unset utility_bin
     }
@@ -432,12 +433,12 @@ if [[ "${USER}" =~ (.*grid|grid.*|.*ora|ora*.) ]]; then
 
     if [ -f "${profile_location_dir}/bin/rlwrap" ] || [ "$(type -fP rlwrap)" ];  then
       if [ -f "${profile_location_dir}/bin/wynik.txt" ]; then 
-        "$(type -fP rlwrap)" -p"7;37" -c -f "${profile_location_dir}/bin/wynik.txt" -r -b "(){}[],+^='@$" "${utility_bin}" $*
+        "$(type -fP rlwrap)" -p"7;37" -c -f "${profile_location_dir}/bin/wynik.txt" -r -b "(){}[],+^='@$" "${utility_bin}" "$@"
       else
-        "$(type -fP rlwrap)" -p"7;37" -c                                            -r -b "(){}[],+^='@$" "${utility_bin}" $*
+        "$(type -fP rlwrap)" -p"7;37" -c                                            -r -b "(){}[],+^='@$" "${utility_bin}" "$@"
       fi
     else
-      "${utility_bin}" $*
+      "${utility_bin}" "$@"
     fi
     unset utility_bin
     }
@@ -462,12 +463,12 @@ if [[ "${USER}" =~ (.*grid|grid.*|.*ora|ora*.) ]]; then
 
     if [ -f "${profile_location_dir}/bin/rlwrap" ] || [ "$(type -fP rlwrap)" ];  then
       if [ -f "${profile_location_dir}/bin/wynik.txt" ]; then 
-        "$(type -fP rlwrap)" -p"7;37" -c -f "${profile_location_dir}/bin/wynik.txt" -r -b "(){}[],+^='@$" "${utility_bin}" $*
+        "$(type -fP rlwrap)" -p"7;37" -c -f "${profile_location_dir}/bin/wynik.txt" -r -b "(){}[],+^='@$" "${utility_bin}" "$@"
       else
-        "$(type -fP rlwrap)" -p"7;37" -c                                            -r -b "(){}[],+^='@$" "${utility_bin}" $*
+        "$(type -fP rlwrap)" -p"7;37" -c                                            -r -b "(){}[],+^='@$" "${utility_bin}" "$@"
       fi
     else
-      "${utility_bin}" $*
+      "${utility_bin}" "$@"
     fi
     unset utility_bin
     }
@@ -492,12 +493,12 @@ if [[ "${USER}" =~ (.*grid|grid.*|.*ora|ora*.) ]]; then
   
     if [ -f "${profile_location_dir}/bin/rlwrap" ] || [ "$(type -fP rlwrap)" ];  then
       if [ -f "${profile_location_dir}/bin/wynik.txt" ]; then 
-        "$(type -fP rlwrap)" -p"7;36" -c -f "${profile_location_dir}/bin/wynik.txt" -r -b "(){}[],+^='@$" "${utility_bin}" $*
+        "$(type -fP rlwrap)" -p"7;36" -c -f "${profile_location_dir}/bin/wynik.txt" -r -b "(){}[],+^='@$" "${utility_bin}" "$@"
       else
-        "$(type -fP rlwrap)" -p"7;36" -c                                            -r -b "(){}[],+^='@$" "${utility_bin}" $*
+        "$(type -fP rlwrap)" -p"7;36" -c                                            -r -b "(){}[],+^='@$" "${utility_bin}" "$@"
       fi
     else
-      "${utility_bin}" $*
+      "${utility_bin}" "$@"
     fi
     unset utility_bin
     }
@@ -533,12 +534,12 @@ if [[ "${USER}" =~ (.*grid|grid.*|.*ora|ora*.) ]]; then
     
     if [ -f "${profile_location_dir}/bin/rlwrap" ] || [ "$(type -fP rlwrap)" ];  then
       if [ -f "${profile_location_dir}/bin/wynik.txt" ]; then 
-        "$(type -fP rlwrap)" -p"7;35" -c -f "${profile_location_dir}/bin/wynik.txt" -r -b "(){}[],+^='@$" "${utility_bin}" -p $*
+        "$(type -fP rlwrap)" -p"7;35" -c -f "${profile_location_dir}/bin/wynik.txt" -r -b "(){}[],+^='@$" "${utility_bin}" -p "$@"
       else
-        "$(type -fP rlwrap)" -p"7;35" -c                                            -r -b "(){}[],+^='@$" "${utility_bin}" -p $*
+        "$(type -fP rlwrap)" -p"7;35" -c                                            -r -b "(){}[],+^='@$" "${utility_bin}" -p "$@"
       fi
     else
-      "${utility_bin}" -p $*
+      "${utility_bin}" -p "$@"
     fi
     unset utility_bin
   
@@ -566,12 +567,12 @@ if [[ "${USER}" =~ (.*grid|grid.*|.*ora|ora*.) ]]; then
     
     if [ -f "${profile_location_dir}/bin/rlwrap" ] || [ "$(type -fP rlwrap)" ];  then
       if [ -f "${profile_location_dir}/bin/wynik.txt" ]; then 
-        "$(type -fP rlwrap)" -p"7;35" -c -f "${profile_location_dir}/bin/wynik.txt" -r -b "(){}[],+^='@$" "${utility_bin}" $*
+        "$(type -fP rlwrap)" -p"7;35" -c -f "${profile_location_dir}/bin/wynik.txt" -r -b "(){}[],+^='@$" "${utility_bin}" "$@"
       else
-        "$(type -fP rlwrap)" -p"7;35" -c                                            -r -b "(){}[],+^='@$" "${utility_bin}" $*
+        "$(type -fP rlwrap)" -p"7;35" -c                                            -r -b "(){}[],+^='@$" "${utility_bin}" "$@"
       fi
     else
-      "${utility_bin}" $*
+      "${utility_bin}" "$@"
     fi
     unset utility_bin
     }
@@ -665,7 +666,7 @@ if [[ "${USER}" =~ (.*grid|grid.*|.*ora|ora*.) ]]; then
   ##########################################################################
   function po() {
     echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
-    . "$(type -fP pickora)" $*
+    . "$(type -fP pickora)" "$@"
     }
   export -f po
   ##########################################################################
@@ -745,7 +746,7 @@ fi    # end of condition: [[ "${USER}" =~ (.*grid$|^grid.*|.*ora$|^ora*.) ]]
 function hg() { 
   echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
   if [ $# -gt 0 ]; then 
-    (history | grep -i -- $* )
+    (history | grep -i -- "$@" )
   else 
     history
   fi 
@@ -753,7 +754,7 @@ function hg() {
 export -f hg
 ##########################################################################
 if [ "$(type -fP prstat)" ]; then
-  function prstat() { "$(type -fP prstat)" 1 $* ; }
+  function prstat() { "$(type -fP prstat)" 1 "$@" ; }
 fi
 ##########################################################################
 function env(){
@@ -772,9 +773,9 @@ function htop() {
   "$(type -tPf htop)" --version >/dev/null 2>&1 ||  { echo "(PGM) htop is not installed :-(" ; echo ; return 1 ; }
   "$(type -Pf htop)" --help   2> /dev/null | grep -q -- "--no-color" >/dev/null 2>&1
   if (( $? > 0 )); then
-    "$(type -Pf htop)" $*
+    "$(type -Pf htop)" "$@"
   else
-    "$(type -Pf htop)" --no-color $*
+    "$(type -Pf htop)" --no-color "$@"
   fi
   }
 export -f htop
@@ -847,9 +848,9 @@ function locate(){
   # check if --ignore-case is a valid option (it is NOT on Ubuntu but is on RedHat)
   "$(type -Pf locate)" --help | grep -q -- "--ignore-case" >/dev/null 2>&1
   if (( $? > 0 )); then
-    "$(type -Pf locate)" $*
+    "$(type -Pf locate)" "$@"
   else
-    "$(type -Pf locate)" --ignore-case $*
+    "$(type -Pf locate)" --ignore-case "$@"
   fi
   }
 export -f locate
@@ -869,7 +870,7 @@ function go(){
 
   if (( $# > 1 )); then
     # "${@:2}" is all arguments from 2nd to the end
-    "$(type -fP ssh)" ${ssh_options} -t $* 
+    "$(type -fP ssh)" ${ssh_options} -t "$@" 
   fi
   if [ "$(type -fP boxes)" >/dev/null 2>/dev/null ]; then
      echo ; echo "ssh to $1 TERMINATED" | "$(type -fP boxes)" -a c -d stone;echo
@@ -976,11 +977,11 @@ function df(){
   }
 export -f df
 ##########################################################################
-function dfh() { df -h $* ; }               ; export -f dfh
+function dfh() { df -h "$@" ; }               ; export -f dfh
 ##########################################################################
-function dfm() { df -m $* ; }               ; export -f dfm
+function dfm() { df -m "$@" ; }               ; export -f dfm
 ##########################################################################
-function dfs() { df --sync $* ; }           ; export -f dfs
+function dfs() { df --sync "$@" ; }           ; export -f dfs
 ##########################################################################
 function dsl() { ds --one-file-system * ; } ; export -f dsl
 ##########################################################################
@@ -1006,9 +1007,9 @@ export -f help-disk
 function screen() {
   echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
   if [ -f "${profile_location_dir}/.screenrc" ]; then
-    "$(type -fP screen)" -c "${profile_location_dir}/.screenrc" -ln -h 599999 -T xterm $*
+    "$(type -fP screen)" -c "${profile_location_dir}/.screenrc" -ln -h 599999 -T xterm "$@"
   else
-    "$(type -fP screen)" -ln -h 599999 -T xterm $*
+    "$(type -fP screen)" -ln -h 599999 -T xterm "$@"
   fi
   }
 export -f screen
@@ -1019,7 +1020,7 @@ function ds () {
   if [ $# -eq 0 ]; then
     du -hs -- * | sort -h
   else
-    du -hs -- $* | sort -h
+    du -hs -- "$@" | sort -h
   fi
   }
 export -f ds
@@ -1091,26 +1092,26 @@ fi
 export -f dip
 ##########################################################################
 if [ "$(uname -s)" == 'Linux' ]; then
-   function ls() { /bin/ls --full-time  --color=none $* ; } ; export -f ls
+   function ls() { /bin/ls --full-time  --color=none "$@" ; } ; export -f ls
 fi
 ##########################################################################
-function ll() { ls $* ; } ; export -f ll
+function ll() { ls "$@" ; } ; export -f ll
 ##########################################################################
-function  l() { ls $* ; } ; export -f l
+function  l() { ls "$@" ; } ; export -f l
 ##########################################################################
 function vi() {
   echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
   if [ -f "${profile_location_dir}/.vimrc" ]; then
-    "$(type -fP vi)" -u "${profile_location_dir}/.vimrc" $*
+    "$(type -fP vi)" -u "${profile_location_dir}/.vimrc" "$@"
   else
-    "$(type -fP vi)" $*
+    "$(type -fP vi)" "$@"
   fi
   }
 export -f vi
 ##########################################################################
-function vim() { vi -- $* ; } ; export -f vim
+function vim() { vi -- "$@" ; } ; export -f vim
 ##########################################################################
-function less() { "$(type -fP less)" --IGNORE-CASE $* ; } ; export -f less
+function less() { "$(type -fP less)" --IGNORE-CASE "$@" ; } ; export -f less
 ##########################################################################
 function help-dd()    { echo ; echo dd bs=50M if= of= status=progress conv=fdatasync  oflag=direct ; echo ; } ; export -f help-dd
 ##########################################################################
