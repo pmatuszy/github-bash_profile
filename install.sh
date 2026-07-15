@@ -29,7 +29,7 @@ else
   p=y # batch mode ==> we set the answer to 'y'
 fi
 
-if [ "$p" != "y" ];then
+if [[ "$p" != [yY] ]];then
   echo exiting then...
   exit 1
 fi
@@ -47,11 +47,9 @@ chmod 644 ${profile_location_dir}/.toprc 2>/dev/null
 cp bashrc ${profile_location_dir}
 cp bash_profile ${profile_location_dir}
 
-mv dfc ${profile_location_dir}/bin 2>/dev/null
-
 if [[ "$USER" == "oracle" || "$USER" == "grid" ]]; then
 
-  mv crs_stat-t dfc ${profile_location_dir}/bin 2>/dev/null
+  mv crs_stat-t ${profile_location_dir}/bin 2>/dev/null
   mv pickora ${profile_location_dir}/bin 2>/dev/null
 
   mkdir -p ${profile_location_dir}/sqlplus/admin 2>/dev/null
@@ -62,7 +60,7 @@ if [[ "$USER" == "oracle" || "$USER" == "grid" ]]; then
   chmod 644 sqlplus/admin/login.sql sqlplus/admin/i.sql 2>/dev/null
 
   chown ${LOGNAME} bin/crs_stat-t bashrc bash_profile bin lib
-  chmod 755 bin/crs_stat-t bin/pickora bin lib bashrc bash_profile bin/dfc
+  chmod 755 bin/crs_stat-t bin/pickora bin lib bashrc bash_profile
   popd
 
   mv wynik.txt ${profile_location_dir}/bin 2>/dev/null
@@ -102,8 +100,6 @@ fi
 cp .vimrc    "${profile_location_dir}"
 cp .screenrc "${profile_location_dir}"
 cp .inputrc  "${profile_location_dir}"
-
-chmod 711 $HOME
 
 rm -f a profile.tar test.sh
 rmdir ${profile_location_dir}/bin ${profile_location_dir}/lib 2>/dev/null
