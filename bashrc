@@ -1,3 +1,4 @@
+# v. 3.61- 2026.07.15 - git aliases: profile_location_dir when set, else $HOME
 # v. 3.60- 2026.07.15 - git aliases: mkdir -p ${profile_location_dir}/github before run
 # v. 3.59- 2026.07.15 - git aliases use explicit ${profile_location_dir}/github/* paths
 # v. 3.58- 2026.07.15 - git aliases: repos under ${profile_location_dir}/github/
@@ -1217,6 +1218,7 @@ export -f help-kitty
 ##########################################################################
 if [ "${MATUSZYK}" == 1 ]; then
   # github aliases
+  export profile_location_dir="${profile_location_dir:-$HOME}"
   function gitpd()  { mkdir -p "${profile_location_dir}/github"; "${profile_location_dir}/github/github-bash_profile/git-pull.sh"       ; cd "${profile_location_dir}/github/github-bash_profile"; } ; export -f gitpd
   function gitpdb() { mkdir -p "${profile_location_dir}/github"; "${profile_location_dir}/github/github-bash_profile/git-pull.sh" batch ; cd "${profile_location_dir}/github/github-bash_profile"; } ; export -f gitpdb
   function gitpu()  { mkdir -p "${profile_location_dir}/github"; "${profile_location_dir}/github/github-bash_profile/git-push.sh"       ; cd "${profile_location_dir}/github/github-bash_profile"; } ; export -f gitpu

@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# 2026.07.15 - v. 0.7 - profile_root: ${profile_location_dir:-$HOME}
 # 2026.07.15 - v. 0.6 - GIT_REPO_DIRECTORY under ${profile_location_dir}/github/github-bash_profile
 # 2026.07.15 - v. 0.5 - confirmation accepts Y as well as y
 # 2023.03.16 - v. 0.4 - before pull do rm profile.tar.bz2.uue profile.tar.bz2 as those files cannot be merged...
@@ -13,9 +14,10 @@ if (( ! script_is_run_interactively ));then    # jesli nie interaktywnie, to chc
   echo "${SCRIPT_VERSION}";echo
 fi
 
-export profile_location_dir="${profile_location_dir:-$HOME}"
+profile_root="${profile_location_dir:-$HOME}"
+export profile_location_dir="${profile_root}"
 export github_project_name=github-bash_profile
-export GIT_REPO_DIRECTORY="${profile_location_dir}/github/github-bash_profile"
+export GIT_REPO_DIRECTORY="${profile_root}/github/github-bash_profile"
 
 export GIT_SSH_COMMAND='ssh -i $HOME/.ssh/id_SSH_ed25519_20230207_OpenSSH'
 
@@ -46,7 +48,7 @@ fi
 echo
 echo
 if [ "${p}" == 'y' -o  "${p}" == 'Y' ]; then
-  cd "${profile_location_dir}"
+  cd "${profile_root}"
 
   # sprawdzam, czy mam dostep do zdalnego repo
   echo git ls-remote git+ssh://git@github.com/pmatuszy/"${github_project_name}".git | boxes -s 70x5 -a c

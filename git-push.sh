@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# 2026.07.15 - v. 0.10 - profile_root: ${profile_location_dir:-$HOME}
 # 2026.07.15 - v. 0.9 - GIT_REPO_DIRECTORY under ${profile_location_dir}/github/github-bash_profile
 # 2026.07.15 - v. 0.8 - confirmation accepts Y as well as y; single add/commit/push cycle
 # 2023.02.09 - v. 0.7 - better git handling, major script revampp
@@ -16,9 +17,10 @@ if (( ! script_is_run_interactively ));then    # jesli nie interaktywnie, to chc
   echo "${SCRIPT_VERSION}";echo
 fi
 
-export profile_location_dir="${profile_location_dir:-$HOME}"
+profile_root="${profile_location_dir:-$HOME}"
+export profile_location_dir="${profile_root}"
 export github_project_name=github-bash_profile
-export GIT_REPO_DIRECTORY="${profile_location_dir}/github/github-bash_profile"
+export GIT_REPO_DIRECTORY="${profile_root}/github/github-bash_profile"
 export GIT_SSH_COMMAND='ssh -i $HOME/.ssh/id_SSH_ed25519_20230207_OpenSSH'
 
 check_if_installed keychain
