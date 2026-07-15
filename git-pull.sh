@@ -12,8 +12,9 @@ if (( ! script_is_run_interactively ));then    # jesli nie interaktywnie, to chc
   echo "${SCRIPT_VERSION}";echo
 fi
 
-export GIT_REPO_DIRECTORY=/root/github-bash_profile
+export profile_location_dir="${profile_location_dir:-$HOME}"
 export github_project_name=github-bash_profile
+export GIT_REPO_DIRECTORY="${profile_location_dir}/github/github-bash_profile"
 
 export GIT_SSH_COMMAND='ssh -i $HOME/.ssh/id_SSH_ed25519_20230207_OpenSSH'
 
@@ -44,7 +45,7 @@ fi
 echo
 echo
 if [ "${p}" == 'y' -o  "${p}" == 'Y' ]; then
-  cd $HOME
+  cd "${profile_location_dir}"
 
   # sprawdzam, czy mam dostep do zdalnego repo
   echo git ls-remote git+ssh://git@github.com/pmatuszy/"${github_project_name}".git | boxes -s 70x5 -a c
@@ -65,7 +66,7 @@ if [ "${p}" == 'y' -o  "${p}" == 'Y' ]; then
     exit 3
   fi
 
-  cd "$HOME/${github_project_name}"
+  cd "${GIT_REPO_DIRECTORY}"
   if (( $batch_mode == 0 ));then
     ./install.sh 
   else

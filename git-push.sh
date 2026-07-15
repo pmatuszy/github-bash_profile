@@ -15,8 +15,9 @@ if (( ! script_is_run_interactively ));then    # jesli nie interaktywnie, to chc
   echo "${SCRIPT_VERSION}";echo
 fi
 
+export profile_location_dir="${profile_location_dir:-$HOME}"
 export github_project_name=github-bash_profile
-export GIT_REPO_DIRECTORY=/root/github-bash_profile
+export GIT_REPO_DIRECTORY="${profile_location_dir}/github/github-bash_profile"
 export GIT_SSH_COMMAND='ssh -i $HOME/.ssh/id_SSH_ed25519_20230207_OpenSSH'
 
 check_if_installed keychain
