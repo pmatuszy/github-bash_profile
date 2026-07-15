@@ -51,11 +51,11 @@ mv dfc ${profile_location_dir}/bin 2>/dev/null
 
 if [[ "$USER" == "oracle" || "$USER" == "grid" ]]; then
 
-  mv crs_stat-t dfc b${profile_location_dir}/in 2>/dev/null
-  mv pickora b${profile_location_dir}/in 2>/dev/null
+  mv crs_stat-t dfc ${profile_location_dir}/bin 2>/dev/null
+  mv pickora ${profile_location_dir}/bin 2>/dev/null
 
-  mkdir -p s${profile_location_dir}/qlplus/admin 2>/dev/null
-  mv login.sql i.sql s${profile_location_dir}/qlplus/admin 2>/dev/null
+  mkdir -p ${profile_location_dir}/sqlplus/admin 2>/dev/null
+  mv login.sql i.sql ${profile_location_dir}/sqlplus/admin 2>/dev/null
 
   pushd .
   cd ${profile_location_dir}
@@ -73,8 +73,9 @@ if [[ "$USER" == "oracle" || "$USER" == "grid" ]]; then
   chmod 644 bin/wynik.txt .pgm-bundle-version 2>/dev/null
 
   touch adrci_history expdp_history impdp_history sqlplus_history asmcmd_history dgmgrl_history .moja_historia_${USER}
-  chmod 666 adrci_history expdp_history impdp_history sqlplus_history 2> /dev/null
-  chmod 666 asmcmd_history dgmgrl_history .moja_historia_${USER} 2>/dev/null
+  # history files must not be world-writable
+  chmod 600 adrci_history expdp_history impdp_history sqlplus_history 2> /dev/null
+  chmod 600 asmcmd_history dgmgrl_history .moja_historia_${USER} 2>/dev/null
   popd 
 fi
 

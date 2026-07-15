@@ -152,15 +152,18 @@ if [ -f $ORATAB ]; then
      fi
 
     # Get the Home defined in the ORATAB for the SID
-    # PGM - modified in 1.4 version of the script: commmented out and setting ORAHOME a new way
-    # ORAHOME=`awk -F: "/${ORASID/+/}:/ {print \\$2; exit}" $ORATAB`
-    ORAHOME=`cat $ORATAB | egrep -v '^ *#'| egrep -n '[^#]+:'|sort -t: -k2,2 |awk -F: "NR == \"$NEWSID\" {print \\$3}"`
+    # PGM - modified in 1.4 version of the script: commented out and setting ORAHOME a new way
+    # When the user picked a menu number, NEWSID is set and we look up by that row.
+    # When the SID was passed as $1, look up by ORASID name instead.
+    if [ -n "${NEWSID:-}" ]; then
+      ORAHOME=`cat $ORATAB | egrep -v '^ *#'| egrep -n '[^#]+:'|sort -t: -k2,2 |awk -F: "NR == \"$NEWSID\" {print \\$3}"`
+    else
+      ORAHOME=`cat $ORATAB | egrep -v '^ *#'|awk -F: "/${ORASID/+/}:/ {print \\$2; exit}"`
+    fi
 
     # If it is RAC, we may have been passed a DB_NAME instead of a SID
     # See if we have a SID - DB_NAME=MYDB01 => SID=MYDB01A
     if  [ -z "$ORAHOME" ]; then
-      # ORAHOME=`awk -F: "/${ORASID/+/}:/ {print \\$2; exit}" $ORATAB`
-      # ORAHOME=`cat $ORATAB | egrep -v '^ *#'|awk -F: "/${ORASID/+/}:/ {print \\$2; exit}" $ORATAB`
       ORAHOME=`cat $ORATAB | egrep -v '^ *#'|awk -F: "/${ORASID/+/}:/ {print \\$2; exit}"`
       if [ -n "$ORAHOME" ]; then
         ORASID=`cat $ORATAB | egrep -v '^ *#'| awk -F: "/${ORASID/+/}:/ {print \\$1; exit}"`

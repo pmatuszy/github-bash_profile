@@ -42,7 +42,7 @@ fi
 
 echo
 echo
-if [ "${p}" == 'y' -o  "${p}" == 'y' ]; then
+if [ "${p}" == 'y' -o  "${p}" == 'Y' ]; then
   cd $HOME
 
   # sprawdzam, czy mam dostep do zdalnego repo

@@ -147,7 +147,7 @@ if [[ "$USER" =~ (.*grid$|^grid.*) ]]; then
   export CRS_HOME=${ORA_CRS_HOME:-}
 fi
 
-if [[ "$USER" =~ (.*grid$|^grid.*|.*ora$|^ora*.) ]]; then
+if [[ "$USER" =~ (.*grid$|^grid.*|.*ora$|^ora.*) ]]; then
   if [ $SHELL = "/bin/ksh" ]; then
         ulimit -u 16384
         ulimit -n 65536

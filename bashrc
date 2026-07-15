@@ -176,7 +176,7 @@ cat /etc/hosts|grep -qi jpmchase                                   && JPMORGAN=1
 [ -f /root/bin/smart-indicators.sh ]                               && MATUSZYK=1
 cat /etc/hosts|grep -qi 'gov.pl'                                   && KGP=1
 cat /etc/chrony.conf /etc/resolv.conf 2>/dev/null |grep -qi ubs    && UBS=1
-cat /etc/chrony.conf /etc/resolv.conf 2>/dev/null |grep -qi socgen && SOCGEN=1
+cat /etc/chrony.conf /etc/resolv.conf 2>/dev/null |grep -qiE 'socgen|sgpb.local' && SOCGEN=1
 
 if [ "${SOCGEN}" == 1 ]; then
   export MRL_PUTTY_PS1=     # unset MRL_PUTTY_PS1 as it corrupts terminal colors...
@@ -234,7 +234,7 @@ function pgm() {
 }
 export -f pgm
 ##########################################################################
-if [[ "${USER}" =~ (.*grid|grid.*|.*ora|ora*.) ]]; then
+if [[ "${USER}" =~ (.*grid$|^grid.*|.*ora$|^ora.*) ]]; then
   export NLS_DATE_FORMAT='yyyy.mm.dd hh24:mi:ss'
   ##########################################################################
   function lsnrs() {
@@ -741,7 +741,7 @@ if [[ "${USER}" =~ (.*grid|grid.*|.*ora|ora*.) ]]; then
     }
   export -f help-oracle
 
-fi    # end of condition: [[ "${USER}" =~ (.*grid$|^grid.*|.*ora$|^ora*.) ]]
+fi    # end of condition: [[ "${USER}" =~ (.*grid$|^grid.*|.*ora$|^ora.*) ]]
 ##########################################################################
 function hg() { 
   echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
@@ -1027,11 +1027,11 @@ export -f ds
 ##########################################################################
 function ver() {
   echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
-  clear;echo '### .pgm-boundle-version ###';
-  if [ -f "${profile_location_dir}"/.pgm-boundle-version ]; then
-    cat "${profile_location_dir}"/.pgm-boundle-version|head -7 
+  clear;echo '### .pgm-bundle-version ###';
+  if [ -f "${profile_location_dir}"/.pgm-bundle-version ]; then
+    cat "${profile_location_dir}"/.pgm-bundle-version|head -7 
   else
-    echo "(PGM) file ${profile_location_dir}/.pgm-boundle-version doesn't exits so I will not cat it here..."
+    echo "(PGM) file ${profile_location_dir}/.pgm-bundle-version doesn't exist so I will not cat it here..."
   fi
   echo;echo;
   echo '### BASHRC ###';
@@ -1065,7 +1065,7 @@ function unwrap() {
   else 
     cd "${profile_location_dir}";
     vi a
-    uudecode a && bzip2 -d profile.tar.bz2 && tar xvf profile.tar && (ls -l bash*; ./test.sh ; ls -l bash*)
+    uudecode a && bzip2 -d profile.tar.bz2 && tar xvf profile.tar && (ls -l bash*; ./install.sh ; ls -l bash*)
   fi
   }
 export -f unwrap

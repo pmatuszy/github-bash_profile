@@ -50,7 +50,7 @@ fi
 
 echo
 echo
-if [ "${p}" == 'y' -o  "${p}" == 'y' ]; then
+if [ "${p}" == 'y' -o  "${p}" == 'Y' ]; then
   git add * .[a-zA-Z]*
   git commit -m \""new push from `hostname` @ `date '+%Y.%m.%d %H:%M:%S'`"\" | boxes -s 90x6 -a l -d ada-box
   git push
@@ -61,7 +61,7 @@ fi
 
 echo
 echo
-if [ "${p}" == 'y' -o  "${p}" == 'y' ]; then
+if [ "${p}" == 'y' -o  "${p}" == 'Y' ]; then
   git add --all * .[a-zA-Z]*
   git commit -a -m \""new push from `hostname` @ `date '+%Y.%m.%d %H:%M:%S'`"\"
 
