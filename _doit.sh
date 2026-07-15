@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# 2026.07.15 - v. 0.4 - profile.tar uses .pgm-bundle-version; dfc removed from tarball
 # 2023.03.16 - v. 0.3 - rm 2> redirection added, dfc moved frmon bin/ to .
 # 2023.03.03 - v. 0.2 - added _script* calls and checks for the installed packages
 # 20xx.xx.xx - v. 0.1 - initial release (date unknown)

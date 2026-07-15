@@ -31,6 +31,7 @@
 #  19/11/19  1.7   PGM  if wrong number is provided we unset oracle env variables
 #  26/11/19  1.8   PGM  commended out a lot of aliases which used ORA_ env variables
 #  28/11/19  1.8   PGM  looping if wrong number was entered
+#  15/07/26  1.9   PGM  bugfix: ORAHOME lookup when SID is passed as an argument
 #*******************************************************************************
 
 ##

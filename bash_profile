@@ -1,3 +1,4 @@
+# v. 2.20- 2026.07.15 - bugfix oracle/grid USER regex (^ora*. -> ^ora.*)
 # v. 2.19- 2023.09.13 - bugfix in check for $USER patterns
 # v. 2.18- 2023.08.23 - SOCGEN - better detection
 # v. 2.17- 2023.06.14 - better USER detection and setting some ORA* env variables only for oracle and grid users

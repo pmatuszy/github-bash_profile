@@ -1,3 +1,5 @@
+# v. 3.57- 2026.07.15 - bugfix oracle/grid USER regex (^ora.*); SOCGEN detection aligned
+#                       with bash_profile; ver() uses .pgm-bundle-version; unwrap() calls install.sh
 # v. 3.56- 2026.07.11 - replaced $* with "$@"
 # v. 3.55- 2025.12.01 - bugfix for l, ll, ls functions - added --
 # v. 3.54- 2025.12.01 - bugfix for ds function - added --

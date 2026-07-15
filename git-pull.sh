@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# 2026.07.15 - v. 0.5 - confirmation accepts Y as well as y
 # 2023.03.16 - v. 0.4 - before pull do rm profile.tar.bz2.uue profile.tar.bz2 as those files cannot be merged...
 # 2023.02.09 - v. 0.3 - better git handling, major script revampp
 # 2021.01.30 - v. 0.2 - making this script more generic (by adding github_project_name variable)
