@@ -1,3 +1,4 @@
+# v. 3.59- 2026.07.15 - git aliases use explicit ${profile_location_dir}/github/* paths
 # v. 3.58- 2026.07.15 - git aliases: repos under ${profile_location_dir}/github/
 # v. 3.57- 2026.07.15 - bugfix oracle/grid USER regex (^ora.*); SOCGEN detection aligned
 #                       with bash_profile; ver() uses .pgm-bundle-version; unwrap() calls install.sh
@@ -1215,17 +1216,15 @@ export -f help-kitty
 ##########################################################################
 if [ "${MATUSZYK}" == 1 ]; then
   # github aliases
-  export dir_profile="${profile_location_dir}/github/github-bash_profile"
-  function gitpd()  { "${dir_profile}/git-pull.sh"       ; cd "${dir_profile}"; } ; export -f gitpd
-  function gitpdb() { "${dir_profile}/git-pull.sh" batch ; cd "${dir_profile}"; } ; export -f gitpdb
-  function gitpu()  { "${dir_profile}/git-push.sh"       ; cd "${dir_profile}"; } ; export -f gitpu
-  function gitpub() { "${dir_profile}/git-push.sh" batch ; cd "${dir_profile}"; } ; export -f gitpub
+  function gitpd()  { "${profile_location_dir}/github/github-bash_profile/git-pull.sh"       ; cd "${profile_location_dir}/github/github-bash_profile"; } ; export -f gitpd
+  function gitpdb() { "${profile_location_dir}/github/github-bash_profile/git-pull.sh" batch ; cd "${profile_location_dir}/github/github-bash_profile"; } ; export -f gitpdb
+  function gitpu()  { "${profile_location_dir}/github/github-bash_profile/git-push.sh"       ; cd "${profile_location_dir}/github/github-bash_profile"; } ; export -f gitpu
+  function gitpub() { "${profile_location_dir}/github/github-bash_profile/git-push.sh" batch ; cd "${profile_location_dir}/github/github-bash_profile"; } ; export -f gitpub
 
-  export dir_name="${profile_location_dir}/github/github-bin"
-  function gitbd()  { "${dir_name}/git-pull.sh"       ; cd "${dir_name}"; } ; export -f gitbd
-  function gitbdb() { "${dir_name}/git-pull.sh" batch ; cd "${dir_name}"; } ; export -f gitbdb
-  function gitbu()  { "${dir_name}/git-push.sh"       ; cd "${dir_name}"; } ; export -f gitbu
-  function gitbub() { "${dir_name}/git-push.sh" batch ; cd "${dir_name}"; } ; export -f gitbub
+  function gitbd()  { "${profile_location_dir}/github/github-bin/git-pull.sh"       ; cd "${profile_location_dir}/github/github-bin"; } ; export -f gitbd
+  function gitbdb() { "${profile_location_dir}/github/github-bin/git-pull.sh" batch ; cd "${profile_location_dir}/github/github-bin"; } ; export -f gitbdb
+  function gitbu()  { "${profile_location_dir}/github/github-bin/git-push.sh"       ; cd "${profile_location_dir}/github/github-bin"; } ; export -f gitbu
+  function gitbub() { "${profile_location_dir}/github/github-bin/git-push.sh" batch ; cd "${profile_location_dir}/github/github-bin"; } ; export -f gitbub
 fi
 ##########################################################################
 function aptitude-all() {
