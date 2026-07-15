@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# 2026.07.15 - v. 0.9 - GIT_REPO_DIRECTORY under ${profile_location_dir}/github/github-bash_profile
 # 2026.07.15 - v. 0.8 - confirmation accepts Y as well as y; single add/commit/push cycle
 # 2023.02.09 - v. 0.7 - better git handling, major script revampp
 # 2021.02.07 - v. 0.6 - git add --all * .[a-zA-Z]* , git remote set-url origin git+ssh: to not have

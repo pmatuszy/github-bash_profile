@@ -1,3 +1,4 @@
+# v. 1.40- 2026.07.15 - git repos under ${profile_location_dir}/github/; version headers updated
 # v. 1.39- 2026.07.15 - install.sh path fixes; removed stale dfc refs; .pgm-bundle-version
 #                       naming fixes; git script and pickora bugfixes; bashrc/bash_profile regex fix
 # v. 1.38- 2025.12.01 - bugfix for bashrc (ds function)

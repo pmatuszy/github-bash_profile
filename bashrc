@@ -1,3 +1,4 @@
+# v. 3.58- 2026.07.15 - git aliases: repos under ${profile_location_dir}/github/
 # v. 3.57- 2026.07.15 - bugfix oracle/grid USER regex (^ora.*); SOCGEN detection aligned
 #                       with bash_profile; ver() uses .pgm-bundle-version; unwrap() calls install.sh
 # v. 3.56- 2026.07.11 - replaced $* with "$@"
