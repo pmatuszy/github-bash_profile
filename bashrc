@@ -1,3 +1,4 @@
+# v. 3.62- 2026.07.16 - github-bin: git-bin.sh pull/reset/push; gitbin-ssh, gitbin-pull/push
 # v. 3.61- 2026.07.15 - git aliases: profile_location_dir when set, else $HOME
 # v. 3.60- 2026.07.15 - git aliases: mkdir -p ${profile_location_dir}/github before run
 # v. 3.59- 2026.07.15 - git aliases use explicit ${profile_location_dir}/github/* paths
@@ -1224,10 +1225,15 @@ if [ "${MATUSZYK}" == 1 ]; then
   function gitpu()  { mkdir -p "${profile_location_dir}/github"; "${profile_location_dir}/github/github-bash_profile/git-push.sh"       ; cd "${profile_location_dir}/github/github-bash_profile"; } ; export -f gitpu
   function gitpub() { mkdir -p "${profile_location_dir}/github"; "${profile_location_dir}/github/github-bash_profile/git-push.sh" batch ; cd "${profile_location_dir}/github/github-bash_profile"; } ; export -f gitpub
 
-  function gitbd()  { mkdir -p "${profile_location_dir}/github"; "${profile_location_dir}/github/github-bin/git-pull.sh"       ; cd "${profile_location_dir}/github/github-bin"; } ; export -f gitbd
-  function gitbdb() { mkdir -p "${profile_location_dir}/github"; "${profile_location_dir}/github/github-bin/git-pull.sh" batch ; cd "${profile_location_dir}/github/github-bin"; } ; export -f gitbdb
-  function gitbu()  { mkdir -p "${profile_location_dir}/github"; "${profile_location_dir}/github/github-bin/git-push.sh"       ; cd "${profile_location_dir}/github/github-bin"; } ; export -f gitbu
-  function gitbub() { mkdir -p "${profile_location_dir}/github"; "${profile_location_dir}/github/github-bin/git-push.sh" batch ; cd "${profile_location_dir}/github/github-bin"; } ; export -f gitbub
+  function gitbdb()      { mkdir -p "${profile_location_dir}/github"; "${profile_location_dir}/github/github-bin/git-bin.sh" pull  batch --no_startup_delay "$@"; } ; export -f gitbdb
+  function gitbin-reset(){ mkdir -p "${profile_location_dir}/github"; "${profile_location_dir}/github/github-bin/git-bin.sh" reset batch --no_startup_delay "$@"; } ; export -f gitbin-reset
+  function gitbin-ssh() {
+    export GIT_SSH_COMMAND='ssh -i $HOME/.ssh/id_SSH_ed25519_20230207_OpenSSH'
+    eval keychain -q --nogui --nocolor --eval id_rsa id_ed25519 id_SSH_ed25519_20230207_OpenSSH 2>&1
+    . "${HOME}/.keychain/${HOSTNAME}-sh"
+  } ; export -f gitbin-ssh
+  alias gitbin-pull='gitbdb'
+  alias gitbin-push="${profile_location_dir}/github/github-bin/git-bin.sh push batch"
 fi
 ##########################################################################
 function aptitude-all() {
@@ -1280,7 +1286,7 @@ complete -A user      su
 complete -A group     newgrp groupdel groupmod
 complete -f -X '!*.zip' unzip
 complete -o default -F bash_complete_go curl dig host netcat ping telnet ssh sftp rlogin traceroute nslookup go
-complete -W "batch"   aptitude-all gitpu gitpd gitbd gitbu
+complete -W "batch"   aptitude-all gitpu gitpd gitbdb gitbin-reset
 # complete bash command section END
 ##########################################################################
 function bash_complete_go() {
