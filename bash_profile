@@ -1,3 +1,4 @@
+# v. 20260716.162620 - version format YYYYMMDD.HH24MISS
 # v. 2.20- 2026.07.15 - bugfix oracle/grid USER regex (^ora*. -> ^ora.*)
 # v. 2.19- 2023.09.13 - bugfix in check for $USER patterns
 # v. 2.18- 2023.08.23 - SOCGEN - better detection

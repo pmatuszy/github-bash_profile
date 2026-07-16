@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# v. 20260716.162620 - version format YYYYMMDD.HH24MISS
 # 2026.07.15 - v. 0.10 - profile_root: ${profile_location_dir:-$HOME}
 # 2026.07.15 - v. 0.9 - GIT_REPO_DIRECTORY under ${profile_location_dir}/github/github-bash_profile
 # 2026.07.15 - v. 0.8 - confirmation accepts Y as well as y; single add/commit/push cycle

@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# v. 20260716.162620 - version format YYYYMMDD.HH24MISS
 # 2026.07.15 - v. 0.3 - fixed bin/sqlplus install paths; removed stale dfc refs;
 #                       accept Y in confirmation; history files chmod 600; dropped chmod 711 $HOME
 # 2021.02.10 - v. 0.2 - added some structural changes - too many changes to describe them here :-)

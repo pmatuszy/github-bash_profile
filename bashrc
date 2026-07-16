@@ -1,3 +1,4 @@
+# v. 20260716.162620 - version format YYYYMMDD.HH24MISS
 # v. 3.62- 2026.07.16 - github-bin: git-bin.sh pull/reset/push; gitbin-ssh, gitbin-pull/push
 # v. 3.61- 2026.07.15 - git aliases: profile_location_dir when set, else $HOME
 # v. 3.60- 2026.07.15 - git aliases: mkdir -p ${profile_location_dir}/github before run

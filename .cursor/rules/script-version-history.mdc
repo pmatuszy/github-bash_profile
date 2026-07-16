@@ -8,25 +8,17 @@ alwaysApply: false
 
 When editing any tracked script or profile file, add a new **top** history line (newest first). Do not edit older lines.
 
-## Shell scripts (`*.sh`, `install.sh`, `_doit.sh`)
-
-Immediately after the shebang:
+## Format (all files)
 
 ```bash
-# YYYY.MM.DD - v. MAJOR.MINOR - brief what changed
+# v. YYYYMMDD.HH24MISS - brief what changed
 ```
 
-Bump patch/minor from the current top entry. Keep one short line.
-
-## Profile files (`bashrc`, `bash_profile`)
-
-At file top (no shebang):
-
-```bash
-# v. MAJOR.MINOR- YYYY.MM.DD - brief what changed
-```
-
-When `bashrc` or `bash_profile` changes, also add a matching top line to `.pgm-bundle-version` (bundle release note).
+- Use local time at edit time (`date +%Y%m%d.%H%M%S`).
+- One short description after the dash.
+- Shell scripts: immediately after the shebang.
+- `bashrc`, `bash_profile`: at file top (no shebang).
+- When `bashrc` or `bash_profile` changes, also add a matching top line to `.pgm-bundle-version`.
 
 ## After changes
 
