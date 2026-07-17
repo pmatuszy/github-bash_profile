@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# v. 20260717.223420 - English-only user messages and comments
 # v. 20260716.162620 - version format YYYYMMDD.HH24MISS
 # 2026.07.15 - v. 0.10 - profile_root: ${profile_location_dir:-$HOME}
 # 2026.07.15 - v. 0.9 - GIT_REPO_DIRECTORY under ${profile_location_dir}/github/github-bash_profile
@@ -14,7 +15,7 @@
 
 . /root/bin/_script_header.sh
 
-if (( ! script_is_run_interactively ));then    # jesli nie interaktywnie, to chcemy wyswietlic info, by poszlo do logow
+if (( ! script_is_run_interactively ));then    # non-interactive: print version info for logs
   echo "${SCRIPT_VERSION}";echo
 fi
 
@@ -63,7 +64,7 @@ if [ "${p}" == 'y' -o  "${p}" == 'Y' ]; then
   echo git push | boxes -s 40x5 -a c
   git push
   if (( $? != 0 )); then
-    echo ; echo '(PGM) nie moge zrobic pusha - wychodze' ; echo
+    echo ; echo '(PGM) cannot push - exiting' ; echo
     exit 2
   fi
 else

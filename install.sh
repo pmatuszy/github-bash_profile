@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# v. 20260717.223420 - English-only; rlwrap-completions.txt; .shell_history_${USER} migration
 # v. 20260716.162620 - version format YYYYMMDD.HH24MISS
 # 2026.07.15 - v. 0.3 - fixed bin/sqlplus install paths; removed stale dfc refs;
 #                       accept Y in confirmation; history files chmod 600; dropped chmod 711 $HOME
@@ -41,8 +42,6 @@ echo
 echo installing scripts...
 echo
 
-komenda=""
-
 mkdir ${profile_location_dir}/bin ${profile_location_dir}/lib 2>/dev/null
 
 chmod 644 ${profile_location_dir}/.toprc 2>/dev/null
@@ -66,17 +65,22 @@ if [[ "$USER" == "oracle" || "$USER" == "grid" ]]; then
   chmod 755 bin/crs_stat-t bin/pickora bin lib bashrc bash_profile
   popd
 
-  mv wynik.txt ${profile_location_dir}/bin 2>/dev/null
+  mv rlwrap-completions.txt ${profile_location_dir}/bin 2>/dev/null
+  mv ${profile_location_dir}/bin/wynik.txt ${profile_location_dir}/bin/rlwrap-completions.txt 2>/dev/null
   
   pushd .
   cd ${profile_location_dir}
  
-  chmod 644 bin/wynik.txt .pgm-bundle-version 2>/dev/null
+  chmod 644 bin/rlwrap-completions.txt .pgm-bundle-version 2>/dev/null
 
-  touch adrci_history expdp_history impdp_history sqlplus_history asmcmd_history dgmgrl_history .moja_historia_${USER}
+  if [ -f .moja_historia_${USER} ] && [ ! -f .shell_history_${USER} ]; then
+    mv .moja_historia_${USER} .shell_history_${USER}
+  fi
+
+  touch adrci_history expdp_history impdp_history sqlplus_history asmcmd_history dgmgrl_history .shell_history_${USER}
   # history files must not be world-writable
   chmod 600 adrci_history expdp_history impdp_history sqlplus_history 2> /dev/null
-  chmod 600 asmcmd_history dgmgrl_history .moja_historia_${USER} 2>/dev/null
+  chmod 600 asmcmd_history dgmgrl_history .shell_history_${USER} 2>/dev/null
   popd 
 fi
 

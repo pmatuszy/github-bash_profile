@@ -11,7 +11,7 @@ When editing any tracked script or profile file, add a new **top** history line 
 ## Format (all files)
 
 ```bash
-# v. YYYYMMDD.HH24MISS - brief what changed
+# v. YYYYMMDD.HH24MISS - brief what changed (English only)
 ```
 
 - Use local time at edit time (`date +%Y%m%d.%H%M%S`).
@@ -19,6 +19,7 @@ When editing any tracked script or profile file, add a new **top** history line 
 - Shell scripts: immediately after the shebang.
 - `bashrc`, `bash_profile`: at file top (no shebang).
 - When `bashrc` or `bash_profile` changes, also add a matching top line to `.pgm-bundle-version`.
+- Use English for new comments, messages, filenames, and variable names.
 
 ## After changes
 

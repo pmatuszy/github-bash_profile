@@ -1,3 +1,4 @@
+# v. 20260717.223420 - English-only: messages, comments, rlwrap-completions, shell_history
 # v. 20260717.215208 - restore gitbub (github-bin push batch via git-bin.sh)
 # v. 20260716.162620 - version format YYYYMMDD.HH24MISS
 # v. 3.62- 2026.07.16 - github-bin: git-bin.sh pull/reset/push; gitbin-ssh, gitbin-pull/push
@@ -347,8 +348,8 @@ if [[ "${USER}" =~ (.*grid$|^grid.*|.*ora$|^ora.*) ]]; then
     fi
 
     if [ -f "${profile_location_dir}/bin/rlwrap" ] || [ "$(type -fP rlwrap)" ];  then
-      if [ -f "${profile_location_dir}/bin/wynik.txt" ]; then 
-        "$(type -fP rlwrap)" -p"1;34" -c -f "${profile_location_dir}/bin/wynik.txt" -r -b "(){}[],+^='@$" "${utility_bin}" "/ as sysdba" "$@"
+      if [ -f "${profile_location_dir}/bin/rlwrap-completions.txt" ]; then 
+        "$(type -fP rlwrap)" -p"1;34" -c -f "${profile_location_dir}/bin/rlwrap-completions.txt" -r -b "(){}[],+^='@$" "${utility_bin}" "/ as sysdba" "$@"
       else
         "$(type -fP rlwrap)" -p"1;34" -c                                            -r -b "(){}[],+^='@$" "${utility_bin}" "/ as sysdba" "$@"
       fi
@@ -381,8 +382,8 @@ if [[ "${USER}" =~ (.*grid$|^grid.*|.*ora$|^ora.*) ]]; then
        printf '\e[8;71;181t'
     fi
     if [ -f "${profile_location_dir}/bin/rlwrap" ] || [ "$(type -fP rlwrap)" ];  then
-      if [ -f "${profile_location_dir}/bin/wynik.txt" ]; then 
-        "$(type -fP rlwrap)" -p"1;34" -c -f "${profile_location_dir}/bin/wynik.txt" -r -b "(){}[],+^='@$" "${utility_bin}" "/ as sysasm" "$@"
+      if [ -f "${profile_location_dir}/bin/rlwrap-completions.txt" ]; then 
+        "$(type -fP rlwrap)" -p"1;34" -c -f "${profile_location_dir}/bin/rlwrap-completions.txt" -r -b "(){}[],+^='@$" "${utility_bin}" "/ as sysasm" "$@"
       else
         "$(type -fP rlwrap)" -p"1;34" -c                                            -r -b "(){}[],+^='@$" "${utility_bin}" "/ as sysasm" "$@"
       fi
@@ -411,8 +412,8 @@ if [[ "${USER}" =~ (.*grid$|^grid.*|.*ora$|^ora.*) ]]; then
     fi
 
     if [ -f "${profile_location_dir}/bin/rlwrap" ] || [ "$(type -fP rlwrap)" ];  then
-      if [ -f "${profile_location_dir}/bin/wynik.txt" ]; then 
-        "$(type -fP rlwrap)" -p"7;37" -c -f "${profile_location_dir}/bin/wynik.txt" -r -b "(){}[],+^='@$" "${utility_bin}" "$@"
+      if [ -f "${profile_location_dir}/bin/rlwrap-completions.txt" ]; then 
+        "$(type -fP rlwrap)" -p"7;37" -c -f "${profile_location_dir}/bin/rlwrap-completions.txt" -r -b "(){}[],+^='@$" "${utility_bin}" "$@"
       else
         "$(type -fP rlwrap)" -p"7;37" -c                                            -r -b "(){}[],+^='@$" "${utility_bin}" "$@"
       fi
@@ -441,8 +442,8 @@ if [[ "${USER}" =~ (.*grid$|^grid.*|.*ora$|^ora.*) ]]; then
     fi
 
     if [ -f "${profile_location_dir}/bin/rlwrap" ] || [ "$(type -fP rlwrap)" ];  then
-      if [ -f "${profile_location_dir}/bin/wynik.txt" ]; then 
-        "$(type -fP rlwrap)" -p"7;37" -c -f "${profile_location_dir}/bin/wynik.txt" -r -b "(){}[],+^='@$" "${utility_bin}" "$@"
+      if [ -f "${profile_location_dir}/bin/rlwrap-completions.txt" ]; then 
+        "$(type -fP rlwrap)" -p"7;37" -c -f "${profile_location_dir}/bin/rlwrap-completions.txt" -r -b "(){}[],+^='@$" "${utility_bin}" "$@"
       else
         "$(type -fP rlwrap)" -p"7;37" -c                                            -r -b "(){}[],+^='@$" "${utility_bin}" "$@"
       fi
@@ -471,8 +472,8 @@ if [[ "${USER}" =~ (.*grid$|^grid.*|.*ora$|^ora.*) ]]; then
     fi
 
     if [ -f "${profile_location_dir}/bin/rlwrap" ] || [ "$(type -fP rlwrap)" ];  then
-      if [ -f "${profile_location_dir}/bin/wynik.txt" ]; then 
-        "$(type -fP rlwrap)" -p"7;37" -c -f "${profile_location_dir}/bin/wynik.txt" -r -b "(){}[],+^='@$" "${utility_bin}" "$@"
+      if [ -f "${profile_location_dir}/bin/rlwrap-completions.txt" ]; then 
+        "$(type -fP rlwrap)" -p"7;37" -c -f "${profile_location_dir}/bin/rlwrap-completions.txt" -r -b "(){}[],+^='@$" "${utility_bin}" "$@"
       else
         "$(type -fP rlwrap)" -p"7;37" -c                                            -r -b "(){}[],+^='@$" "${utility_bin}" "$@"
       fi
@@ -501,8 +502,8 @@ if [[ "${USER}" =~ (.*grid$|^grid.*|.*ora$|^ora.*) ]]; then
     fi
   
     if [ -f "${profile_location_dir}/bin/rlwrap" ] || [ "$(type -fP rlwrap)" ];  then
-      if [ -f "${profile_location_dir}/bin/wynik.txt" ]; then 
-        "$(type -fP rlwrap)" -p"7;36" -c -f "${profile_location_dir}/bin/wynik.txt" -r -b "(){}[],+^='@$" "${utility_bin}" "$@"
+      if [ -f "${profile_location_dir}/bin/rlwrap-completions.txt" ]; then 
+        "$(type -fP rlwrap)" -p"7;36" -c -f "${profile_location_dir}/bin/rlwrap-completions.txt" -r -b "(){}[],+^='@$" "${utility_bin}" "$@"
       else
         "$(type -fP rlwrap)" -p"7;36" -c                                            -r -b "(){}[],+^='@$" "${utility_bin}" "$@"
       fi
@@ -542,8 +543,8 @@ if [[ "${USER}" =~ (.*grid$|^grid.*|.*ora$|^ora.*) ]]; then
     export ORACLE_PATH=    # we unset this as if we run e.g. asmcmd shutdown it will run login.sql file, which is not nice ...
     
     if [ -f "${profile_location_dir}/bin/rlwrap" ] || [ "$(type -fP rlwrap)" ];  then
-      if [ -f "${profile_location_dir}/bin/wynik.txt" ]; then 
-        "$(type -fP rlwrap)" -p"7;35" -c -f "${profile_location_dir}/bin/wynik.txt" -r -b "(){}[],+^='@$" "${utility_bin}" -p "$@"
+      if [ -f "${profile_location_dir}/bin/rlwrap-completions.txt" ]; then 
+        "$(type -fP rlwrap)" -p"7;35" -c -f "${profile_location_dir}/bin/rlwrap-completions.txt" -r -b "(){}[],+^='@$" "${utility_bin}" -p "$@"
       else
         "$(type -fP rlwrap)" -p"7;35" -c                                            -r -b "(){}[],+^='@$" "${utility_bin}" -p "$@"
       fi
@@ -575,8 +576,8 @@ if [[ "${USER}" =~ (.*grid$|^grid.*|.*ora$|^ora.*) ]]; then
     fi
     
     if [ -f "${profile_location_dir}/bin/rlwrap" ] || [ "$(type -fP rlwrap)" ];  then
-      if [ -f "${profile_location_dir}/bin/wynik.txt" ]; then 
-        "$(type -fP rlwrap)" -p"7;35" -c -f "${profile_location_dir}/bin/wynik.txt" -r -b "(){}[],+^='@$" "${utility_bin}" "$@"
+      if [ -f "${profile_location_dir}/bin/rlwrap-completions.txt" ]; then 
+        "$(type -fP rlwrap)" -p"7;35" -c -f "${profile_location_dir}/bin/rlwrap-completions.txt" -r -b "(){}[],+^='@$" "${utility_bin}" "$@"
       else
         "$(type -fP rlwrap)" -p"7;35" -c                                            -r -b "(){}[],+^='@$" "${utility_bin}" "$@"
       fi
@@ -1256,8 +1257,8 @@ function aptitude-all() {
   boxes <<< "aptitude -q ${assume_yes} autoclean";
   aptitude -q ${assume_yes} autoclean ;
   
-  if [ -x ${HOME}/bin/sprawdz-ile-apt-list--upgradable.sh ]; then 
-    ${HOME}/bin/sprawdz-ile-apt-list--upgradable.sh
+  if [ -x ${HOME}/bin/healthchecks-apt-upgradable-count.sh ]; then
+    ${HOME}/bin/healthchecks-apt-upgradable-count.sh
   fi
   }
 if [ ! "$(type -fP aptitude)" ]; then
@@ -1432,7 +1433,7 @@ PROMPT_COMMAND="${PROMPT_COMMAND:+${PROMPT_COMMAND}$'\n'}"
 export LC_TIME=en_GB  # for date to show 24h time
 export LC_MESSAGES=en_US.UTF-8
 export LC_COLLATE=en_US.UTF-8
-export LANG=en_US.utf8           # by pass i mc sie ladnie wyswietlaly
+export LANG=en_US.utf8           # so passwd and mc display correctly
 export LANGUAGE=en_US:en
 export LC_CTYPE=en_US.UTF-8
 export SYSTEMD_PAGER=""          # Setting this to an empty string or the value "cat" is equivalent to passing --no-pager

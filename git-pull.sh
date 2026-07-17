@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# v. 20260717.223420 - English-only user messages and comments
 # v. 20260716.162620 - version format YYYYMMDD.HH24MISS
 # 2026.07.15 - v. 0.7 - profile_root: ${profile_location_dir:-$HOME}
 # 2026.07.15 - v. 0.6 - GIT_REPO_DIRECTORY under ${profile_location_dir}/github/github-bash_profile
@@ -11,7 +12,7 @@
 
 . /root/bin/_script_header.sh
 
-if (( ! script_is_run_interactively ));then    # jesli nie interaktywnie, to chcemy wyswietlic info, by poszlo do logow
+if (( ! script_is_run_interactively ));then    # non-interactive: print version info for logs
   echo "${SCRIPT_VERSION}";echo
 fi
 
@@ -51,11 +52,11 @@ echo
 if [ "${p}" == 'y' -o  "${p}" == 'Y' ]; then
   cd "${profile_root}"
 
-  # sprawdzam, czy mam dostep do zdalnego repo
+  # check remote repository access
   echo git ls-remote git+ssh://git@github.com/pmatuszy/"${github_project_name}".git | boxes -s 70x5 -a c
   git ls-remote git+ssh://git@github.com/pmatuszy/"${github_project_name}".git 2>&1 >/dev/null
   if (( $? != 0 )); then
-    echo  ; echo ; echo "Nie mam dostepu do zdalnego repozytorium.... WYCHODZE" ; echo ; echo
+    echo  ; echo ; echo "No access to remote repository.... EXITING" ; echo ; echo
     exit 2
   fi
 
@@ -66,7 +67,7 @@ if [ "${p}" == 'y' -o  "${p}" == 'Y' ]; then
   echo git pull git+ssh://git@github.com/pmatuszy/"${github_project_name}".git | boxes -s 70x5 -a c
   git pull git+ssh://git@github.com/pmatuszy/"${github_project_name}".git
   if (( $? != 0 )); then
-    echo  ; echo ; echo "Pull was not successful... WYCHODZE" ; echo ; echo
+    echo  ; echo ; echo "Pull was not successful... EXITING" ; echo ; echo
     exit 3
   fi
 

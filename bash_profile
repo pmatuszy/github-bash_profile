@@ -1,3 +1,4 @@
+# v. 20260717.223420 - HISTFILE .shell_history_${USER}; English ORA_CRS_HOME comments
 # v. 20260716.162620 - version format YYYYMMDD.HH24MISS
 # v. 2.20- 2026.07.15 - bugfix oracle/grid USER regex (^ora*. -> ^ora.*)
 # v. 2.19- 2023.09.13 - bugfix in check for $USER patterns
@@ -120,7 +121,7 @@ export HISTTIMEFORMAT="%F %T "
 # dont limit the size of the history file.
 # export HISTSIZE=10000
 unset HISTFILESIZE
-export HISTFILE=${profile_location_dir}/.moja_historia_${USER}
+export HISTFILE=${profile_location_dir}/.shell_history_${USER}
 
 # let's clean up some history (just in case)
 for p in `history |grep "export RCLONE_CONFIG_PASS="|awk '{print $1}'|sort -nr`;do history -d $p ; done
@@ -141,11 +142,11 @@ stty kill '^U'
 stty intr '^C'
 
 if [[ "$USER" =~ (.*grid$|^grid.*) ]]; then
-  # ustawianie ORA_CRS_HOME - poczatek
+  # Setting ORA_CRS_HOME - start
   if [[ "`ps -ef | grep crsd.bin|grep -v grep|wc -l`" == 1 ]]; then
     export ORA_CRS_HOME=`ps -ef | grep crsd.bin|grep -v grep |sed 's/\/bin\/crsd.bin.*//g'|grep root|sed 's/.* \//\//g'`
   fi
-  # ustawianie ORA_CRS_HOME - koniec
+  # Setting ORA_CRS_HOME - end
   export CRS_HOME=${ORA_CRS_HOME:-}
 fi
 
