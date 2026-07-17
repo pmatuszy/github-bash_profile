@@ -1,3 +1,4 @@
+# v. 20260717.215208 - restore gitbub (github-bin push batch via git-bin.sh)
 # v. 20260716.162620 - version format YYYYMMDD.HH24MISS
 # v. 3.62- 2026.07.16 - github-bin: git-bin.sh pull/reset/push; gitbin-ssh, gitbin-pull/push
 # v. 3.61- 2026.07.15 - git aliases: profile_location_dir when set, else $HOME
@@ -1228,13 +1229,14 @@ if [ "${MATUSZYK}" == 1 ]; then
 
   function gitbdb()      { mkdir -p "${profile_location_dir}/github"; "${profile_location_dir}/github/github-bin/git-bin.sh" pull  batch --no_startup_delay "$@"; } ; export -f gitbdb
   function gitbin-reset(){ mkdir -p "${profile_location_dir}/github"; "${profile_location_dir}/github/github-bin/git-bin.sh" reset batch --no_startup_delay "$@"; } ; export -f gitbin-reset
+  function gitbub()      { mkdir -p "${profile_location_dir}/github"; "${profile_location_dir}/github/github-bin/git-bin.sh" push  batch --no_startup_delay "$@"; } ; export -f gitbub
   function gitbin-ssh() {
     export GIT_SSH_COMMAND='ssh -i $HOME/.ssh/id_SSH_ed25519_20230207_OpenSSH'
     eval keychain -q --nogui --nocolor --eval id_rsa id_ed25519 id_SSH_ed25519_20230207_OpenSSH 2>&1
     . "${HOME}/.keychain/${HOSTNAME}-sh"
   } ; export -f gitbin-ssh
   alias gitbin-pull='gitbdb'
-  alias gitbin-push="${profile_location_dir}/github/github-bin/git-bin.sh push batch"
+  alias gitbin-push='gitbub'
 fi
 ##########################################################################
 function aptitude-all() {
@@ -1287,7 +1289,7 @@ complete -A user      su
 complete -A group     newgrp groupdel groupmod
 complete -f -X '!*.zip' unzip
 complete -o default -F bash_complete_go curl dig host netcat ping telnet ssh sftp rlogin traceroute nslookup go
-complete -W "batch"   aptitude-all gitpu gitpd gitbdb gitbin-reset
+complete -W "batch"   aptitude-all gitpu gitpd gitbdb gitbub gitbin-reset
 # complete bash command section END
 ##########################################################################
 function bash_complete_go() {
