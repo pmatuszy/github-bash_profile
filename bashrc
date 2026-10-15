@@ -401,6 +401,13 @@ if [[ "${USER}" =~ (.*grid$|^grid.*|.*ora$|^ora.*) ]]; then
   }
   alias salp='_pgm_show_alert_log_path'
   ##########################################################################
+  function la() {
+    local alert_log_path
+    alert_log_path="$(_pgm_show_alert_log_path)" || return 1
+    less "${alert_log_path}"
+  }
+  export -f la
+  ##########################################################################
   function va() {
     echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
     valert
@@ -852,6 +859,7 @@ if [[ "${USER}" =~ (.*grid$|^grid.*|.*ora$|^ora.*) ]]; then
       "ta" "Follow the alert log" \
       "va" "Display the alert log" \
       "salp" "Show the alert log file path" \
+      "la" "Open the alert log in less" \
       "tha" "Follow the alert log in ~/pgm" \
       "cha" "Display the alert log in ~/pgm"
 
