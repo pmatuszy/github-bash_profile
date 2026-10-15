@@ -241,6 +241,23 @@ fi
 # settig profile_location_dir END   #
 #####################################
 
+rlwrap_bin=
+if [ -x "${profile_location_dir}/bin/rlwrap" ]; then
+  rlwrap_bin="${profile_location_dir}/bin/rlwrap"
+elif command -v rlwrap >/dev/null 2>&1; then
+  rlwrap_bin="$(type -P rlwrap)"
+fi
+
+use_rlwrap=0
+if [ -n "${rlwrap_bin}" ]; then
+  if bash -c 'ulimit -c 0; "$1" --version >/dev/null 2>&1' bash "${rlwrap_bin}" 2>/dev/null; then
+    use_rlwrap=1
+  else
+    printf 'rlwrap at "%s" is unusable; running without rlwrap.\n' "${rlwrap_bin}" >&2
+  fi
+fi
+export rlwrap_bin use_rlwrap
+
 ##########################################################################
 function pgm() {
   echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
@@ -358,11 +375,11 @@ if [[ "${USER}" =~ (.*grid$|^grid.*|.*ora$|^ora.*) ]]; then
        printf '\e[8;71;175t'
     fi
 
-    if [ -f "${profile_location_dir}/bin/rlwrap" ] || [ "$(type -fP rlwrap)" ];  then
+    if (( use_rlwrap )); then
       if [ -f "${profile_location_dir}/bin/rlwrap-completions.txt" ]; then 
-        "$(type -fP rlwrap)" -p"1;34" -c -f "${profile_location_dir}/bin/rlwrap-completions.txt" -r -b "(){}[],+^='@$" "${utility_bin}" "/ as sysdba" "$@"
+        "${rlwrap_bin}" -p"1;34" -c -f "${profile_location_dir}/bin/rlwrap-completions.txt" -r -b "(){}[],+^='@$" "${utility_bin}" "/ as sysdba" "$@"
       else
-        "$(type -fP rlwrap)" -p"1;34" -c                                            -r -b "(){}[],+^='@$" "${utility_bin}" "/ as sysdba" "$@"
+        "${rlwrap_bin}" -p"1;34" -c                                            -r -b "(){}[],+^='@$" "${utility_bin}" "/ as sysdba" "$@"
       fi
     else
       "${utility_bin}" "/ as sysdba" "$@"
@@ -392,11 +409,11 @@ if [[ "${USER}" =~ (.*grid$|^grid.*|.*ora$|^ora.*) ]]; then
     if [ "$(uname -a|grep -i Linux|wc -l)" -eq 1 ]; then
        printf '\e[8;71;181t'
     fi
-    if [ -f "${profile_location_dir}/bin/rlwrap" ] || [ "$(type -fP rlwrap)" ];  then
+    if (( use_rlwrap )); then
       if [ -f "${profile_location_dir}/bin/rlwrap-completions.txt" ]; then 
-        "$(type -fP rlwrap)" -p"1;34" -c -f "${profile_location_dir}/bin/rlwrap-completions.txt" -r -b "(){}[],+^='@$" "${utility_bin}" "/ as sysasm" "$@"
+        "${rlwrap_bin}" -p"1;34" -c -f "${profile_location_dir}/bin/rlwrap-completions.txt" -r -b "(){}[],+^='@$" "${utility_bin}" "/ as sysasm" "$@"
       else
-        "$(type -fP rlwrap)" -p"1;34" -c                                            -r -b "(){}[],+^='@$" "${utility_bin}" "/ as sysasm" "$@"
+        "${rlwrap_bin}" -p"1;34" -c                                            -r -b "(){}[],+^='@$" "${utility_bin}" "/ as sysasm" "$@"
       fi
     else
       "${utility_bin}" "$@"
@@ -422,11 +439,11 @@ if [[ "${USER}" =~ (.*grid$|^grid.*|.*ora$|^ora.*) ]]; then
       return 3
     fi
 
-    if [ -f "${profile_location_dir}/bin/rlwrap" ] || [ "$(type -fP rlwrap)" ];  then
+    if (( use_rlwrap )); then
       if [ -f "${profile_location_dir}/bin/rlwrap-completions.txt" ]; then 
-        "$(type -fP rlwrap)" -p"7;37" -c -f "${profile_location_dir}/bin/rlwrap-completions.txt" -r -b "(){}[],+^='@$" "${utility_bin}" "$@"
+        "${rlwrap_bin}" -p"7;37" -c -f "${profile_location_dir}/bin/rlwrap-completions.txt" -r -b "(){}[],+^='@$" "${utility_bin}" "$@"
       else
-        "$(type -fP rlwrap)" -p"7;37" -c                                            -r -b "(){}[],+^='@$" "${utility_bin}" "$@"
+        "${rlwrap_bin}" -p"7;37" -c                                            -r -b "(){}[],+^='@$" "${utility_bin}" "$@"
       fi
     else
       "${utility_bin}" "$@"
@@ -452,11 +469,11 @@ if [[ "${USER}" =~ (.*grid$|^grid.*|.*ora$|^ora.*) ]]; then
       return 3
     fi
 
-    if [ -f "${profile_location_dir}/bin/rlwrap" ] || [ "$(type -fP rlwrap)" ];  then
+    if (( use_rlwrap )); then
       if [ -f "${profile_location_dir}/bin/rlwrap-completions.txt" ]; then 
-        "$(type -fP rlwrap)" -p"7;37" -c -f "${profile_location_dir}/bin/rlwrap-completions.txt" -r -b "(){}[],+^='@$" "${utility_bin}" "$@"
+        "${rlwrap_bin}" -p"7;37" -c -f "${profile_location_dir}/bin/rlwrap-completions.txt" -r -b "(){}[],+^='@$" "${utility_bin}" "$@"
       else
-        "$(type -fP rlwrap)" -p"7;37" -c                                            -r -b "(){}[],+^='@$" "${utility_bin}" "$@"
+        "${rlwrap_bin}" -p"7;37" -c                                            -r -b "(){}[],+^='@$" "${utility_bin}" "$@"
       fi
     else
       "${utility_bin}" "$@"
@@ -482,11 +499,11 @@ if [[ "${USER}" =~ (.*grid$|^grid.*|.*ora$|^ora.*) ]]; then
       return 3
     fi
 
-    if [ -f "${profile_location_dir}/bin/rlwrap" ] || [ "$(type -fP rlwrap)" ];  then
+    if (( use_rlwrap )); then
       if [ -f "${profile_location_dir}/bin/rlwrap-completions.txt" ]; then 
-        "$(type -fP rlwrap)" -p"7;37" -c -f "${profile_location_dir}/bin/rlwrap-completions.txt" -r -b "(){}[],+^='@$" "${utility_bin}" "$@"
+        "${rlwrap_bin}" -p"7;37" -c -f "${profile_location_dir}/bin/rlwrap-completions.txt" -r -b "(){}[],+^='@$" "${utility_bin}" "$@"
       else
-        "$(type -fP rlwrap)" -p"7;37" -c                                            -r -b "(){}[],+^='@$" "${utility_bin}" "$@"
+        "${rlwrap_bin}" -p"7;37" -c                                            -r -b "(){}[],+^='@$" "${utility_bin}" "$@"
       fi
     else
       "${utility_bin}" "$@"
@@ -512,11 +529,11 @@ if [[ "${USER}" =~ (.*grid$|^grid.*|.*ora$|^ora.*) ]]; then
       return 3
     fi
   
-    if [ -f "${profile_location_dir}/bin/rlwrap" ] || [ "$(type -fP rlwrap)" ];  then
+    if (( use_rlwrap )); then
       if [ -f "${profile_location_dir}/bin/rlwrap-completions.txt" ]; then 
-        "$(type -fP rlwrap)" -p"7;36" -c -f "${profile_location_dir}/bin/rlwrap-completions.txt" -r -b "(){}[],+^='@$" "${utility_bin}" "$@"
+        "${rlwrap_bin}" -p"7;36" -c -f "${profile_location_dir}/bin/rlwrap-completions.txt" -r -b "(){}[],+^='@$" "${utility_bin}" "$@"
       else
-        "$(type -fP rlwrap)" -p"7;36" -c                                            -r -b "(){}[],+^='@$" "${utility_bin}" "$@"
+        "${rlwrap_bin}" -p"7;36" -c                                            -r -b "(){}[],+^='@$" "${utility_bin}" "$@"
       fi
     else
       "${utility_bin}" "$@"
@@ -553,11 +570,11 @@ if [[ "${USER}" =~ (.*grid$|^grid.*|.*ora$|^ora.*) ]]; then
     export ORG_ORACLE_PATH="${ORACLE_PATH}"
     export ORACLE_PATH=    # we unset this as if we run e.g. asmcmd shutdown it will run login.sql file, which is not nice ...
     
-    if [ -f "${profile_location_dir}/bin/rlwrap" ] || [ "$(type -fP rlwrap)" ];  then
+    if (( use_rlwrap )); then
       if [ -f "${profile_location_dir}/bin/rlwrap-completions.txt" ]; then 
-        "$(type -fP rlwrap)" -p"7;35" -c -f "${profile_location_dir}/bin/rlwrap-completions.txt" -r -b "(){}[],+^='@$" "${utility_bin}" -p "$@"
+        "${rlwrap_bin}" -p"7;35" -c -f "${profile_location_dir}/bin/rlwrap-completions.txt" -r -b "(){}[],+^='@$" "${utility_bin}" -p "$@"
       else
-        "$(type -fP rlwrap)" -p"7;35" -c                                            -r -b "(){}[],+^='@$" "${utility_bin}" -p "$@"
+        "${rlwrap_bin}" -p"7;35" -c                                            -r -b "(){}[],+^='@$" "${utility_bin}" -p "$@"
       fi
     else
       "${utility_bin}" -p "$@"
@@ -586,11 +603,11 @@ if [[ "${USER}" =~ (.*grid$|^grid.*|.*ora$|^ora.*) ]]; then
       return 3
     fi
     
-    if [ -f "${profile_location_dir}/bin/rlwrap" ] || [ "$(type -fP rlwrap)" ];  then
+    if (( use_rlwrap )); then
       if [ -f "${profile_location_dir}/bin/rlwrap-completions.txt" ]; then 
-        "$(type -fP rlwrap)" -p"7;35" -c -f "${profile_location_dir}/bin/rlwrap-completions.txt" -r -b "(){}[],+^='@$" "${utility_bin}" "$@"
+        "${rlwrap_bin}" -p"7;35" -c -f "${profile_location_dir}/bin/rlwrap-completions.txt" -r -b "(){}[],+^='@$" "${utility_bin}" "$@"
       else
-        "$(type -fP rlwrap)" -p"7;35" -c                                            -r -b "(){}[],+^='@$" "${utility_bin}" "$@"
+        "${rlwrap_bin}" -p"7;35" -c                                            -r -b "(){}[],+^='@$" "${utility_bin}" "$@"
       fi
     else
       "${utility_bin}" "$@"
