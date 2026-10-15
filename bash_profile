@@ -1,3 +1,4 @@
+# v. 20261015.093417 - default profile_location_dir to HOME; preserve configured values
 # v. 20260717.223420 - HISTFILE .shell_history_${USER}; English ORA_CRS_HOME comments
 # v. 20260716.162620 - version format YYYYMMDD.HH24MISS
 # v. 2.20- 2026.07.15 - bugfix oracle/grid USER regex (^ora*. -> ^ora.*)
@@ -53,7 +54,7 @@
 #####################################
 # settig profile_location_dir START #
 #####################################
-export profile_location_dir=/root
+export profile_location_dir="${profile_location_dir:-$HOME}"
 JPMORGAN=0
 MATUSZYK=0
 KGP=0
@@ -76,7 +77,7 @@ fi
 
 if [ $KGP == 1 ]; then
   if [ "$USER" == "root" ]; then
-    export profile_location_dir=/root/pgm
+    export profile_location_dir="${HOME}/pgm"
   else
     export profile_location_dir=$HOME/pgm
   fi
@@ -84,7 +85,7 @@ fi
 
 if [ $MATUSZYK == 1 ]; then
   if [ "$USER" == "root" ]; then
-    export profile_location_dir=/root
+    export profile_location_dir="${HOME}"
   else
     export profile_location_dir=$HOME
   fi

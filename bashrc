@@ -1,3 +1,4 @@
+# v. 20261015.093417 - default profile_location_dir to HOME; preserve configured values
 # v. 20260717.223420 - English-only: messages, comments, rlwrap-completions, shell_history
 # v. 20260717.215208 - restore gitbub (github-bin push batch via git-bin.sh)
 # v. 20260716.162620 - version format YYYYMMDD.HH24MISS
@@ -175,7 +176,7 @@
 #####################################
 # settig profile_location_dir START #
 #####################################
-export profile_location_dir=/root
+export profile_location_dir="${profile_location_dir:-$HOME}"
 JPMORGAN=0
 MATUSZYK=0
 KGP=0
@@ -199,7 +200,7 @@ fi
 
 if [ "${KGP}" == 1 ]; then
   if [ "${USER}" == "root" ]; then
-    export profile_location_dir=/root/pgm
+    export profile_location_dir="${HOME}/pgm"
   else
     export profile_location_dir="${HOME}/pgm"
   fi
@@ -207,7 +208,7 @@ fi
 
 if [ "${MATUSZYK}" == 1 ]; then
   if [ "${USER}" == "root" ]; then
-    export profile_location_dir=/root
+    export profile_location_dir="${HOME}"
   else
     export profile_location_dir="${HOME}"
   fi

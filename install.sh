@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# v. 20261015.093417 - preserve profile_location_dir defaults and overrides during install
 # v. 20260717.223420 - English-only; rlwrap-completions.txt; .shell_history_${USER} migration
 # v. 20260716.162620 - version format YYYYMMDD.HH24MISS
 # 2026.07.15 - v. 0.3 - fixed bin/sqlplus install paths; removed stale dfc refs;
@@ -87,17 +88,6 @@ fi
 rm $profile_location_dir/.bash_profile $profile_location_dir/.bashrc 2>/dev/null
 ln -s $profile_location_dir/bash_profile $profile_location_dir/.bash_profile
 ln -s $profile_location_dir/bashrc $profile_location_dir/.bashrc
-
-pushd .
-cd "${profile_location_dir}"
-
-cat bash_profile |sed "s@^export profile_location_dir=.*@export profile_location_dir=$profile_location_dir@" > a
-mv a bash_profile
-
-cat bashrc |sed "s@^export profile_location_dir=.*@export profile_location_dir=$profile_location_dir@g" > a
-mv a bashrc
-
-popd 
 
 cp .pgm-bundle-version "${profile_location_dir}"
 if [ -f "${profile_location_dir}/.pgm-boundle-version" ];then

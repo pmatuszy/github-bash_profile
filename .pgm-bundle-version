@@ -1,7 +1,9 @@
+# v. 20261015.093417 - preserve profile_location_dir defaults and overrides
 # v. 20260717.223420 - English-only naming: rlwrap-completions, shell_history, _misc
 # v. 20260717.215208 - restore gitbub (github-bin push batch)
 # v. 20260716.162620 - version format YYYYMMDD.HH24MISS
 # v. 1.44- 2026.07.16 - github-bin aliases use git-bin.sh; gitbin-reset/ssh/pull/push
+# v. 1.45- 2026.10.15 - default profile_location_dir to HOME; preserve configured paths on install
 # v. 1.43- 2026.07.15 - profile_location_dir when set, else $HOME for git paths
 # v. 1.42- 2026.07.15 - git aliases: mkdir -p ${profile_location_dir}/github before run
 # v. 1.41- 2026.07.15 - git aliases use explicit ${profile_location_dir}/github/* paths
