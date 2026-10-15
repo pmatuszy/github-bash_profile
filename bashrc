@@ -1,3 +1,4 @@
+# v. 20261015.154400 - set ADR base in alert display commands before selecting ADR home
 # v. 20261015.153800 - resolve ADR homes directly for valert and talert
 # v. 20261015.093417 - default profile_location_dir to HOME; preserve configured values
 # v. 20260717.223420 - English-only: messages, comments, rlwrap-completions, shell_history
@@ -356,9 +357,13 @@ if [[ "${USER}" =~ (.*grid$|^grid.*|.*ora$|^ora.*) ]]; then
       return 1
     fi
 
-    local adr_home
+    local adr_home adrci_command
     adr_home="$(_pgm_adr_home_for_sid)" || return 1
-    "${ORACLE_HOME}/bin/adrci" exec="set homepath ${adr_home};show alert"
+    adrci_command=
+    if [ -n "${ORACLE_BASE}" ]; then
+      adrci_command="set base ${ORACLE_BASE};"
+    fi
+    "${ORACLE_HOME}/bin/adrci" exec="${adrci_command}set homepath ${adr_home};show alert"
   }
   export -f valert
   ##########################################################################
@@ -369,9 +374,13 @@ if [[ "${USER}" =~ (.*grid$|^grid.*|.*ora$|^ora.*) ]]; then
       return 1
     fi
 
-    local adr_home
+    local adr_home adrci_command
     adr_home="$(_pgm_adr_home_for_sid)" || return 1
-    "${ORACLE_HOME}/bin/adrci" exec="set homepath ${adr_home};show alert -tail 500 -f"
+    adrci_command=
+    if [ -n "${ORACLE_BASE}" ]; then
+      adrci_command="set base ${ORACLE_BASE};"
+    fi
+    "${ORACLE_HOME}/bin/adrci" exec="${adrci_command}set homepath ${adr_home};show alert -tail 500 -f"
   }
   export -f talert
   ##########################################################################
