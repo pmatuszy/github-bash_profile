@@ -33,6 +33,7 @@
 #  28/11/19  1.8   PGM  looping if wrong number was entered
 #  15/07/26  1.9   PGM  bugfix: ORAHOME lookup when SID is passed as an argument
 #  15/10/26  1.10  PGM  align menu; quit immediately; ENTER disambiguates numeric prefixes
+#  15/10/26  1.11  PGM  exit with a message if no selection is made within 200 seconds
 #*******************************************************************************
 
 ##
@@ -84,6 +85,8 @@ if [ -f $ORATAB ]; then
     NEWSID="9999"
     max_number_in_menu=`egrep -n '^[^#]+:' $ORATAB | wc -l`
     number_chosen="9998"
+    selection_timeout=200
+    selection_deadline=$((SECONDS + selection_timeout))
     until [ ${number_chosen} -le ${max_number_in_menu} ]; do
       echo
       echo "Instances listed in the ORATAB (currently set to $ORATAB)"
@@ -109,7 +112,19 @@ if [ -f $ORATAB ]; then
       echo $N "ORACLE_SID = [$ORASID] ? $C"
       NEWSID=
       while :; do
-        if ! read -r -n 1 NEWSID_CHAR; then
+        remaining=$((selection_deadline - SECONDS))
+        if (( remaining <= 0 )); then
+          echo
+          printf 'No selection was made within %s seconds; exiting pickora.\n' "$selection_timeout"
+          return 2
+        fi
+        read -r -t "$remaining" -n 1 NEWSID_CHAR
+        read_status=$?
+        if (( read_status > 128 )); then
+          echo
+          printf 'No selection was made within %s seconds; exiting pickora.\n' "$selection_timeout"
+          return 2
+        elif (( read_status != 0 )); then
           break
         fi
         if [[ "$NEWSID_CHAR" = "q" || "$NEWSID_CHAR" = "Q" || "$NEWSID_CHAR" = "e" || "$NEWSID_CHAR" = "E" || "$NEWSID_CHAR" = "k" || "$NEWSID_CHAR" = "K" ]]; then
