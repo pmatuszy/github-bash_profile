@@ -60,12 +60,18 @@ MATUSZYK=0
 KGP=0
 UBS=0
 SOCGEN=0
+SYMPANY=0
 
 cat /etc/hosts|grep -qi jpmchase                                                 && JPMORGAN=1
 [ -f /root/bin/smart-indicators.sh ]                                             && MATUSZYK=1
 cat /etc/hosts|grep -qi 'gov.pl'                                                 && KGP=1
 cat /etc/chrony.conf /etc/resolv.conf 2>/dev/null |grep -qi ubs                  && UBS=1
 cat /etc/chrony.conf /etc/resolv.conf 2>/dev/null |grep -qiE 'socgen|sgpb.local' && SOCGEN=1
+cat /etc/hostname /etc/resolv.conf 2>/dev/null    |grep -qiE 'socgen|sgpb.local' && SYMPANY=1
+
+if [ $SYMPANY == 1 ]; then
+  export profile_location_dir=$HOME/pgm
+fi
 
 if [ $SOCGEN == 1 ]; then
   export MRL_PUTTY_PS1=     # unset MRL_PUTTY_PS1 as it corrupts terminal colors...
