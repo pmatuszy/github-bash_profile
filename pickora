@@ -32,6 +32,7 @@
 #  26/11/19  1.8   PGM  commended out a lot of aliases which used ORA_ env variables
 #  28/11/19  1.8   PGM  looping if wrong number was entered
 #  15/07/26  1.9   PGM  bugfix: ORAHOME lookup when SID is passed as an argument
+#  15/10/26  1.10  PGM  align SID and ORACLE_HOME columns in selection menu
 #*******************************************************************************
 
 ##
@@ -90,7 +91,16 @@ if [ -f $ORATAB ]; then
       # Show the SIDS from ORATAB with a number for each to choose, format:
       # [1]     MYDBDA        /u01/oracle/product/MYDB/10.2.0/
 
-      egrep -n '^[^#]+:' $ORATAB |sort -t: -k2,2| awk -F: '{print "["NR"]" "\t" $2 "\t" $3}'
+      egrep -n '^[^#]+:' $ORATAB |sort -t: -k2,2 | awk -F: '
+        {
+          sid[NR] = $2
+          home[NR] = $3
+          if (length($2) > sid_width) sid_width = length($2)
+        }
+        END {
+          for (i = 1; i <= NR; i++)
+            printf "[%d]  %-*s  %s\n", i, sid_width, sid[i], home[i]
+        }'
       echo
       echo [q/Q/e/E/k/K/[ENTER]] - exit without changing the currently set variables
       echo
