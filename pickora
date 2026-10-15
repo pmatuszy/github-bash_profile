@@ -32,7 +32,7 @@
 #  26/11/19  1.8   PGM  commended out a lot of aliases which used ORA_ env variables
 #  28/11/19  1.8   PGM  looping if wrong number was entered
 #  15/07/26  1.9   PGM  bugfix: ORAHOME lookup when SID is passed as an argument
-#  15/10/26  1.10  PGM  align SID and ORACLE_HOME columns in selection menu
+#  15/10/26  1.10  PGM  align menu columns; quit on keypress without waiting for ENTER
 #*******************************************************************************
 
 ##
@@ -107,10 +107,13 @@ if [ -f $ORATAB ]; then
 
       # Get the user input
       echo $N "ORACLE_SID = [$ORASID] ? $C"
-      read NEWSID
+      read -r -n 1 NEWSID
       if [[ "$NEWSID" = "q" || "$NEWSID" = "Q" || "$NEWSID" = "e" || "$NEWSID" = "E" || "$NEWSID" = "k" || "$NEWSID" = "K" || "$NEWSID" = "" ]]; then
+        echo
         return 2
       fi
+      read -r NEWSID_REST
+      NEWSID="${NEWSID}${NEWSID_REST}"
 
       # from that moment on we would like to have only positive integers
       if (( "$NEWSID" > $max_number_in_menu || $NEWSID < 1 )) ; then
