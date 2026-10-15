@@ -189,7 +189,7 @@ cat /etc/hosts|grep -qi jpmchase                                                
 cat /etc/hosts|grep -qi 'gov.pl'                                                 && KGP=1
 cat /etc/chrony.conf /etc/resolv.conf 2>/dev/null |grep -qi ubs                  && UBS=1
 cat /etc/chrony.conf /etc/resolv.conf 2>/dev/null |grep -qiE 'socgen|sgpb.local' && SOCGEN=1
-cat /etc/hostname /etc/resolv.conf 2>/dev/null    |grep -qiE 'socgen|sgpb.local' && SYMPANY=1
+cat /etc/hostname /etc/resolv.conf 2>/dev/null    |grep -qiE 'sympany'           && SYMPANY=1
 
 if [ $SYMPANY == 1 ]; then
   export profile_location_dir=$HOME/pgm
