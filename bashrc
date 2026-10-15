@@ -1,3 +1,4 @@
+# v. 20261015.153800 - resolve ADR homes directly for valert and talert
 # v. 20261015.093417 - default profile_location_dir to HOME; preserve configured values
 # v. 20260717.223420 - English-only: messages, comments, rlwrap-completions, shell_history
 # v. 20260717.215208 - restore gitbub (github-bin push batch via git-bin.sh)
@@ -296,13 +297,68 @@ if [[ "${USER}" =~ (.*grid$|^grid.*|.*ora$|^ora.*) ]]; then
   }
   export -f lsnrs
   ##########################################################################
+  function _pgm_adr_home_for_sid() {
+    local adrci_bin="${ORACLE_HOME}/bin/adrci"
+    local adrci_command adr_homes adr_matches adr_home_line nocasematch_was_set=0
+
+    if [ -z "${ORACLE_HOME}" ] || [ ! -x "${adrci_bin}" ]; then
+      echo "adrci is not executable under ORACLE_HOME: ${adrci_bin}" >&2
+      return 1
+    fi
+
+    if [ -n "${ORACLE_BASE}" ]; then
+      adrci_command="set base ${ORACLE_BASE};show homes"
+    else
+      adrci_command="show homes"
+    fi
+
+    adr_homes=$("${adrci_bin}" exec="${adrci_command}") || {
+      echo "Could not list ADR homes using ${adrci_bin}." >&2
+      return 1
+    }
+    shopt -q nocasematch && nocasematch_was_set=1
+    adr_matches=
+    while IFS= read -r adr_home_line; do
+      adr_home_line="${adr_home_line#"${adr_home_line%%[![:space:]]*}"}"
+      adr_home_line="${adr_home_line%"${adr_home_line##*[![:space:]]}"}"
+      shopt -s nocasematch
+      case "${adr_home_line}" in
+        diag/rdbms/*/"${ORACLE_SID}"|diag/asm/*/"${ORACLE_SID}")
+          if [ -n "${adr_matches}" ]; then
+            adr_matches+=$'\n'
+          fi
+          adr_matches+="${adr_home_line}"
+          ;;
+      esac
+      if (( ! nocasematch_was_set )); then
+        shopt -u nocasematch
+      fi
+    done <<< "${adr_homes}"
+
+    if [ -z "${adr_matches}" ]; then
+      echo "No ADR home found for ORACLE_SID=${ORACLE_SID}." >&2
+      return 1
+    fi
+    if [[ "${adr_matches}" == *$'\n'* ]]; then
+      echo "Multiple ADR homes found for ORACLE_SID=${ORACLE_SID}:" >&2
+      printf '%s\n' "${adr_matches}" >&2
+      return 1
+    fi
+
+    printf '%s\n' "${adr_matches}"
+  }
+  export -f _pgm_adr_home_for_sid
+  ##########################################################################
   function valert() {
     echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
-    if [ "${ORACLE_SID}" == "" ]; then
+    if [ -z "${ORACLE_SID}" ]; then
       echo "ORACLE_SID is not set" ; echo
-    else
-      adrci exec="set base ${ORACLE_BASE};set homepath $(adrci exec="set base ${ORACLE_BASE};show homes"|egrep "rdbms|asm"|grep -i "/${ORACLE_SID}$");show alert"
+      return 1
     fi
+
+    local adr_home
+    adr_home="$(_pgm_adr_home_for_sid)" || return 1
+    "${ORACLE_HOME}/bin/adrci" exec="set homepath ${adr_home};show alert"
   }
   export -f valert
   ##########################################################################
@@ -310,9 +366,12 @@ if [[ "${USER}" =~ (.*grid$|^grid.*|.*ora$|^ora.*) ]]; then
     echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
     if [ "${ORACLE_SID}" == "" ]; then
       echo "ORACLE_SID is not set"; echo
-    else
-      adrci exec="set base ${ORACLE_BASE};set homepath $(adrci exec="set base ${ORACLE_BASE};show homes"|egrep "rdbms|asm"|grep -i "/${ORACLE_SID}$");show alert -tail 500 -f"
+      return 1
     fi
+
+    local adr_home
+    adr_home="$(_pgm_adr_home_for_sid)" || return 1
+    "${ORACLE_HOME}/bin/adrci" exec="set homepath ${adr_home};show alert -tail 500 -f"
   }
   export -f talert
   ##########################################################################
