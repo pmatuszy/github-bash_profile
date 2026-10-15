@@ -1,3 +1,4 @@
+-- v.1.82- 2026.10.15 - make statistics_level=all opt-in; report errors; streamline session info
 -- v.1.81- 2019.12.03 - added various column formatting
 -- v.1.6 - 2019.11.29 - setting statistics_level to all only on mounted instance, butify the code
 --                      added alert.log location for the connected instance only for db versions > 9
@@ -224,11 +225,16 @@ declare
     dbms_output.put_line ('alter session set statistics_level=all;');
     dbms_output.put_line ('');
 
-    execute immediate 'alter session set statistics_level=all';
+    -- Enable manually when collecting diagnostic execution statistics:
+    -- alter session set statistics_level=all;
 
   exception
-    when others then -- if we are connected to non-mounted db (e.g. asm) we silently skip to the next section
-    null;
+    when others then
+      if sqlcode != -1507 then
+        dbms_output.put_line(
+          'Could not display database startup information: ' || sqlerrm
+        );
+      end if;
 end;
 /
 
@@ -298,12 +304,11 @@ select
         i.host_name                     i_host_name,
         to_char(s.sid)                  i_sid,
         to_char(s.serial#)              i_serial,
-        (select substr(banner, instr(banner, 'Release ')+8,10) from v$version where rownum = 1) i_ver,
-        (select  substr(substr(banner, instr(banner, 'Release ')+8),
+        substr(vver.banner, instr(vver.banner, 'Release ')+8,10) i_ver,
+        substr(substr(vver.banner, instr(vver.banner, 'Release ')+8),
                         1,
-                        instr(substr(banner, instr(banner, 'Release ')+8),'.')-1)
-         from v$version
-         where rownum = 1) i_myoraver,
+                        instr(substr(vver.banner, instr(vver.banner, 'Release ')+8),'.')-1)
+         i_myoraver,
         to_char(startup_time, 'YYYYMMDD HH24:MI:SS') i_startup_day,
         p.spid                          i_spid,
         trim(to_char(p.pid))            i_opid,
@@ -315,7 +320,8 @@ select
 from
         v$session s,
         v$instance i,
-        v$process p
+        v$process p,
+        (select banner from v$version where rownum = 1) vver
 where
         s.paddr = p.addr
 and
@@ -326,12 +332,8 @@ and
 -- host title &_i_user@&_i_conn [sid=&mysid ser#=&_i_serial spid=&_i_spid inst=&_i_inst host=&_i_host cpid=&_i_cpid opid=&_i_opid]
 -- host doskey /exename=sqlplus.exe desc=set lines 80 sqlprompt ""$Tdescribe $*$Tset lines 299 sqlprompt "SQL> "
 
-set head off
-set feedback off
-set timing off
+prompt
 
-select '' from dual;
-set head on
 set feedback on
 set timing on
 

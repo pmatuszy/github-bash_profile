@@ -33,12 +33,11 @@ select
 	i.host_name			i_host_name, 
 	to_char(s.sid) 			i_sid, 
 	to_char(s.serial#)		i_serial, 
-	(select substr(banner, instr(banner, 'Release ')+8,10) from v$version where rownum = 1) i_ver,
-	(select  substr(substr(banner, instr(banner, 'Release ')+8),
+	substr(vver.banner, instr(vver.banner, 'Release ')+8,10) i_ver,
+	substr(substr(vver.banner, instr(vver.banner, 'Release ')+8),
 	 		1,
-			instr(substr(banner, instr(banner, 'Release ')+8),'.')-1)
-	 from v$version 
-	 where rownum = 1) i_myoraver,
+			instr(substr(vver.banner, instr(vver.banner, 'Release ')+8),'.')-1)
+	 i_myoraver,
 	to_char(startup_time, 'YYYYMMDD') i_startup_day, 
 	p.spid				i_spid, 
 	trim(to_char(p.pid))		i_opid, 
@@ -50,7 +49,8 @@ select
 from 
 	v$session s, 
 	v$instance i, 
-	v$process p
+	v$process p,
+	(select banner from v$version where rownum = 1) vver
 where 
 	s.paddr = p.addr
 and 
@@ -61,12 +61,8 @@ and
 --host title &_i_user@&_i_conn [sid=&mysid ser#=&_i_serial spid=&_i_spid inst=&_i_inst host=&_i_host cpid=&_i_cpid opid=&_i_opid]
 --host doskey /exename=sqlplus.exe desc=set lines 80 sqlprompt ""$Tdescribe $*$Tset lines 299 sqlprompt "SQL> "
 
-set head off
-set feedback off
-set timing off
+prompt
 
-select '' from dual;
-set head on
 set feedback on
 set timing on
     
