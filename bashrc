@@ -384,6 +384,23 @@ if [[ "${USER}" =~ (.*grid$|^grid.*|.*ora$|^ora.*) ]]; then
   }
   export -f talert
   ##########################################################################
+  function _pgm_show_alert_log_path() {
+    if [ -z "${ORACLE_SID}" ]; then
+      echo "ORACLE_SID is not set." >&2
+      return 1
+    fi
+    if [ -z "${ORACLE_BASE}" ]; then
+      echo "ORACLE_BASE is not set; cannot determine the full alert log path." >&2
+      return 1
+    fi
+
+    local adr_home alert_log_path
+    adr_home="$(_pgm_adr_home_for_sid)" || return 1
+    alert_log_path="${ORACLE_BASE%/}/${adr_home}/trace/alert_${ORACLE_SID}.log"
+    printf '%s\n' "${alert_log_path}"
+  }
+  alias salp='_pgm_show_alert_log_path'
+  ##########################################################################
   function va() {
     echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
     valert
@@ -819,32 +836,44 @@ if [[ "${USER}" =~ (.*grid$|^grid.*|.*ora$|^ora.*) ]]; then
   export -f dgscl
   ##########################################################################
   function help-oracle() {
-    echo ; echo "---- (PGM) ${FUNCNAME} is a function ----" ; echo
-    echo "~~~ Data Guard ~~~"
-    echo "dgsc  - DG show configuration"
-    echo "dgscv - DG show configuration verbose"
-    echo "dgscl - DG show confiuration lag"
-    echo "dgsp  - DG show Primary DB"
-    echo "dgss  - DG show Standby database"
-    echo ; echo "~~~ alert.log ~~~"
-    echo "ta, talert - tail alert.log"
-    echo "va, valert - vi alert.log"
-    echo "tha        - tail -f home alert"
-    echo "cha        - cat     home alert"
-    echo ; echo "~~~ listeners ~~~"
-    echo "lsnr  - show running listeners"
-    echo "lsnrh - show running listeners from the CURRENTLY set ORACLE_HOME"
-    echo ; echo "~~~ ORACLE_HOME and ORACLE_BASE ~~~"
-    echo "ob  - go to ORACLE_BASE and show the ORACLE_BASE value"
-    echo "oh  - go to ORACLE_HOME and show the ORACLE_HOME value"
-    echo "soh - show ORACLE_HOME value"
-    echo "sob - show ORACLE_BASE value"
-    echo ; echo "~~~ other stuff ~~~"
-    echo "pmon - show what instances are currently running"
-    echo "po - pickora - choose which instance environment variables you want to set"
-    echo "var - show ORACLE specific environment variables"
-    echo
-    }
+    printf '\nOracle shell helpers\n'
+    printf '====================\n\n'
+
+    printf 'Data Guard\n'
+    printf '  %-8s %s\n' \
+      "dgsc" "Show configuration" \
+      "dgscv" "Show configuration details" \
+      "dgscl" "Show configuration lag" \
+      "dgsp" "Show primary database" \
+      "dgss" "Show standby databases"
+
+    printf '\nAlert logs\n'
+    printf '  %-8s %s\n' \
+      "ta" "Follow the alert log" \
+      "va" "Display the alert log" \
+      "salp" "Show the alert log file path" \
+      "tha" "Follow the alert log in ~/pgm" \
+      "cha" "Display the alert log in ~/pgm"
+
+    printf '\nListeners\n'
+    printf '  %-8s %s\n' \
+      "lsnr" "Show running listeners" \
+      "lsnrh" "Show listeners using the current ORACLE_HOME"
+
+    printf '\nOracle environment\n'
+    printf '  %-8s %s\n' \
+      "ob" "Change to ORACLE_BASE and display its value" \
+      "oh" "Change to ORACLE_HOME and display its value" \
+      "soh" "Display ORACLE_HOME" \
+      "sob" "Display ORACLE_BASE"
+
+    printf '\nOther\n'
+    printf '  %-8s %s\n' \
+      "pmon" "Show running Oracle instances" \
+      "po" "Choose an Oracle instance with pickora" \
+      "var" "Display Oracle-related environment variables"
+    printf '\n'
+  }
   export -f help-oracle
 
 fi    # end of condition: [[ "${USER}" =~ (.*grid$|^grid.*|.*ora$|^ora.*) ]]
@@ -1559,4 +1588,3 @@ fi
 if [[ $- == *i* ]]; then
   bind 'set enable-bracketed-paste off'
 fi
-
