@@ -192,7 +192,11 @@ cat /etc/chrony.conf /etc/resolv.conf 2>/dev/null |grep -qiE 'socgen|sgpb.local'
 cat /etc/hostname /etc/resolv.conf 2>/dev/null    |grep -qiE 'sympany'           && SYMPANY=1
 
 if [ $SYMPANY == 1 ]; then
-  export profile_location_dir=$HOME/pgm
+  if [ "${USER}" == "pms" ]; then
+    export profile_location_dir="${HOME}"
+  else
+    export profile_location_dir="${HOME}/pgm"
+  fi
 fi
 
 if [ "${SOCGEN}" == 1 ]; then
