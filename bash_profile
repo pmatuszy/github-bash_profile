@@ -169,7 +169,7 @@ if [[ "$USER" =~ (.*grid$|^grid.*|.*ora$|^ora.*) ]]; then
         ulimit -u 16384 -n 65536
   fi
   umask 0022
-  export SQLPATH=${SQLPATH:${profile_location_dir}/sqlplus/admin}
+  export SQLPATH=${SQLPATH}:${profile_location_dir}/sqlplus/admin
   export ORACLE_PATH=${SQLPATH}                      # from 12cR2 SQLPATH is no longer in use
   export ORACLE_BASE=${ORACLE_BASE:-PGM_UNKNOWN_LOCATION}
   export ORACLE_HOME=${ORA_CRS_HOME:-}
