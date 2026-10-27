@@ -75,6 +75,9 @@ if [ $SYMPANY == 1 ]; then
   else
     export profile_location_dir="${HOME}/pgm"
   fi
+  # below is  making TMOUT which is may be set read-only to read-write
+  [ $(type -fP gdb) ] && gdb -ex 'call (int) unbind_variable("TMOUT")' --pid=$$ --batch 2>&1 > /dev/null
+  export TMOUT=0            # to disable auto-logout set the TMOUT to zero or unset it
 fi
 
 if [ $SOCGEN == 1 ]; then
