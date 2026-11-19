@@ -34,6 +34,7 @@
 #  15/07/26  1.9   PGM  bugfix: ORAHOME lookup when SID is passed as an argument
 #  15/10/26  1.10  PGM  align menu; quit immediately; ENTER disambiguates numeric prefixes
 #  15/10/26  1.11  PGM  exit with a message if no selection is made within 200 seconds
+#  19/11/26  1.12  PGM  highlight the current Oracle environment in the menu
 #*******************************************************************************
 
 ##
@@ -45,6 +46,12 @@ if [ -f /var/opt/oracle/oratab ]; then
   ORATAB=/var/opt/oracle/oratab
 fi
 RET_VAL=0
+CURRENT_ORACLE_SID=${ORACLE_SID:-}
+CURRENT_ORACLE_HOME=${ORACLE_HOME:-}
+MENU_COLOR=0
+if [[ -t 1 && -z ${NO_COLOR:-} ]]; then
+  MENU_COLOR=1
+fi
 
 
 ##
@@ -94,15 +101,35 @@ if [ -f $ORATAB ]; then
       # Show the SIDS from ORATAB with a number for each to choose, format:
       # [1]     MYDBDA        /u01/oracle/product/MYDB/10.2.0/
 
-      egrep -n '^[^#]+:' $ORATAB |sort -t: -k2,2 | awk -F: '
+      egrep -n '^[^#]+:' $ORATAB |sort -t: -k2,2 | awk -F: \
+        -v current_sid="$CURRENT_ORACLE_SID" \
+        -v current_home="$CURRENT_ORACLE_HOME" \
+        -v menu_color="$MENU_COLOR" '
         {
           sid[NR] = $2
           home[NR] = $3
           if (length($2) > sid_width) sid_width = length($2)
         }
         END {
-          for (i = 1; i <= NR; i++)
-            printf "[%d]  %-*s  %s\n", i, sid_width, sid[i], home[i]
+          if (current_sid != "" && current_home != "") {
+            for (i = 1; i <= NR; i++) {
+              if (sid[i] == current_sid && home[i] == current_home) {
+                exact_match = 1
+                break
+              }
+            }
+          }
+          for (i = 1; i <= NR; i++) {
+            is_current = current_sid != "" && sid[i] == current_sid &&
+              (!exact_match || home[i] == current_home)
+            if (is_current && menu_color) {
+              printf "\033[1;36m[%d]  %-*s  %s  [current]\033[0m\n", i, sid_width, sid[i], home[i]
+            } else if (is_current) {
+              printf "[%d]  %-*s  %s  [current]\n", i, sid_width, sid[i], home[i]
+            } else {
+              printf "[%d]  %-*s  %s\n", i, sid_width, sid[i], home[i]
+            }
+          }
         }'
       echo
       echo [q/Q/e/E/k/K/[ENTER]] - exit without changing the currently set variables
