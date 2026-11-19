@@ -36,6 +36,9 @@
 #  15/10/26  1.11  PGM  exit with a message if no selection is made within 200 seconds
 #  19/11/26  1.12  PGM  highlight the current Oracle environment in the menu
 #  19/11/26  1.13  PGM  align menu numbers, instance names, and Oracle homes
+#  19/11/26  1.14  PGM  support Up/Down menu selection with Enter
+#  19/11/26  1.15  PGM  redraw arrow menu in place on terminals without cursor save/restore
+#  19/11/26  1.16  PGM  include the first row when repainting the arrow menu
 #*******************************************************************************
 
 ##
@@ -58,6 +61,205 @@ fi
 ##
 ### Functions
 ##
+
+pickora_restore_arrow_tty() {
+  printf '\033[?25h' 2>/dev/null || true
+  if [ -n "${PICKORA_ARROW_STTY:-}" ]; then
+    stty "$PICKORA_ARROW_STTY" 2>/dev/null || true
+    PICKORA_ARROW_STTY=
+  fi
+}
+
+pickora_draw_arrow_menu() {
+  local selected_number="$1"
+  local i sid home is_current color=""
+  local number_width=${#PICKORA_MENU_SIDS[@]}
+  number_width=${#number_width}
+
+  if (( PICKORA_MENU_DRAWN )); then
+    printf '\r\033[%dA' "$(( ${#PICKORA_MENU_SIDS[@]} + 3 ))"
+  else
+    echo
+    echo "Instances listed in the ORATAB (currently set to $ORATAB)"
+    echo
+    PICKORA_MENU_DRAWN=1
+  fi
+
+  for ((i = 0; i < ${#PICKORA_MENU_SIDS[@]}; i++)); do
+    if (( PICKORA_MENU_DRAWN > 1 )); then
+      printf '\033[2K'
+    fi
+    sid="${PICKORA_MENU_SIDS[i]}"
+    home="${PICKORA_MENU_HOMES[i]}"
+    is_current=0
+    if [[ -n "$CURRENT_ORACLE_SID" && "$sid" == "$CURRENT_ORACLE_SID" ]] &&
+      { (( ! PICKORA_CURRENT_EXACT )) || [[ "$home" == "$CURRENT_ORACLE_HOME" ]]; }; then
+      is_current=1
+    fi
+
+    if (( i + 1 == selected_number )); then
+      color=""
+      if (( MENU_COLOR )); then
+        color=$'\033[1;32m'
+        (( is_current )) && color=$'\033[1;36m'
+      fi
+      printf '%s> [%*d]  %-*s  %s' "$color" "$number_width" "$((i + 1))" "$PICKORA_SID_WIDTH" "$sid" "$home"
+    else
+      color=""
+      (( is_current && MENU_COLOR )) && color=$'\033[1;36m'
+      printf '%s  [%*d]  %-*s  %s' "$color" "$number_width" "$((i + 1))" "$PICKORA_SID_WIDTH" "$sid" "$home"
+    fi
+
+    if (( is_current )); then
+      printf '  [current]'
+    fi
+    if [[ -n "$color" ]]; then
+      printf '\033[0m'
+    fi
+    printf '\n'
+  done
+  if (( PICKORA_MENU_DRAWN > 1 )); then
+    printf '\033[3B\r\033[2K'
+    printf 'ORACLE_SID = [%s] ? ' "$ORASID"
+  else
+    echo
+    echo 'Up/Down move, Enter selects, or type a menu number. q exits without changing the current variables.'
+    echo
+    printf 'ORACLE_SID = [%s] ? ' "$ORASID"
+    PICKORA_MENU_DRAWN=2
+  fi
+}
+
+pickora_arrow_select() {
+  local line_number sid home entry_status i key key2 remaining read_status
+  local longer_choice choice_text
+  local selected_number=1
+  local exact_number=0
+  local arrow_number=0
+
+  PICKORA_MENU_SIDS=()
+  PICKORA_MENU_HOMES=()
+  while IFS=: read -r line_number sid home entry_status; do
+    PICKORA_MENU_SIDS+=("$sid")
+    PICKORA_MENU_HOMES+=("$home")
+  done < <(egrep -n '^[^#]+:' "$ORATAB" | sort -t: -k2,2)
+
+  max_number_in_menu=${#PICKORA_MENU_SIDS[@]}
+  (( max_number_in_menu > 0 )) || return 1
+
+  PICKORA_SID_WIDTH=0
+  for ((i = 0; i < max_number_in_menu; i++)); do
+    if (( ${#PICKORA_MENU_SIDS[i]} > PICKORA_SID_WIDTH )); then
+      PICKORA_SID_WIDTH=${#PICKORA_MENU_SIDS[i]}
+    fi
+    if [[ "${PICKORA_MENU_SIDS[i]}" == "$CURRENT_ORACLE_SID" && -n "$CURRENT_ORACLE_SID" ]]; then
+      (( arrow_number == 0 )) && arrow_number=$((i + 1))
+      if (( exact_number == 0 )) &&
+        [[ "${PICKORA_MENU_HOMES[i]}" == "$CURRENT_ORACLE_HOME" && -n "$CURRENT_ORACLE_HOME" ]]; then
+        exact_number=$((i + 1))
+      fi
+    fi
+  done
+
+  PICKORA_CURRENT_EXACT=0
+  if (( exact_number > 0 )); then
+    PICKORA_CURRENT_EXACT=1
+    selected_number=$exact_number
+  elif (( arrow_number > 0 )); then
+    selected_number=$arrow_number
+  fi
+
+  PICKORA_MENU_DRAWN=0
+  NEWSID=
+  PICKORA_ARROW_STTY="$(stty -g 2>/dev/null)" || return 1
+  if ! stty -echo -icanon min 1 time 0 2>/dev/null; then
+    pickora_restore_arrow_tty
+    return 1
+  fi
+  printf '\033[?25l'
+  pickora_draw_arrow_menu "$selected_number"
+
+  while :; do
+    remaining=$((selection_deadline - SECONDS))
+    if (( remaining <= 0 )); then
+      pickora_restore_arrow_tty
+      printf '\n'
+      printf 'No selection was made within %s seconds; exiting pickora.\n' "$selection_timeout"
+      return 2
+    fi
+    key=
+    IFS= read -r -t "$remaining" -n 1 key
+    read_status=$?
+    if (( read_status > 128 )); then
+      pickora_restore_arrow_tty
+      printf '\n'
+      printf 'No selection was made within %s seconds; exiting pickora.\n' "$selection_timeout"
+      return 2
+    elif (( read_status != 0 )); then
+      pickora_restore_arrow_tty
+      printf '\n'
+      return 2
+    fi
+
+    if [[ "$key" == $'\033' ]]; then
+      key2=
+      IFS= read -r -t 0.05 -n 1 key2 || key2=
+      if [[ "$key2" == '[' || "$key2" == 'O' ]]; then
+        key=
+        IFS= read -r -t 0.05 -n 1 key || key=
+        case "$key" in
+          A)
+            (( selected_number > 1 )) && selected_number=$((selected_number - 1))
+            NEWSID=
+            pickora_draw_arrow_menu "$selected_number"
+            ;;
+          B)
+            (( selected_number < max_number_in_menu )) && selected_number=$((selected_number + 1))
+            NEWSID=
+            pickora_draw_arrow_menu "$selected_number"
+            ;;
+        esac
+      fi
+      continue
+    fi
+
+    if [[ "$key" == q || "$key" == Q || "$key" == e || "$key" == E || "$key" == k || "$key" == K ]]; then
+      pickora_restore_arrow_tty
+      printf '\n'
+      return 2
+    fi
+
+    if [[ -z "$key" || "$key" == $'\n' || "$key" == $'\r' || "$key" == ' ' ]]; then
+      [[ -n "$NEWSID" ]] || NEWSID=$selected_number
+      break
+    fi
+
+    if [[ "$key" =~ ^[0-9]$ ]]; then
+      NEWSID="${NEWSID}${key}"
+      longer_choice=0
+      for ((choice = 1; choice <= max_number_in_menu; choice++)); do
+        choice_text="${choice}"
+        if [[ "$choice_text" == "$NEWSID"* && "$choice_text" != "$NEWSID" ]]; then
+          longer_choice=1
+        fi
+      done
+      if (( ! longer_choice )); then
+        break
+      fi
+      if (( 10#$NEWSID >= 1 && 10#$NEWSID <= max_number_in_menu )); then
+        selected_number=$((10#$NEWSID))
+        pickora_draw_arrow_menu "$selected_number"
+      fi
+      continue
+    fi
+
+    break
+  done
+
+  pickora_restore_arrow_tty
+  printf '\n'
+  return 0
+}
 
 ##
 ### Begin
@@ -96,6 +298,16 @@ if [ -f $ORATAB ]; then
     selection_timeout=200
     selection_deadline=$((SECONDS + selection_timeout))
     until [ ${number_chosen} -le ${max_number_in_menu} ]; do
+      if [[ -t 0 && -t 1 ]] && command -v stty >/dev/null 2>&1; then
+        pickora_arrow_select
+        arrow_status=$?
+        if (( arrow_status == 0 )); then
+          break
+        elif (( arrow_status == 2 )); then
+          return 2
+        fi
+      fi
+
       echo
       echo "Instances listed in the ORATAB (currently set to $ORATAB)"
       echo
