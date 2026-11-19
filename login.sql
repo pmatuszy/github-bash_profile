@@ -166,7 +166,12 @@ col IDX_NAME format a30 justify center
 col IDX_TABLE format a30 justify center
 col IDX_COLUMNS format a30 justify center
 col PAR_NAME format a30 justify center
-col PAR_VALUE format a30 justify center
+col PAR_VALUE format a40 justify center
+col PRE_NAME format a30 justify center
+col PRE_OBJECT format a30 justify center
+col PRV_PREFERENCE format a30 justify center
+col PRV_ATTRIBUTE format a30 justify center
+col SPW_WORD format a20 justify center
 -- nicer looking output (PGM)
 -- colsep is optional, but it makes output look like sqlite which is easier to parse using scripts.
 set colsep " | "
