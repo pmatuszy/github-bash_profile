@@ -1,3 +1,17 @@
+-- choose version_full (18c+) or version (older) without parse errors
+def _ver_col=version
+col ver_col noprint new_value _ver_col
+
+set termout off
+select case
+         when to_number(substr(version, 1, instr(version, '.') - 1)) >= 18
+         then 'version_full'
+         else 'version'
+       end ver_col
+from v$instance;
+set termout &var_up_and_running
+
+
 -- the Who am I script
 
 def   mysid="NA"
@@ -17,7 +31,7 @@ col i_spid head SPID for a7 new_value _i_spid
 col i_opid head OPID for a5 new_value _i_opid
 col i_host_name head HOST_NAME for a20 new_value _i_host
 col i_instance_name head INST_NAME for a10 new_value _i_inst
-col i_ver head VERSION for a10
+col i_ver head VERSION for a12
 col i_startup_day head STARTED for a8
 col _i_user noprint new_value _i_user
 col _i_conn noprint new_value _i_conn
@@ -28,12 +42,12 @@ set feedback off
 set timing off
 
 select 
-	s.username			i_username, 
-	i.instance_name	i_instance_name, 
-	i.host_name			i_host_name, 
+	s.username			    i_username, 
+	i.instance_name	        i_instance_name, 
+	i.host_name		  	    i_host_name, 
 	to_char(s.sid) 			i_sid, 
 	to_char(s.serial#)		i_serial, 
-	substr(vver.banner, instr(vver.banner, 'Release ')+8,10) i_ver,
+	i.&_ver_col             i_ver,
 	substr(substr(vver.banner, instr(vver.banner, 'Release ')+8),
 	 		1,
 			instr(substr(vver.banner, instr(vver.banner, 'Release ')+8),'.')-1)
