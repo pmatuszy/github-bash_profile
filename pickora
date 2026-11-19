@@ -35,6 +35,7 @@
 #  15/10/26  1.10  PGM  align menu; quit immediately; ENTER disambiguates numeric prefixes
 #  15/10/26  1.11  PGM  exit with a message if no selection is made within 200 seconds
 #  19/11/26  1.12  PGM  highlight the current Oracle environment in the menu
+#  19/11/26  1.13  PGM  align menu numbers, instance names, and Oracle homes
 #*******************************************************************************
 
 ##
@@ -108,6 +109,7 @@ if [ -f $ORATAB ]; then
         {
           sid[NR] = $2
           home[NR] = $3
+          if (length(NR) > number_width) number_width = length(NR)
           if (length($2) > sid_width) sid_width = length($2)
         }
         END {
@@ -123,11 +125,11 @@ if [ -f $ORATAB ]; then
             is_current = current_sid != "" && sid[i] == current_sid &&
               (!exact_match || home[i] == current_home)
             if (is_current && menu_color) {
-              printf "\033[1;36m[%d]  %-*s  %s  [current]\033[0m\n", i, sid_width, sid[i], home[i]
+              printf "\033[1;36m[%*d]  %-*s  %s  [current]\033[0m\n", number_width, i, sid_width, sid[i], home[i]
             } else if (is_current) {
-              printf "[%d]  %-*s  %s  [current]\n", i, sid_width, sid[i], home[i]
+              printf "[%*d]  %-*s  %s  [current]\n", number_width, i, sid_width, sid[i], home[i]
             } else {
-              printf "[%d]  %-*s  %s\n", i, sid_width, sid[i], home[i]
+              printf "[%*d]  %-*s  %s\n", number_width, i, sid_width, sid[i], home[i]
             }
           }
         }'
