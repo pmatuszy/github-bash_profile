@@ -163,8 +163,10 @@ col platform_name format a33  justify center
 
 col IDX_OWNER format a30 justify center
 col IDX_NAME format a30 justify center
-
-
+col IDX_TABLE format a30 justify center
+col IDX_COLUMNS format a30 justify center
+col PAR_NAME format a30 justify center
+col PAR_VALUE format a30 justify center
 -- nicer looking output (PGM)
 -- colsep is optional, but it makes output look like sqlite which is easier to parse using scripts.
 set colsep " | "
